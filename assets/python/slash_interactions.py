@@ -43,6 +43,33 @@ async def interaction_handler(request):
 
 	if interaction["type"] == 2:
 		...
+
+@Router.get("/register")
+async def register_call(request: Request):
+	admin = request.headers.get("Authorisation")
+
+	if admin not in Router.Internal.Dynamic.fetch("ADMIN_TOKENS"):
+		return 'invalid admin verification', 401
+
+	commands = [
+		{
+			"name": "voice",
+			"type": 2,
+			"description": "Voice Channel controller.",
+			"options": [
+				{
+					"name": "create",
+					"type": 1,
+					"description": "Create a voice channel."
+				},
+				{
+					"name": "permit",
+					"type": 2,
+					"description": "Permit a user to join a voice channel.",
+					"options": [
+						{
+							"name": "approve",
+							"description": "Approve a user to join a voice channel.",
 							"type": 1,
 							"options": [
 								{
