@@ -22,3 +22,5 @@ class Internal:
 
 			def get(self, key: str) -> Any:
 				return self.cache.get(key)
+
+		self.Constants = Constants
