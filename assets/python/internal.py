@@ -24,3 +24,11 @@ class Internal:
 				return self.cache.get(key)
 
 		self.Constants = Constants
+
+		class Client:
+			def __init__(self, constants: Constants):
+				self.id = constants.fetch("CLIENT_ID")
+				self.core_guild_id = constants.fetch("CORE_GUILD_ID")
+				self.token = constants.fetch("CLIENT_TOKEN")
+
+		self.Client = Client
