@@ -53,6 +53,6 @@ class Internal:
 				return value
 
 			async def get(self, key: str) -> Any:
-				return self.cache.get()
+				return self.cache.get(key)
 
 		self.Dynamic = Dynamic
