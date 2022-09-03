@@ -20,6 +20,11 @@ UPLOAD_ENDPOINT = f"{ENDPOINT_URL}/applications/{Router.Internal.Client.id}/guil
 DISCORD_HEADERS = {
 	"Authorization": f"Bot {Router.Internal.Client.token}"
 }
+BUTTON_ROLE_ID_MAP = {
+	"role_ann": "1015551523771654184",
+	"role_eve": "1015551585897689158",
+	"role_qot": "1015618714713985175"
+}
 
 @Router.post("/interaction")
 async def interaction_handler(request):
@@ -65,10 +70,34 @@ async def interaction_handler(request):
 								async with session.post(
 									f"{ENDPOINT_URL}/"
 								) as response_:
-								...
+									...
 
 				except:
 					...
+
+	elif interaction["type"] == 3:
+		payload = interaction["data"]
+		if payload.get("data")["custom_id"] in BUTTON_ROLE_ID_MAP:
+			async with aiohttp.ClientSession() as session:
+				async with session.get(
+					f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}",
+					headers = DISCORD_HEADERS
+				) as response:
+					if BUTTON_ROLE_ID_MAP[payload.get("data")["custom_id"]] in response.get("roles"):
+						await session.delete(
+							f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}/roles/{BUTTON_ROLE_ID_MAP[payload.get('data')['custom_id']]}",
+							headers = DISCORD_HEADERS
+						)
+
+					else:
+						await session.put(
+							f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}/roles/{BUTTON_ROLE_ID_MAP[payload.get('data')['custom_id']]}",
+							headers = DISCORD_HEADERS
+						)
+			
+			return {
+				"type": 1
+			}
 
 @Router.get("/register")
 async def register_call(request: Request):
