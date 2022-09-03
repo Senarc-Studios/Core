@@ -20,21 +20,20 @@ class Internal:
 						key: constants[key]
 					}
 				)
-				return self.constants.get(key)
+				return constants.get(key)
 
 			def get(self, key: str) -> Any:
 				return self.cache.get(key)
 
-		self.Constants = Constants
+		setattr(self, "Constants", Constants)
 
 		class Client:
-			def __init__(self):
-				constants = self.Constants("constants.json")
+			def __init__(self, constants: Constants):
 				self.id = constants.fetch("CLIENT_ID")
 				self.core_guild_id = constants.fetch("CORE_GUILD_ID")
 				self.token = constants.fetch("CLIENT_TOKEN")
 
-		self.Client = Client
+		setattr(self, "Client", Client)
 
 		class Dynamic:
 			def __init__(self):
@@ -55,4 +54,4 @@ class Internal:
 			async def get(self, key: str) -> Any:
 				return self.cache.get(key)
 
-		self.Dynamic = Dynamic
+		setattr(self, "Dynamic", Dynamic)

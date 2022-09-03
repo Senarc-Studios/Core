@@ -9,16 +9,19 @@ from nacl.exceptions import BadSignatureError
 from fastapi import APIRouter
 from fastapi import Request
 
-# Import global_func from 3 directories up
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from assets.python.internal import Internal
+
+internal = Internal()
+constants = internal.Constants("./assets/json/constants.json")
+Client = internal.Client(constants)
 
 Router = APIRouter(
 	prefix="/discord"
 )
 ENDPOINT_URL = "https://discord.com/api/v10"
-UPLOAD_ENDPOINT = f"{ENDPOINT_URL}/applications/{Router.Internal.Client.id}/guilds/{Router.Internal.Client.core_guild_id}/commands"
+UPLOAD_ENDPOINT = f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands"
 DISCORD_HEADERS = {
-	"Authorization": f"Bot {Router.Internal.Client.token}"
+	"Authorization": f"Bot {Client.token}"
 }
 BUTTON_ROLE_ID_MAP = {
 	"role_ann": "1015551523771654184",
@@ -106,7 +109,7 @@ async def interaction_handler(request):
 async def register_call(request: Request):
 	admin = request.headers.get("Authorisation")
 
-	if admin not in Router.Internal.Dynamic.fetch("ADMIN_TOKENS"):
+	if admin not in internal.Dynamic.fetch("ADMIN_TOKENS"):
 		return 'invalid admin verification', 401
 
 	commands = [
