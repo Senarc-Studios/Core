@@ -26,7 +26,7 @@ Internal.Client(constants)
 setattr(slash_interactions_handler.Router, "Internal", Internal)
 
 SERVER_PORT = {
-	"CANARY": 2010,
+	"DEVELOPMENT": 2010,
 	"PRODUCTION": 2000 
 }
 
