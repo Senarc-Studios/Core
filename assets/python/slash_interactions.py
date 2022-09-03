@@ -54,26 +54,29 @@ async def interaction_handler(request):
 				return {
 					"type": 4,
 					"data": {
-						"content": "You can only create a voice channel in <#1009722821364166706> after joining it."
+						"content": "You can only create a voice channel in <#1009722821364166706>.",
+						"flags": 6
 					}
 				}
 
 			else:
-				try:
-					async with aiohttp.ClientSession() as session:
-						async with session.get(
-							f"{ENDPOINT_URL}/channels/{data.get('channel_id')}",
-							DISCORD_HEADERS
-							) as response:
-							data = await response.json()
-							if data.get("type") == 2:
-								async with session.post(
-									f"{ENDPOINT_URL}/"
-								) as response_:
-									...
-
-				except:
-					...
+				async with aiohttp.ClientSession() as session:
+					async with session.post(
+						f"{ENDPOINT_URL}/guilds/886543799843688498/channels",
+						headers=DISCORD_HEADERS,
+						json={
+							"name": f"{interaction['member']['user']['username']}'s Voice Channel",
+							"type": 2,
+							"parent_id": "1009722813327867955"
+						}
+					) as resp:
+						return {
+							"type": 4,
+							"data": {
+								"content": f"Created a voice channel: <#{(await resp.json())['id']}>",
+								"flags": 6
+							}
+						}
 
 	elif interaction["type"] == 3:
 		payload = interaction["data"]
