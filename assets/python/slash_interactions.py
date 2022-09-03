@@ -15,7 +15,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 Router = APIRouter(
 	prefix="/discord"
 )
-ENDPOINT_URL = f"https://discord.com/api/v10/applications/{Router.Internal.Client.id}/guilds/{Router.Internal.Client.core_guild_id}/commands"
+ENDPOINT_URL = "https://discord.com/api/v10"
+UPLOAD_ENDPOINT = f"{ENDPOINT_URL}/applications/{Router.Internal.Client.id}/guilds/{Router.Internal.Client.core_guild_id}/commands"
 DISCORD_HEADERS = {
 	"Authorization": f"Bot {Router.Internal.Client.token}"
 }
@@ -42,7 +43,32 @@ async def interaction_handler(request):
 		}
 
 	if interaction["type"] == 2:
-		...
+		data = interaction.get("data")
+		if data.get("name") == "voice" and data["options"]["name"] == "create":
+			if not data.get("channel_id") == "1009722821364166706":
+				return {
+					"type": 4,
+					"data": {
+						"content": "You can only create a voice channel in <#1009722821364166706> after joining it."
+					}
+				}
+
+			else:
+				try:
+					async with aiohttp.ClientSession() as session:
+						async with session.get(
+							f"{ENDPOINT_URL}/channels/{data.get('channel_id')}",
+							DISCORD_HEADERS
+							) as response:
+							data = await response.json()
+							if data.get("type") == 2:
+								async with session.post(
+									f"{ENDPOINT_URL}/"
+								) as response_:
+								...
+
+				except:
+					...
 
 @Router.get("/register")
 async def register_call(request: Request):
