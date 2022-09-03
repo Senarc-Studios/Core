@@ -1,0 +1,6 @@
+fastapi
+dnspython
+pymongo
+motor
+asyncio
+cool-utils
