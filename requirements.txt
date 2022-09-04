@@ -1,6 +1,6 @@
 fastapi
+uvicorn
 dnspython
 pymongo
 motor
-asyncio
 cool-utils
