@@ -167,9 +167,29 @@ async def register_call(request: Request):
 
 	try:
 		async with aiohttp.ClientSession() as session:
+			async with session.get(
+				f"{ENDPOINT_URL}/applications/{Client.id}/commands",
+				headers = DISCORD_HEADERS
+			) as response_:
+				for command in (await response_.json()):
+					await session.delete(
+						f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
+						headers = DISCORD_HEADERS
+					)
+
+			async with session.get(
+				f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands",
+				headers = DISCORD_HEADERS
+			) as response_:
+				for command in (await response_.json()):
+					await session.delete(
+						f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands/{command['id']}",
+						headers = DISCORD_HEADERS
+					)
+
 			for command in commands:
 				async with session.put(
-					ENDPOINT_URL,
+					f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands",
 					headers = DISCORD_HEADERS,
 					json = command
 				) as response:
