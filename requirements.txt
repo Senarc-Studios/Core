@@ -3,4 +3,7 @@ uvicorn
 dnspython
 pymongo
 motor
+aiohttp
+pynacl
+discord-webhook
 cool-utils
