@@ -33,7 +33,7 @@ BUTTON_ROLE_ID_MAP = {
 @Router.post("/interaction")
 async def interaction_handler(request: Request):
 	interaction = await request.json()
-	PUBLIC_KEY = '857a7a80ac7bcb00814d54af3cfce9276a1cff9fa0dd240af4fc6ae94294a0a6'
+	PUBLIC_KEY = constants.fetch("CLIENT_PUBLIC_KEY")
 
 	verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
 
