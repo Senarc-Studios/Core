@@ -21,7 +21,8 @@ Router = APIRouter(
 ENDPOINT_URL = "https://discord.com/api/v10"
 UPLOAD_ENDPOINT = f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands"
 DISCORD_HEADERS = {
-	"Authorization": f"Bot {Client.token}"
+	"Authorization": f"Bot {Client.token}",
+	"Content-Type": "application/json"
 }
 BUTTON_ROLE_ID_MAP = {
 	"role_ann": "1015551523771654184",
@@ -30,7 +31,7 @@ BUTTON_ROLE_ID_MAP = {
 }
 
 @Router.post("/interaction")
-async def interaction_handler(request):
+async def interaction_handler(request: Request):
 	interaction = await request.json()
 	PUBLIC_KEY = '857a7a80ac7bcb00814d54af3cfce9276a1cff9fa0dd240af4fc6ae94294a0a6'
 
@@ -38,7 +39,7 @@ async def interaction_handler(request):
 
 	signature = request.headers.get("X-Signature-Ed25519")
 	timestamp = request.headers.get("X-Signature-Timestamp")
-	body = request.data.decode("utf-8")
+	body = (await request.body()).decode("utf-8")
 
 	try:
 		verify_key.verify(f'{timestamp}{body}'.encode(), bytes.fromhex(signature))
@@ -52,13 +53,14 @@ async def interaction_handler(request):
 
 	if interaction["type"] == 2:
 		data = interaction.get("data")
-		if data.get("name") == "voice" and data["options"]["name"] == "create":
-			if not data.get("channel_id") == "1009722821364166706":
+		print(data)
+		if data.get("name") == "voice" and data["options"][0]["name"] == "create":
+			if not interaction.get("channel_id") == "1009722821364166706":
 				return {
 					"type": 4,
 					"data": {
 						"content": "You can only create a voice channel in <#1009722821364166706>.",
-						"flags": 6
+						"flags": 64
 					}
 				}
 
@@ -70,14 +72,21 @@ async def interaction_handler(request):
 						json={
 							"name": f"{interaction['member']['user']['username']}'s Voice Channel",
 							"type": 2,
-							"parent_id": "1009722813327867955"
+							"parent_id": "1009722813327867955",
+							"permission_overwrites": [
+								{
+									"id": interaction["member"]["user"]["id"],
+									"type": 1,
+									"allow": 8
+								}
+							]
 						}
 					) as resp:
 						return {
 							"type": 4,
 							"data": {
 								"content": f"Created a voice channel: <#{(await resp.json())['id']}>",
-								"flags": 6
+								"flags": 64
 							}
 						}
 
@@ -107,15 +116,14 @@ async def interaction_handler(request):
 
 @Router.get("/register")
 async def register_call(request: Request):
-	admin = request.headers.get("Authorisation")
+	#admin = request.headers.get("Authorisation")
 
-	if admin not in internal.Dynamic.fetch("ADMIN_TOKENS"):
-		return 'invalid admin verification', 401
+	#if admin not in internal.Dynamic.fetch("ADMIN_TOKENS"):
+	#	return 'invalid admin verification', 401
 
 	commands = [
 		{
 			"name": "voice",
-			"type": 2,
 			"description": "Voice Channel controller.",
 			"options": [
 				{
@@ -176,7 +184,7 @@ async def register_call(request: Request):
 						f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
 						headers = DISCORD_HEADERS
 					)
-
+					
 			async with session.get(
 				f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands",
 				headers = DISCORD_HEADERS
@@ -188,16 +196,17 @@ async def register_call(request: Request):
 					)
 
 			for command in commands:
-				async with session.put(
+				async with session.post(
 					f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands",
 					headers = DISCORD_HEADERS,
 					json = command
-				) as response:
-					return await response.text()
+				) as response_:
+					print(await response_.json())
+					return await response_.json()
 	except:
 		return {
 			"success": False
-		}
+		}, 501
 	return {
 		"success": True
 	}
