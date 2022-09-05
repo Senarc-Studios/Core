@@ -70,14 +70,14 @@ async def interaction_handler(request: Request):
 						f"{ENDPOINT_URL}/guilds/886543799843688498/channels",
 						headers=DISCORD_HEADERS,
 						json={
-							"name": f"{interaction['member']['user']['username']}'s Voice Channel",
+							"name": f"{interaction['member']['user']['username']}'s VC",
 							"type": 2,
 							"parent_id": "1009722813327867955",
 							"permission_overwrites": [
 								{
 									"id": interaction["member"]["user"]["id"],
 									"type": 1,
-									"allow": 8
+									"allow": 554385280784
 								}
 							]
 						}
@@ -86,6 +86,31 @@ async def interaction_handler(request: Request):
 							"type": 4,
 							"data": {
 								"content": f"Created a voice channel: <#{(await resp.json())['id']}>",
+								"flags": 64
+							}
+						}
+		
+		elif data.get("name") == "voice" and data["options"][0]["name"] == "permit":
+			sub_action = data["options"][0]["options"][0]
+			if sub_action["name"] == "approve":
+				async with aiohttp.ClientSession() as session:
+					async with session.patch(
+						f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
+						headers = DISCORD_HEADERS,
+						json = {
+							"permission_overwrites": [
+								{
+									"id": sub_action["options"][0]["value"],
+									"type": 1,
+									"allow": 549792517632
+								}
+							]
+						}
+					) as resp:
+						return {
+							"type": 4,
+							"data": {
+								"content": f"Added <@{sub_action['options'][0]['value']}> to the voice channel.",
 								"flags": 64
 							}
 						}
