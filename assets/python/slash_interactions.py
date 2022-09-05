@@ -78,6 +78,11 @@ async def interaction_handler(request: Request):
 									"id": interaction["member"]["user"]["id"],
 									"type": 1,
 									"allow": 554385280784
+								},
+								{
+									"id": "886543799843688498",
+									"type": 0,
+									"deny": 1024
 								}
 							]
 						}
