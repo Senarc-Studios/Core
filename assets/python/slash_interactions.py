@@ -142,6 +142,30 @@ async def interaction_handler(request: Request):
 								"flags": 64
 							}
 						}
+			
+			elif sub_action["name"] == "deny":
+				async with aiohttp.ClientSession() as session:
+					async with session.patch(
+						f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
+						headers = DISCORD_HEADERS,
+						json = {
+							"permission_overwrites": [
+								{
+									"id": sub_action["options"][0]["value"],
+									"type": 1,
+									"allow": 0,
+									"deny": 1024,
+								}
+							]
+						}
+					) as resp:
+						return {
+							"type": 4,
+							"data": {
+								"content": f"<:success:890082793235816449> Removed <@{sub_action['options'][0]['value']}> from the voice channel.",
+								"flags": 64
+							}
+						}
 
 		elif data.get("name") == "voice" and data["options"][0]["name"] == "end":
 			async with aiohttp.ClientSession() as session:
