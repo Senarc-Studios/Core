@@ -59,7 +59,7 @@ async def interaction_handler(request: Request):
 				return {
 					"type": 4,
 					"data": {
-						"content": "You can only create a voice channel in <#1009722821364166706>.",
+						"content": "<:forbidden:890082794112446548> You can only create a voice channel in <#1009722821364166706>.",
 						"flags": 64
 					}
 				}
@@ -90,7 +90,7 @@ async def interaction_handler(request: Request):
 						return {
 							"type": 4,
 							"data": {
-								"content": f"Created a voice channel: <#{(await resp.json())['id']}>",
+								"content": f"<:success:890082793235816449> Created a voice channel: <#{(await resp.json())['id']}>",
 								"flags": 64
 							}
 						}
@@ -115,10 +115,38 @@ async def interaction_handler(request: Request):
 						return {
 							"type": 4,
 							"data": {
-								"content": f"Added <@{sub_action['options'][0]['value']}> to the voice channel.",
+								"content": f"<:success:890082793235816449> Added <@{sub_action['options'][0]['value']}> to the voice channel.",
 								"flags": 64
 							}
 						}
+
+		elif data.get("name") == "voice" and data["options"][0]["name"] == "end":
+			async with aiohttp.ClientSession() as session:
+				async with session.get(
+					f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
+					headers = DISCORD_HEADERS
+				) as channel:
+					for permissions in channel.get("permission_overwrites"):
+						if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == 554385280784:
+							await session.delete(
+								f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
+								headers = DISCORD_HEADERS
+							)
+							return {
+								"type": 4,
+								"data": {
+									"content": f"<:success:890082793235816449> Ended the voice channel session.",
+									"flags": 64
+								}
+							}
+						else:
+							return {
+								"type": 4,
+								"data": {
+									"content": "<:forbidden:890082794112446548> You don't have permission to delete this voice channel.",
+									"flags": 64
+								}
+							}
 
 	elif interaction["type"] == 3:
 		payload = interaction["data"]
