@@ -1,6 +1,6 @@
 import os
 import sys
-
+import json
 import aiohttp
 
 from nacl.signing import VerifyKey
@@ -53,7 +53,6 @@ async def interaction_handler(request: Request):
 
 	if interaction["type"] == 2:
 		data = interaction.get("data")
-		print(data)
 		if data.get("name") == "voice" and data["options"][0]["name"] == "create":
 			if not interaction.get("channel_id") == "1009722821364166706":
 				return {
@@ -66,34 +65,58 @@ async def interaction_handler(request: Request):
 
 			else:
 				async with aiohttp.ClientSession() as session:
-					async with session.post(
-						f"{ENDPOINT_URL}/guilds/886543799843688498/channels",
-						headers=DISCORD_HEADERS,
-						json={
-							"name": f"{interaction['member']['user']['username']}'s VC",
-							"type": 2,
-							"parent_id": "1009722813327867955",
-							"permission_overwrites": [
-								{
-									"id": interaction["member"]["user"]["id"],
-									"type": 1,
-									"allow": 554385280784
-								},
-								{
-									"id": "886543799843688498",
-									"type": 0,
-									"deny": 1024
-								}
-							]
-						}
-					) as resp:
-						return {
-							"type": 4,
-							"data": {
-								"content": f"<:success:890082793235816449> Created a voice channel: <#{(await resp.json())['id']}>",
-								"flags": 64
+					async with session.get(
+						f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/channels",
+						headers = DISCORD_HEADERS
+					) as guild_channels:
+						guild_channels = await guild_channels.json()
+						print(json.dumps(guild_channels, indent = 4))
+						for channel in guild_channels:
+							if channel.get("parent_id") == "1009722813327867955":
+								for permissions in channel.get("permission_overwrites"):
+									if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == "554385280784":
+										return {
+											"type": 4,
+											"data": {
+												"content": "<:forbidden:890082794112446548> You already have a voice channel.",
+												"flags": 64
+											}
+										}
+
+									else:
+										continue
+
+							else:
+								continue
+
+						async with session.post(
+							f"{ENDPOINT_URL}/guilds/886543799843688498/channels",
+							headers=DISCORD_HEADERS,
+							json={
+								"name": f"{interaction['member']['user']['username']}'s VC",
+								"type": 2,
+								"parent_id": "1009722813327867955",
+								"permission_overwrites": [
+									{
+										"id": interaction["member"]["user"]["id"],
+										"type": 1,
+										"allow": 554385280784
+									},
+									{
+										"id": "886543799843688498",
+										"type": 0,
+										"deny": 1024
+									}
+								]
 							}
-						}
+						) as resp:
+							return {
+								"type": 4,
+								"data": {
+									"content": f"<:success:890082793235816449> Created a voice channel: <#{(await resp.json())['id']}>",
+									"flags": 64
+								}
+							}
 		
 		elif data.get("name") == "voice" and data["options"][0]["name"] == "permit":
 			sub_action = data["options"][0]["options"][0]
@@ -126,8 +149,9 @@ async def interaction_handler(request: Request):
 					f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
 					headers = DISCORD_HEADERS
 				) as channel:
+					channel = await channel.json()
 					for permissions in channel.get("permission_overwrites"):
-						if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == 554385280784:
+						if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == "554385280784":
 							await session.delete(
 								f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
 								headers = DISCORD_HEADERS
