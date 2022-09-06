@@ -164,13 +164,15 @@ async def interaction_handler(request: Request):
 								}
 							}
 						else:
-							return {
-								"type": 4,
-								"data": {
-									"content": "<:forbidden:890082794112446548> You don't have permission to delete this voice channel.",
-									"flags": 64
-								}
-							}
+							continue
+					
+					return {
+						"type": 4,
+						"data": {
+							"content": "<:forbidden:890082794112446548> You don't have permission to delete this voice channel.",
+							"flags": 64
+						}
+					}
 
 	elif interaction["type"] == 3:
 		payload = interaction["data"]
