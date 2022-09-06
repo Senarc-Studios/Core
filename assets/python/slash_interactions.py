@@ -198,10 +198,10 @@ async def interaction_handler(request: Request):
 
 @Router.get("/register")
 async def register_call(request: Request):
-	#admin = request.headers.get("Authorisation")
+	admin = request.headers.get("Authorisation")
 
-	#if admin not in internal.Dynamic.fetch("ADMIN_TOKENS"):
-	#	return 'invalid admin verification', 401
+	if admin not in internal.Dynamic.fetch("ADMIN_TOKENS"):
+		return 'invalid admin verification', 401
 
 	commands = [
 		{
