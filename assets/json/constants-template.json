@@ -10,5 +10,13 @@
         "ANNOUNCEMENTS": "SNOWFLAKE_ID",
         "EVENTS": "SNOWFLAKE_ID",
 	    "QOTD": "SNOWFLAKE_ID"
+    },
+    "EMOJIS": {
+        "SUCCESS": "EMOJI_NAME_AND_ID",
+        "FAIL": "EMOJI_NAME_AND_ID"
+    },
+    "CHANNELS": {
+        "VOICE_CATEGORY": "SNOWFLAKE_ID",
+        "CREATE_VOICE": "SNOWFLAKE_ID"
     }
 }
