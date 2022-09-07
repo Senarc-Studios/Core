@@ -14,6 +14,7 @@ from assets.python.internal import Internal
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
 constants.fetch("CLIENT_PUBLIC_KEY")
+constants.fetch("PING_ROLES")
 Client = internal.Client(constants)
 
 Router = APIRouter(
@@ -24,11 +25,6 @@ UPLOAD_ENDPOINT = f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_
 DISCORD_HEADERS = {
 	"Authorization": f"Bot {Client.token}",
 	"Content-Type": "application/json"
-}
-BUTTON_ROLE_ID_MAP = {
-	"role_ann": "1015551523771654184",
-	"role_eve": "1015551585897689158",
-	"role_qot": "1015618714713985175"
 }
 
 @Router.post("/interaction")
@@ -201,13 +197,13 @@ async def interaction_handler(request: Request):
 
 	elif interaction["type"] == 3:
 		payload = interaction["data"]
-		if payload.get("data")["custom_id"] in BUTTON_ROLE_ID_MAP:
+		if payload.get("data")["custom_id"] in constants.get("PING_ROLES"):
 			async with aiohttp.ClientSession() as session:
 				async with session.get(
 					f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}",
 					headers = DISCORD_HEADERS
 				) as response:
-					if BUTTON_ROLE_ID_MAP[payload.get("data")["custom_id"]] in response.get("roles"):
+					if constants.get("PING_ROLES")[payload.get("data")["custom_id"]] in response.get("roles"):
 						await session.delete(
 							f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}/roles/{BUTTON_ROLE_ID_MAP[payload.get('data')['custom_id']]}",
 							headers = DISCORD_HEADERS
