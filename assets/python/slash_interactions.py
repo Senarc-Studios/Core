@@ -223,6 +223,18 @@ async def interaction_handler(request: Request):
 			return {
 				"type": 1
 			}
+		
+		elif payload.get("data")["custom_id"] == "CLEAR_ALL":
+			async with aiohttp.ClientSession() as session:
+				for custom_id, _id in constants.get("PING_ROLES").items():
+					await session.delete(
+						f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{_id}",
+						headers = DISCORD_HEADERS
+					)
+			
+			return {
+				"type": 1
+			}
 
 @Router.get("/register")
 async def register_call(request: Request):
