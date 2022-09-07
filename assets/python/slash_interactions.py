@@ -276,54 +276,6 @@ async def register_call(request: Request):
 					"description": "End your voice channel."
 				}
 			]
-		},
-		{
-			"name": "role",
-			"options": [
-				{
-					"name": "add",
-					"type": 1,
-					"description": "Add a role to yourself.",
-					"options": [
-						{
-							"name": "role",
-							"description": "The role you want.",
-							"type": 3,
-							"required": True,
-							"choices": [
-								{
-									"name": "Announcements",
-									"value": "announcements"
-								},
-								{
-									"name": "Events",
-									"value": "events"
-								},
-								{
-									"name": "Updates",
-									"value": "updates"
-								},
-								{
-									"name": "QOTD",
-									"value": "qotd"
-								}
-							]
-						}
-					]
-				},
-				{
-					"name": "remove",
-					"type": 1,
-					"description": "Remove a role from yourself.",
-					"options": [
-						{
-							"name": "role",
-							"description": "The role you want to remove.",
-							"autocomplete": True,
-						}
-					]
-				}
-			]
 		}
 	]
 
