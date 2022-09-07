@@ -196,22 +196,23 @@ async def interaction_handler(request: Request):
 					}
 
 	elif interaction["type"] == 3:
+		PING_ROLES = constants.get("PING_ROLES")
 		payload = interaction["data"]
-		if payload.get("data")["custom_id"] in constants.get("PING_ROLES"):
+		if payload.get("data")["custom_id"] in PING_ROLES:
 			async with aiohttp.ClientSession() as session:
 				async with session.get(
 					f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}",
 					headers = DISCORD_HEADERS
 				) as response:
-					if constants.get("PING_ROLES")[payload.get("data")["custom_id"]] in response.get("roles"):
+					if PING_ROLES[payload.get("data")["custom_id"]] in response.get("roles"):
 						await session.delete(
-							f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}/roles/{BUTTON_ROLE_ID_MAP[payload.get('data')['custom_id']]}",
+							f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('data')['custom_id']]}",
 							headers = DISCORD_HEADERS
 						)
 
 					else:
 						await session.put(
-							f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}/roles/{BUTTON_ROLE_ID_MAP[payload.get('data')['custom_id']]}",
+							f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('data')['custom_id']]}",
 							headers = DISCORD_HEADERS
 						)
 			
