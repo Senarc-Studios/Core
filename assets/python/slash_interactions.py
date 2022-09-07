@@ -15,6 +15,8 @@ internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
 constants.fetch("CLIENT_PUBLIC_KEY")
 constants.fetch("PING_ROLES")
+constants.fetch("EMOJIS")
+constants.fetch("CHANNELS")
 Client = internal.Client(constants)
 
 Router = APIRouter(
@@ -29,8 +31,10 @@ DISCORD_HEADERS = {
 
 @Router.post("/interaction")
 async def interaction_handler(request: Request):
-	interaction = await request.json()
 	PUBLIC_KEY = constants.get("CLIENT_PUBLIC_KEY")
+	CHANNELS = constants.get("CHANNELS")
+	EMOJIS = constants.get("EMOJIS")
+	interaction = await request.json()
 
 	verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
 
@@ -51,11 +55,11 @@ async def interaction_handler(request: Request):
 	if interaction["type"] == 2:
 		data = interaction.get("data")
 		if data.get("name") == "voice" and data["options"][0]["name"] == "create":
-			if not interaction.get("channel_id") == "1009722821364166706":
+			if not interaction.get("channel_id") == CHANNELS["CREATE_VOICE"]:
 				return {
 					"type": 4,
 					"data": {
-						"content": "<:forbidden:890082794112446548> You can only create a voice channel in <#1009722821364166706>.",
+						"content": f"{EMOJIS['FAIL']} You can only create a voice channel in <#{CHANNELS['CREATE_VOICE']}>.",
 						"flags": 64
 					}
 				}
@@ -69,13 +73,13 @@ async def interaction_handler(request: Request):
 						guild_channels = await guild_channels.json()
 						print(json.dumps(guild_channels, indent = 4))
 						for channel in guild_channels:
-							if channel.get("parent_id") == "1009722813327867955":
+							if channel.get("parent_id") == CHANNELS["VOICE_CATEGORY"]:
 								for permissions in channel.get("permission_overwrites"):
 									if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == "554385280784":
 										return {
 											"type": 4,
 											"data": {
-												"content": "<:forbidden:890082794112446548> You already have a voice channel.",
+												"content": f"{EMOJIS['FAIL']} You already have a voice channel.",
 												"flags": 64
 											}
 										}
@@ -87,12 +91,12 @@ async def interaction_handler(request: Request):
 								continue
 
 						async with session.post(
-							f"{ENDPOINT_URL}/guilds/886543799843688498/channels",
+							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/channels",
 							headers=DISCORD_HEADERS,
 							json={
 								"name": f"{interaction['member']['user']['username']}'s VC",
 								"type": 2,
-								"parent_id": "1009722813327867955",
+								"parent_id": CHANNELS['VOICE_CATEGORY'],
 								"permission_overwrites": [
 									{
 										"id": interaction["member"]["user"]["id"],
@@ -100,7 +104,7 @@ async def interaction_handler(request: Request):
 										"allow": 554385280784
 									},
 									{
-										"id": "886543799843688498",
+										"id": Client.core_guild_id,
 										"type": 0,
 										"deny": 1024
 									}
@@ -110,7 +114,7 @@ async def interaction_handler(request: Request):
 							return {
 								"type": 4,
 								"data": {
-									"content": f"<:success:890082793235816449> Created a voice channel: <#{(await resp.json())['id']}>",
+									"content": f"{EMOJIS['SUCCESS']} Created a voice channel: <#{(await resp.json())['id']}>",
 									"flags": 64
 								}
 							}
@@ -135,7 +139,7 @@ async def interaction_handler(request: Request):
 						return {
 							"type": 4,
 							"data": {
-								"content": f"<:success:890082793235816449> Added <@{sub_action['options'][0]['value']}> to the voice channel.",
+								"content": f"{EMOJIS['SUCCESS']} Added <@{sub_action['options'][0]['value']}> to the voice channel.",
 								"flags": 64
 							}
 						}
@@ -159,7 +163,7 @@ async def interaction_handler(request: Request):
 						return {
 							"type": 4,
 							"data": {
-								"content": f"<:success:890082793235816449> Removed <@{sub_action['options'][0]['value']}> from the voice channel.",
+								"content": f"{EMOJIS['SUCCESS']} Removed <@{sub_action['options'][0]['value']}> from the voice channel.",
 								"flags": 64
 							}
 						}
@@ -180,7 +184,7 @@ async def interaction_handler(request: Request):
 							return {
 								"type": 4,
 								"data": {
-									"content": f"<:success:890082793235816449> Ended the voice channel session.",
+									"content": f"{EMOJIS['SUCCESS']} Ended the voice channel session.",
 									"flags": 64
 								}
 							}
@@ -190,7 +194,7 @@ async def interaction_handler(request: Request):
 					return {
 						"type": 4,
 						"data": {
-							"content": "<:forbidden:890082794112446548> You don't have permission to delete this voice channel.",
+							"content": f"{EMOJIS['FAIL']} You don't have permission to delete this voice channel.",
 							"flags": 64
 						}
 					}
@@ -201,18 +205,18 @@ async def interaction_handler(request: Request):
 		if payload.get("data")["custom_id"] in PING_ROLES:
 			async with aiohttp.ClientSession() as session:
 				async with session.get(
-					f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}",
+					f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}",
 					headers = DISCORD_HEADERS
 				) as response:
 					if PING_ROLES[payload.get("data")["custom_id"]] in response.get("roles"):
 						await session.delete(
-							f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('data')['custom_id']]}",
+							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('data')['custom_id']]}",
 							headers = DISCORD_HEADERS
 						)
 
 					else:
 						await session.put(
-							f"{ENDPOINT_URL}/guilds/886543799843688498/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('data')['custom_id']]}",
+							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('data')['custom_id']]}",
 							headers = DISCORD_HEADERS
 						)
 			
