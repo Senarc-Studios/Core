@@ -202,29 +202,42 @@ async def interaction_handler(request: Request):
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
 		payload = interaction["data"]
-		if payload.get("data")["custom_id"] in PING_ROLES:
+		if payload.get("custom_id") in PING_ROLES:
 			async with aiohttp.ClientSession() as session:
 				async with session.get(
 					f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}",
 					headers = DISCORD_HEADERS
 				) as response:
-					if PING_ROLES[payload.get("data")["custom_id"]] in response.get("roles"):
+					response = await response.json()
+					if PING_ROLES[payload.get("custom_id")] in response.get("roles"):
 						await session.delete(
-							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('data')['custom_id']]}",
+							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
 							headers = DISCORD_HEADERS
 						)
 
+						return {
+							"type": 4,
+							"data":{
+								"content": f"{EMOJIS['SUCCESS']} `{payload.get('custom_id')}` role has been removed to your account.",
+								"flags": 64
+							}
+						}
+
 					else:
 						await session.put(
-							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('data')['custom_id']]}",
+							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
 							headers = DISCORD_HEADERS
 						)
-			
-			return {
-				"type": 1
-			}
+
+						return {
+							"type": 4,
+							"data":{
+								"content": f"{EMOJIS['SUCCESS']} `{payload.get('custom_id')}` role has been added to your account.",
+								"flags": 64
+							}
+						}
 		
-		elif payload.get("data")["custom_id"] == "CLEAR_ALL":
+		elif payload.get("custom_id") == "CLEAR_ALL":
 			async with aiohttp.ClientSession() as session:
 				for custom_id, _id in constants.get("PING_ROLES").items():
 					await session.delete(
@@ -233,7 +246,11 @@ async def interaction_handler(request: Request):
 					)
 			
 			return {
-				"type": 1
+				"type": 4,
+				"data":{
+					"content": f"{EMOJIS['SUCCESS']} Cleared all roles from your account.",
+					"flags": 64
+				}
 			}
 
 @Router.get("/register")
