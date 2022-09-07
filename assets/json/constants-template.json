@@ -9,6 +9,7 @@
     "PING_ROLES": {
         "ANNOUNCEMENTS": "SNOWFLAKE_ID",
         "EVENTS": "SNOWFLAKE_ID",
+        "UPDATES": "SNOWFLAKE_ID",
 	    "QOTD": "SNOWFLAKE_ID"
     },
     "EMOJIS": {
