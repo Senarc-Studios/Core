@@ -13,6 +13,7 @@ from assets.python.internal import Internal
 
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
+constants.fetch("CLIENT_PUBLIC_KEY")
 Client = internal.Client(constants)
 
 Router = APIRouter(
@@ -33,7 +34,7 @@ BUTTON_ROLE_ID_MAP = {
 @Router.post("/interaction")
 async def interaction_handler(request: Request):
 	interaction = await request.json()
-	PUBLIC_KEY = constants.fetch("CLIENT_PUBLIC_KEY")
+	PUBLIC_KEY = constants.get("CLIENT_PUBLIC_KEY")
 
 	verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
 
