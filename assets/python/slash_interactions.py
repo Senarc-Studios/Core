@@ -131,19 +131,17 @@ async def interaction_handler(request: Request):
 						permission_overwrites = channel["permission_overwrites"]
 						permission_overwrites.append(
 							{
-								"permission_overwrites": [
-									{
-										"id": sub_action["options"][0]["value"],
-										"type": 1,
-										"allow": "549792517632"
-									}
-								]
+								"id": sub_action["options"][0]["value"],
+								"type": 1,
+								"allow": "549792517632"
 							}
 						)
 						async with session.patch(
 							f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
 							headers = DISCORD_HEADERS,
-							json = permission_overwrites
+							json = {
+								"permission_overwrites": permission_overwrites
+							}
 						) as resp:
 							return {
 								"type": 4,
