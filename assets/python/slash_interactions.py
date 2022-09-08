@@ -123,50 +123,63 @@ async def interaction_handler(request: Request):
 			sub_action = data["options"][0]["options"][0]
 			if sub_action["name"] == "approve":
 				async with aiohttp.ClientSession() as session:
-					async with session.patch(
+					async with session.get(
 						f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
-						headers = DISCORD_HEADERS,
-						json = {
-							"permission_overwrites": [
-								{
-									"id": sub_action["options"][0]["value"],
-									"type": 1,
-									"allow": 549792517632
-								}
-							]
-						}
-					) as resp:
-						return {
-							"type": 4,
-							"data": {
-								"content": f"{EMOJIS['SUCCESS']} Added <@{sub_action['options'][0]['value']}> to the voice channel.",
-								"flags": 64
+						headers = DISCORD_HEADERS
+					) as channel:
+						channel = await channel.json()
+						permission_overwrites = channel["permission_overwrites"]
+						permission_overwrites.append(
+							{
+								"permission_overwrites": [
+									{
+										"id": sub_action["options"][0]["value"],
+										"type": 1,
+										"allow": "549792517632"
+									}
+								]
 							}
-						}
+						)
+						async with session.patch(
+							f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
+							headers = DISCORD_HEADERS,
+							json = permission_overwrites
+						) as resp:
+							return {
+								"type": 4,
+								"data": {
+									"content": f"{EMOJIS['SUCCESS']} Added <@!{sub_action['options'][0]['value']}> to the voice channel.",
+									"flags": 64
+								}
+							}
 			
 			elif sub_action["name"] == "deny":
 				async with aiohttp.ClientSession() as session:
-					async with session.patch(
+					async with session.get(
 						f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
-						headers = DISCORD_HEADERS,
-						json = {
-							"permission_overwrites": [
-								{
-									"id": sub_action["options"][0]["value"],
-									"type": 1,
-									"allow": 0,
-									"deny": 0,
-								}
-							]
-						}
-					) as resp:
-						return {
-							"type": 4,
-							"data": {
-								"content": f"{EMOJIS['SUCCESS']} Removed <@{sub_action['options'][0]['value']}> from the voice channel.",
-								"flags": 64
+						headers = DISCORD_HEADERS
+					) as channel:
+						channel = await channel.json()
+						permission_overwrites = channel["permission_overwrites"]
+						for overwrites in permission_overwrites:
+							if overwrites["id"] == sub_action["options"][0]["value"]:
+								permission_overwrites.remove(overwrites)
+								break
+
+						async with session.patch(
+							f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
+							headers = DISCORD_HEADERS,
+							json = {
+								"permission_overwrites": permission_overwrites
 							}
-						}
+						) as resp:
+							return {
+								"type": 4,
+								"data": {
+									"content": f"{EMOJIS['SUCCESS']} Removed <@!{sub_action['options'][0]['value']}> from the voice channel.",
+									"flags": 64
+								}
+							}
 
 		elif data.get("name") == "voice" and data["options"][0]["name"] == "end":
 			async with aiohttp.ClientSession() as session:
@@ -175,7 +188,9 @@ async def interaction_handler(request: Request):
 					headers = DISCORD_HEADERS
 				) as channel:
 					channel = await channel.json()
+					print(json.dumps(channel, indent=4))
 					for permissions in channel.get("permission_overwrites"):
+						print(json.dumps(permissions, indent=4))
 						if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == "554385280784":
 							await session.delete(
 								f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
