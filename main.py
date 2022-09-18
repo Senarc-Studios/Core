@@ -2,6 +2,7 @@ import os
 
 from assets.python.internal import Internal
 
+import json
 import uvicorn
 import datetime
 
@@ -40,10 +41,6 @@ app.include_router(uptime_handler.Router)
 app.include_router(slash_interactions_handler.Router)
 
 if __name__ == '__main__':
-	# Write current time in json to file
-	with open("./assets/json/uptime.json", "rw") as file:
-		file.write(int(datetime.datetime.now().timestamp()))
-
 	uvicorn.run(
 		"main:app",
 		host = '127.0.0.1',
