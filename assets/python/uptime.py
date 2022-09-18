@@ -4,11 +4,9 @@ import datetime
 from fastapi import APIRouter
 from fastapi import Request
 
-Router = APIRouter(
-    prefix = "/uptime",
-)
+Router = APIRouter()
 
-@Router.get("/")
+@Router.get("/uptime")
 async def uptime(request: Request):
     # Load uptime.json
     with open("./assets/json/uptime.json", "r") as file:
