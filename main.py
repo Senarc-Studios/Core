@@ -10,6 +10,7 @@ from fastapi import FastAPI
 from fastapi import Request
 from fastapi.responses import HTMLResponse
 
+from assets.python import uptime as uptime_handler
 from assets.python import slash_interactions as slash_interactions_handler
 
 from cool_utils import Terminal
@@ -35,6 +36,7 @@ app = FastAPI(
 async def home(request : Request):
 	return "This is Senarc Core API."
 
+app.include_router(uptime_handler.Router)
 app.include_router(slash_interactions_handler.Router)
 
 if __name__ == '__main__':
