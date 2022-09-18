@@ -9,13 +9,10 @@ from fastapi import FastAPI
 
 from fastapi import Request
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 
 from assets.python import slash_interactions as slash_interactions_handler
 
 from cool_utils import Terminal
-from discord_webhook import DiscordWebhook, DiscordEmbed
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
