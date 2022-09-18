@@ -3,6 +3,7 @@ import os
 from assets.python.internal import Internal
 
 import uvicorn
+import datetime
 
 from fastapi import FastAPI
 
@@ -40,20 +41,16 @@ async def home(request : Request):
 app.include_router(slash_interactions_handler.Router)
 
 if __name__ == '__main__':
-	try:
-		uvicorn.run(
-			"main:app",
-			host = '127.0.0.1',
-			port = SERVER_PORT[internal.Constants.fetch("ENVIRONMENT")],
-			reload = True,
-			debug = True,
-			workers = 2
-		)
-		Terminal.display("Server has Started")
-	except Exception as error:
-		webhook_url = Internal.Constants.fetch("WEBHOOKS")['errors']
-		webhook = DiscordWebhook(url=webhook_url)
-		embed = DiscordEmbed(description=f"```py\n{error}\n{error.__traceback__}\n```", color=0x90B5F8)
-		embed.set_footer(text="Senarc API for developers")
-		webhook.add_embed(embed)
-		webhook.execute()
+	# Write current time in json to file
+	with open("./assets/json/uptime.json", "rw") as file:
+		file.write(int(datetime.datetime.now().timestamp()))
+
+	uvicorn.run(
+		"main:app",
+		host = '127.0.0.1',
+		port = SERVER_PORT[internal.Constants.fetch("ENVIRONMENT")],
+		reload = True,
+		debug = True,
+		workers = 2
+	)
+	Terminal.display("Server has Started")
