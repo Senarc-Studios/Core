@@ -1,1 +1,0 @@
-{"id":"11b7c9f6-8a97-43eb-b218-223a55ffd7b4","space":28449,"runtime":"python3.9","name":"Core","path":"jjyyo9","project":"b0x9mzcy","account":"144798365827","region":"us-east-1","deps":["fastapi","dnspython","pymongo","motor","cool-utils","uvicorn","aiohttp","pynacl","discord-webhook"],"envs":null,"public":true,"log_level":"debug","cron":""}
