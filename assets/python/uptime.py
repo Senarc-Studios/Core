@@ -1,3 +1,4 @@
+import os
 import json
 import datetime
 
@@ -8,4 +9,4 @@ Router = APIRouter()
 
 @Router.get("/uptime")
 async def uptime(request: Request):
-    return "Core API is Online.", 200
+    return "Core API is Online."
