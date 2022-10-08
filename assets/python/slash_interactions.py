@@ -322,6 +322,14 @@ async def register_call(request: Request):
 					"description": "End your voice channel."
 				}
 			]
+		},
+		{
+			"name": "token",
+			"options": []
+		},
+		{
+			"name": "generate-token",
+			"description": "Generate Senarc API Token."
 		}
 	]
 
