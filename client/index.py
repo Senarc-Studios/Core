@@ -23,6 +23,63 @@ bot = Bot(
 for constant in fetch_list:
 	Constants.fetch(constant)
 
+class ApplicationManagementUnit:
+	def __init__(self):
+		self.bot = bot
+		self.constants = Constants
+
+	async def start(self):
+		try:
+			self.bot.run(Constants.get("CLIENT_TOKEN"))
+		except Exception as error:
+			print(error)
+		await self._loop_task_fetch()
+
+	async def _loop_task_fetch(self):
+		await asyncio.sleep(0.01)
+		mongo = self.constants.get("MONGO")
+		collection = mongo["senarc-core"]["tasks"]
+		while True:
+			payload = await collection.find_one(
+				{
+					"status": "pending"
+				}
+			)
+			if payload is not None:
+				action_type = payload["action"]
+				if action_type == 101:
+					data = payload["data"]
+					core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
+					member = await core_guild.fetch_member(data["member_id"])
+					channel = await self.bot.fetch_channel(data["channel_id"])
+					try:
+						await member.move_to(channel)
+						await collection.update_one(
+							{
+								"task_id": payload["task_id"]
+							},
+							{
+								"$set": {
+									"status": "completed"
+								}
+							}
+						)
+					except:
+						await collection.update_one(
+							{
+								"task_id": payload["task_id"]
+							},
+							{
+								"$set": {
+									"status": "failed",
+									"result": {
+										"reason": "User not in voice channel."
+									}
+								}
+							}
+						)
+					continue
+
 @bot.listen("on_ready")
 async def startup():
 	Terminal.display("Bot is ready.")
