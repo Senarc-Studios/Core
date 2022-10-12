@@ -9,7 +9,10 @@ Internal = Internal()
 Constants = Internal.Constants("./assets/json/constants.json")
 fetch_list = (
 	"CLIENT_TOKEN",
-	"ROLES"
+	"CHANNELS",
+	"MONGO",
+	"ROLES",
+	"ENVIRONMENT"
 )
 intents = Intents.all()
 bot = Bot(
