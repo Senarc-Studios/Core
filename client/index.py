@@ -45,5 +45,4 @@ async def greet_new_members(member):
 	)
 	role = await member.guild.fetch_role(Constants.get("ROLES").get("MEMBER"))
 	await member.add_roles(role)
-	except Exception as error:
-		print(error)
+	await member.guild.system_channel.send(embed = embed)
