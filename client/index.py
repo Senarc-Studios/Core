@@ -32,7 +32,7 @@ async def greet_new_members(member):
 	Terminal.display(f"{member.name} has joined the guild.")
 	embed = Embed(
 		timestamp = member.joined_at,
-		description = f"Welcome to **Senarc Studios**, we hope you have a nice stay!",
+		description = f"Welcome to **Senarc**'s Core Guild, we hope you have a nice stay!",
 		colour = 0x35393f
 	)
 	embed.set_author(
@@ -45,10 +45,5 @@ async def greet_new_members(member):
 	)
 	role = await member.guild.fetch_role(Constants.get("ROLES").get("MEMBER"))
 	await member.add_roles(role)
-	await member.guild.system_channel.send(embed = embed)
-
-if __name__ == "__main__":
-	try:
-		bot.run(Constants.get("CLIENT_TOKEN"))
 	except Exception as error:
 		print(error)
