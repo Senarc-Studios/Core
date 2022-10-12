@@ -1,3 +1,5 @@
+import asyncio
+
 import json
 
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -55,3 +57,46 @@ class Internal:
 				return self.cache.get(key)
 
 		setattr(self, "Dynamic", Dynamic)
+
+class ApplicationSyncManager:
+	def __init__(self):
+		internal = Internal()
+		constants = internal.Constants("./assets/json/constants.json")
+		constants.fetch("MONGO")
+		self.constants = constants
+		self._send_queue = []
+
+	def start(self):
+		asyncio.create_task(self._dispatch_sync_loop())
+
+	async def _dispatch_sync_loop(self):
+		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
+		collection = mongo["senarc-core"]["tasks"]
+		while True:
+			for payload in await collection.find(
+				{
+					"status": "completed"
+				}
+			):
+				await collection.delete_one(payload)
+
+			for payload in self._send_queue:
+				await collection.insert_one(payload)
+
+	async def send_action_packet(self, packet: dict):
+		"""
+		Schema:
+		{
+			"action": 101,
+			"data": {
+				"member_id": SNOWFLAKE_ID,
+				"channel_id": SNOWFLAKE_ID
+			}
+		}
+		"""
+		if (
+			str(packet.get("action")).startswith("1") and len(str(packet.get("action"))) >= 3
+		) and (
+			packet.get("data") is not None
+		):
+			return self._send_queue.append(packet)
