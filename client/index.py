@@ -35,7 +35,7 @@ class ApplicationManagementUnit:
 			self.bot.run(Constants.get("CLIENT_TOKEN"))
 		except Exception as error:
 			print(error)
-		await self._loop_task_fetch()
+		asyncio.create_task(self._loop_task_fetch())
 
 	async def _loop_task_fetch(self):
 		await asyncio.sleep(0.01)
