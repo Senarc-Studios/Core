@@ -1,3 +1,5 @@
+import asyncio
+
 from assets.python.internal import Internal
 
 from cool_utils import Terminal
