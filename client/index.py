@@ -55,6 +55,21 @@ class ApplicationManagementUnit:
 					core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
 					member = await core_guild.fetch_member(data["member_id"])
 					channel = await self.bot.fetch_channel(data["channel_id"])
+					if channel is None:
+						await collection.update_one(
+							{
+								"_id": payload["_id"]
+							},
+							{
+								"$set": {
+									"status": "failed",
+									"result": {
+										"reason": "Channel not found."
+									}
+								}
+							}
+						)
+						continue
 					try:
 						await member.move_to(channel)
 						await collection.update_one(
