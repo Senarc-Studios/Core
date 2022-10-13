@@ -80,11 +80,12 @@ class ApplicationSyncManager:
 			) == 0:
 				continue
 
-			for payload in collection.find(
+			documents = collection.find(
 				{
 					"status": "completed"
 				}
-			):
+			)
+			for payload in documents:
 				self.completed_task_queue.append(payload)
 				await collection.delete_one(payload)
 
@@ -92,11 +93,12 @@ class ApplicationSyncManager:
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
 		collection = mongo["senarc-core"]["tasks"]
 		while True:
-			for payload in collection.find(
+			documents = collection.find(
 				{
 					"status": "completed"
 				}
-			):
+			)
+			for payload in documents:
 				self.completed_task_queue.append(payload)
 				await collection.delete_one(payload)
 
