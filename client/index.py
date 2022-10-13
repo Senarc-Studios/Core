@@ -98,6 +98,53 @@ class ApplicationManagementUnit:
 						)
 					continue
 
+			elif action_type == 102:
+				data = payload["data"]
+				core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
+				member = await core_guild.fetch_member(data["member_id"])
+				channel = await self.bot.fetch_channel(data["channel_id"])
+				if channel is None:
+					await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "failed",
+								"result": {
+									"reason": "Channel not found."
+								}
+							}
+						}
+					)
+					continue
+				if member in channel.members:
+					await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "completed"
+							}
+						}
+					)
+				else:
+					await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "failed",
+								"result": {
+									"reason": "User not in voice channel."
+								}
+							}
+						}
+					)
+				continue
+
 @bot.listen("on_ready")
 async def startup():
 	Terminal.display("Bot is ready.")
