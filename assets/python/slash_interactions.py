@@ -128,10 +128,11 @@ async def interaction_handler(request: Request):
 										"flags": 64
 									}
 								}
+						else:
 							return {
 								"type": 4,
 								"data": {
-									"content": f"{EMOJIS['SUCCESS']} Created a voice channel: <#{(await resp.json())['id']}>",
+									"content": f"{EMOJIS['FAIL']} You need to join the VC to create yours.",
 									"flags": 64
 								}
 							}
