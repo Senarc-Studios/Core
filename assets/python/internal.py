@@ -97,6 +97,8 @@ class ApplicationSyncManager:
 			for payload in self._send_queue:
 				await collection.insert_one(payload)
 				self._send_queue.remove(payload)
+			await asyncio.sleep(0.05)
+			continue
 
 	async def send_action_packet(self, packet: dict):
 		"""
