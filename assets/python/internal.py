@@ -1,5 +1,5 @@
 import asyncio
-
+import datetime
 import json
 
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -99,4 +99,11 @@ class ApplicationSyncManager:
 		) and (
 			packet.get("data") is not None
 		):
-			return self._send_queue.append(packet)
+			task_id = f"{int(datetime.datetime.now().timestamp())}"
+			packet.update(
+				{
+					"task_id": task_id
+				}
+			)
+			self._send_queue.append(packet)
+			while True:
