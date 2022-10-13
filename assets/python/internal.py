@@ -69,7 +69,26 @@ class ApplicationSyncManager:
 	def start(self):
 		asyncio.create_task(self._dispatch_sync_loop())
 
-	async def _dispatch_sync_loop(self):
+	async def _dispatch_fetch_loop(self):
+		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
+		collection = mongo["senarc-core"]["tasks"]
+		while True:
+			if await collection.count_documents(
+				{
+					"status": "pending"
+				}
+			) == 0:
+				continue
+
+			for payload in collection.find(
+				{
+					"status": "completed"
+				}
+			):
+				self.completed_task_queue.append(payload)
+				await collection.delete_one(payload)
+
+	async def _dispatch_send_loop(self):
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
 		collection = mongo["senarc-core"]["tasks"]
 		while True:
