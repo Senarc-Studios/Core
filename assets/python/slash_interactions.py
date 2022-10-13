@@ -91,27 +91,43 @@ async def interaction_handler(request: Request):
 							else:
 								continue
 
-						async with session.post(
-							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/channels",
-							headers=DISCORD_HEADERS,
-							json={
-								"name": f"{interaction['member']['user']['username']}'s VC",
-								"type": 2,
-								"parent_id": CHANNELS['VOICE_CATEGORY'],
-								"permission_overwrites": [
-									{
-										"id": interaction["member"]["user"]["id"],
-										"type": 1,
-										"allow": 554385280784
-									},
-									{
-										"id": Client.core_guild_id,
-										"type": 0,
-										"deny": 1024
-									}
-								]
+						if await ApplicationSyncManager.send_action_packet(
+							{
+								"action": 102,
+								"data": {
+									"channel_id": CHANNELS["CREATE_VOICE"],
+									"member_id": interaction["member"]["user"]["id"]
+								}
 							}
-						) as resp:
+						)["status"] == "completed":
+							async with session.post(
+								f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/channels",
+								headers=DISCORD_HEADERS,
+								json={
+									"name": f"{interaction['member']['user']['username']}'s VC",
+									"type": 2,
+									"parent_id": CHANNELS['VOICE_CATEGORY'],
+									"permission_overwrites": [
+										{
+											"id": interaction["member"]["user"]["id"],
+											"type": 1,
+											"allow": 554385280784
+										},
+										{
+											"id": Client.core_guild_id,
+											"type": 0,
+											"deny": 1024
+										}
+									]
+								}
+							) as resp:
+								return {
+									"type": 4,
+									"data": {
+										"content": f"{EMOJIS['SUCCESS']} Created a voice channel: <#{(await resp.json())['id']}>",
+										"flags": 64
+									}
+								}
 							return {
 								"type": 4,
 								"data": {
