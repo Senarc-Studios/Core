@@ -78,6 +78,7 @@ class ApplicationSyncManager:
 					"status": "completed"
 				}
 			):
+				self.completed_task_queue.append(payload)
 				await collection.delete_one(payload)
 
 			for payload in self._send_queue:
@@ -107,3 +108,10 @@ class ApplicationSyncManager:
 			)
 			self._send_queue.append(packet)
 			while True:
+				for payload in self.completed_task_queue:
+					if payload.get("task_id") == task_id:
+						return payload.get("data")
+
+					else:
+						await asyncio.sleep(0.1)
+						continue
