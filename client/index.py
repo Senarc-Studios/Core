@@ -31,7 +31,7 @@ class ApplicationManagementUnit:
 		self.bot = bot
 		self.constants = Constants
 
-	async def start(self):
+	def start(self):
 		try:
 			self.bot.run(Constants.get("CLIENT_TOKEN"))
 		except Exception as error:
@@ -168,3 +168,6 @@ async def greet_new_members(member):
 	role = await member.guild.fetch_role(Constants.get("ROLES").get("MEMBER"))
 	await member.add_roles(role)
 	await member.guild.system_channel.send(embed = embed)
+
+ApplicationManagementUnit = ApplicationManagementUnit()
+ApplicationManagementUnit.start()
