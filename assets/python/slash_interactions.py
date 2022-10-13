@@ -9,7 +9,7 @@ from nacl.exceptions import BadSignatureError
 from fastapi import APIRouter
 from fastapi import Request
 
-from assets.python.internal import Internal
+from assets.python.internal import Internal, ApplicationSyncManager
 
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
@@ -18,6 +18,7 @@ constants.fetch("PING_ROLES")
 constants.fetch("EMOJIS")
 constants.fetch("CHANNELS")
 Client = internal.Client(constants)
+ApplicationSyncManager = ApplicationSyncManager().start()
 
 Router = APIRouter(
 	prefix="/discord"
