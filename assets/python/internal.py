@@ -73,7 +73,7 @@ class ApplicationSyncManager:
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
 		collection = mongo["senarc-core"]["tasks"]
 		while True:
-			for payload in await collection.find(
+			for payload in collection.find(
 				{
 					"status": "completed"
 				}
