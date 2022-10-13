@@ -3,6 +3,7 @@ import asyncio
 from assets.python.internal import Internal
 
 from cool_utils import Terminal
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from discord import Embed, Intents
 from discord.ext.commands import Bot
@@ -39,7 +40,7 @@ class ApplicationManagementUnit:
 
 	async def _loop_task_fetch(self):
 		await asyncio.sleep(0.01)
-		mongo = self.constants.get("MONGO")
+		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
 		collection = mongo["senarc-core"]["tasks"]
 		while True:
 			payload = await collection.find_one(
