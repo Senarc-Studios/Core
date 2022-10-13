@@ -1,5 +1,7 @@
 fastapi
 uvicorn
+uvloop
+httptools==0.1
 dnspython
 pymongo
 motor
