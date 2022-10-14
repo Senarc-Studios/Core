@@ -73,7 +73,6 @@ async def interaction_handler(request: Request):
 						headers = DISCORD_HEADERS
 					) as guild_channels:
 						guild_channels = await guild_channels.json()
-						print(json.dumps(guild_channels, indent = 4))
 						for channel in guild_channels:
 							if channel.get("parent_id") == CHANNELS["VOICE_CATEGORY"]:
 								for permissions in channel.get("permission_overwrites"):
