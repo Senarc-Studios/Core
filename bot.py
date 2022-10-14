@@ -39,7 +39,6 @@ class ApplicationManagementUnit:
 		asyncio.create_task(self._loop_task_fetch())
 
 	async def _loop_task_fetch(self):
-		await asyncio.sleep(0.01)
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
 		collection = mongo["senarc-core"]["tasks"]
 		while True:
