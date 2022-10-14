@@ -2,6 +2,7 @@ import json
 import asyncio
 import datetime
 import threading
+from types import coroutine
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -72,15 +73,13 @@ class ApplicationSyncManager:
 	def start(self):
 		if not self.is_running:
 			self.is_running = True
-			_fetch_loop = asyncio.new_event_loop()
-			asyncio.set_event_loop(_fetch_loop)
-			asyncio.ensure_future(self._dispatch_fetch_loop())
-			_fetch_loop.run_forever()
+			_fetch_loop = asyncio.get_event_loop()
+			coroutine = self._dispatch_fetch_loop()
+			_fetch_loop.run_forever(coroutine)
 
-			_send_loop = asyncio.new_event_loop()
-			asyncio.set_event_loop(_send_loop)
-			asyncio.ensure_future(self._dispatch_send_loop())
-			_send_loop.run_forever()
+			_send_loop = asyncio.get_event_loop()
+			coroutine_ = self._dispatch_send_loop()
+			_send_loop.run_forever(coroutine_)
 
 		else:
 			raise RuntimeError("ASM is already running.")
