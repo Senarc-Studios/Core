@@ -73,11 +73,17 @@ class ApplicationSyncManager:
 		if not self.is_running:
 			fetch_thread = threading.Thread(
 				name = "Fetch Loop",
-				target = self._dispatch_fetch_loop
+				target = asyncio.run,
+				args = (
+					self._dispatch_fetch_loop()
+				)
 			)
 			send_thread = threading.Thread(
 				name = "Send Loop",
-				target = self._dispatch_send_loop
+				target = asyncio.run,
+				args = (
+					self._dispatch_fetch_loop()
+				)
 			)
 			fetch_thread.start()
 			send_thread.start()
