@@ -1,1 +1,1 @@
-uvicorn main:app --reload --host 127.0.0.1 --port 8050 --workers 2
+uvicorn main:app --reload --host 127.0.0.1 --workers 2

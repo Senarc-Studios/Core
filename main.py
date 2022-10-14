@@ -24,8 +24,8 @@ constants = internal.Constants("./assets/json/constants.json")
 Client = internal.Client(constants)
 
 SERVER_PORT = {
-	"DEVELOPMENT": 2010,
-	"PRODUCTION": 2000 
+	"DEVELOPMENT": 88,
+	"PRODUCTION": 80 
 }
 
 app = FastAPI(
