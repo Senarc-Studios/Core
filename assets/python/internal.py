@@ -66,11 +66,16 @@ class ApplicationSyncManager:
 		self.constants = constants
 		self._send_queue = []
 		self._completed_task_queue = []
+		self.is_running = False
 
 	def start(self):
-		asyncio.create_task(self._dispatch_fetch_loop())
-		asyncio.create_task(self._dispatch_send_loop())
-		
+		if not self.is_running:
+			asyncio.create_task(self._dispatch_fetch_loop())
+			asyncio.create_task(self._dispatch_send_loop())
+			self.is_running = True
+
+		else:
+			raise RuntimeError("ASM is already running.")
 
 	async def _dispatch_fetch_loop(self):
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))

@@ -19,7 +19,6 @@ constants.fetch("EMOJIS")
 constants.fetch("CHANNELS")
 Client = internal.Client(constants)
 ApplicationSyncManager = ApplicationSyncManager()
-ApplicationSyncManager.start()
 
 Router = APIRouter(
 	prefix="/discord"
@@ -31,8 +30,17 @@ DISCORD_HEADERS = {
 	"Content-Type": "application/json"
 }
 
+def asm_ensure_running() -> bool:
+	if not ApplicationSyncManager.is_running:
+		ApplicationSyncManager.start()
+		return False
+
+	else:
+		return True
+
 @Router.post("/interaction")
 async def interaction_handler(request: Request):
+	asm_ensure_running()
 	PUBLIC_KEY = constants.get("CLIENT_PUBLIC_KEY")
 	CHANNELS = constants.get("CHANNELS")
 	EMOJIS = constants.get("EMOJIS")
