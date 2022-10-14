@@ -42,6 +42,12 @@ class ApplicationManagementUnit:
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
 		collection = mongo["senarc-core"]["tasks"]
 		while True:
+			if await collection.count_documents(
+				{
+					"status": "pending"
+				}
+			) > 0:
+				continue
 			payload = await collection.find_one(
 				{
 					"status": "pending"
