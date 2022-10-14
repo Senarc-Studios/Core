@@ -49,6 +49,7 @@ class ApplicationManagementUnit:
 				}
 			)
 			if payload is not None:
+				print(payload)
 				action_type = payload["action"]
 				if action_type == 101:
 					data = payload["data"]
@@ -169,5 +170,6 @@ async def greet_new_members(member):
 	await member.add_roles(role)
 	await member.guild.system_channel.send(embed = embed)
 
-ApplicationManagementUnit = ApplicationManagementUnit()
-ApplicationManagementUnit.start()
+if __name__ == "__main__":
+	ApplicationManagementUnit = ApplicationManagementUnit()
+	ApplicationManagementUnit.start()

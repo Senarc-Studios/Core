@@ -42,7 +42,7 @@ app.include_router(slash_interactions_handler.Router)
 
 if __name__ == '__main__':
 	uvicorn.run(
-		"main:app",
+		app,
 		host = '127.0.0.1',
 		port = SERVER_PORT[internal.Constants.fetch("ENVIRONMENT")],
 		reload = True,
