@@ -122,7 +122,7 @@ class ApplicationSyncManager:
 			packet.update(
 				{
 					"task_id": task_id,
-					"status": "pending"s
+					"status": "pending"
 				}
 			)
 			self._send_queue.append(packet)
