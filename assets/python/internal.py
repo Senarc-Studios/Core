@@ -69,6 +69,7 @@ class ApplicationSyncManager:
 	def start(self):
 		asyncio.create_task(self._dispatch_fetch_loop())
 		asyncio.create_task(self._dispatch_send_loop())
+		
 
 	async def _dispatch_fetch_loop(self):
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
