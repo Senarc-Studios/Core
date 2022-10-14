@@ -65,6 +65,7 @@ class ApplicationSyncManager:
 		constants.fetch("MONGO")
 		self.constants = constants
 		self._send_queue = []
+		self._completed_task_queue = []
 
 	def start(self):
 		asyncio.create_task(self._dispatch_fetch_loop())
@@ -88,7 +89,7 @@ class ApplicationSyncManager:
 				}
 			)
 			for payload in documents:
-				self.completed_task_queue.append(payload)
+				self._completed_task_queue.append(payload)
 				await collection.delete_one(payload)
 
 	async def _dispatch_send_loop(self):
@@ -125,7 +126,7 @@ class ApplicationSyncManager:
 			)
 			self._send_queue.append(packet)
 			while True:
-				for payload in self.completed_task_queue:
+				for payload in self._completed_task_queue:
 					if payload.get("task_id") == task_id:
 						return payload.get("data")
 
