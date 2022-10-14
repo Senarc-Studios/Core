@@ -71,23 +71,14 @@ class ApplicationSyncManager:
 
 	def start(self):
 		if not self.is_running:
-			fetch_thread = threading.Thread(
-				name = "Fetch Loop",
-				target = asyncio.run,
-				args = (
-					self._dispatch_fetch_loop()
-				)
-			)
-			send_thread = threading.Thread(
-				name = "Send Loop",
-				target = asyncio.run,
-				args = (
-					self._dispatch_fetch_loop()
-				)
-			)
-			fetch_thread.start()
-			send_thread.start()
 			self.is_running = True
+			_fetch_loop = asyncio.get_event_loop()
+			_fetch_loop.run_until_complete(self._dispatch_fetch_loop())
+			_send_loop = asyncio.get_event_loop()
+			_send_loop.run_until_complete(self._dispatch_send_loop())
+
+			_fetch_loop.close()
+			_send_loop.close()
 
 		else:
 			raise RuntimeError("ASM is already running.")
