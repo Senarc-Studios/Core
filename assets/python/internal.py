@@ -75,11 +75,11 @@ class ApplicationSyncManager:
 			self.is_running = True
 			_fetch_loop = asyncio.get_event_loop()
 			coroutine = self._dispatch_fetch_loop()
-			_fetch_loop.run_forever(coroutine)
+			_fetch_loop.run_until_complete(coroutine)
 
 			_send_loop = asyncio.get_event_loop()
 			coroutine_ = self._dispatch_send_loop()
-			_send_loop.run_forever(coroutine_)
+			_send_loop.run_until_complete(coroutine_)
 
 		else:
 			raise RuntimeError("ASM is already running.")
