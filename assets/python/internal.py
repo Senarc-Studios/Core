@@ -1,6 +1,7 @@
+import json
 import asyncio
 import datetime
-import json
+import threading
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -70,8 +71,16 @@ class ApplicationSyncManager:
 
 	def start(self):
 		if not self.is_running:
-			asyncio.create_task(self._dispatch_fetch_loop())
-			asyncio.create_task(self._dispatch_send_loop())
+			fetch_thread = threading.Thread(
+				name = "Fetch Loop",
+				target = self._dispatch_fetch_loop
+			)
+			send_thread = threading.Thread(
+				name = "Send Loop",
+				target = self._dispatch_send_loop
+			)
+			fetch_thread.start()
+			send_thread.start()
 			self.is_running = True
 
 		else:
