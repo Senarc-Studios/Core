@@ -92,7 +92,7 @@ async def interaction_handler(request: Request):
 							else:
 								continue
 
-						if await ApplicationSyncManager.send_action_packet(
+						if (await ApplicationSyncManager.send_action_packet(
 							{
 								"action": 102,
 								"data": {
@@ -100,7 +100,7 @@ async def interaction_handler(request: Request):
 									"member_id": interaction["member"]["user"]["id"]
 								}
 							}
-						)["status"] == "completed":
+						))["status"] == "completed":
 							async with session.post(
 								f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/channels",
 								headers=DISCORD_HEADERS,
