@@ -2,11 +2,15 @@ import json
 import asyncio
 import datetime
 import threading
+import nest_asyncio
+
 from types import coroutine
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from typing import Any
+
+nest_asyncio.apply()
 
 class Internal:
 	def __init__(self):

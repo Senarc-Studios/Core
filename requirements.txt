@@ -8,6 +8,7 @@ motor
 aiohttp
 pynacl
 discord-webhook
+nest_asyncio
 websockets
 discord.py
 cool-utils
