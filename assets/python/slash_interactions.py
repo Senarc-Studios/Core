@@ -18,7 +18,8 @@ constants.fetch("PING_ROLES")
 constants.fetch("EMOJIS")
 constants.fetch("CHANNELS")
 Client = internal.Client(constants)
-ApplicationSyncManager = ApplicationSyncManager().start()
+ApplicationSyncManager = ApplicationSyncManager()
+ApplicationSyncManager.start()
 
 Router = APIRouter(
 	prefix="/discord"
