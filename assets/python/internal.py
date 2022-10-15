@@ -1,4 +1,5 @@
 import json
+import uvloop
 import asyncio
 import datetime
 
@@ -70,19 +71,15 @@ class ApplicationSyncManager:
 		self._completed_task_queue = []
 		self.is_running = False
 
-	def start(self):
+	async def start(self):
 		if not self.is_running:
-			import uvloop
 			asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-			self.is_running = True
-			_fetch_loop = asyncio.get_event_loop()
-			coroutine = self._dispatch_fetch_loop()
-			_fetch_loop.run_until_complete(coroutine)
+			loop = asyncio.get_running_loop()
+			await loop.run_in_executor(None, lambda: self._dispatch_fetch_loop())
+			await loop.run_in_executor(None, lambda: self._dispatch_send_loop())
 
-			_send_loop = asyncio.get_event_loop()
-			coroutine_ = self._dispatch_send_loop()
-			_send_loop.run_until_complete(coroutine_)
+			self.is_running = True
 
 		else:
 			raise RuntimeError("ASM is already running.")
