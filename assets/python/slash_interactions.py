@@ -30,9 +30,9 @@ DISCORD_HEADERS = {
 	"Content-Type": "application/json"
 }
 
-def asm_ensure_running() -> bool:
+async def asm_ensure_running() -> bool:
 	if not ApplicationSyncManager.is_running:
-		ApplicationSyncManager.start()
+		await ApplicationSyncManager.start()
 		return False
 
 	else:
@@ -40,7 +40,7 @@ def asm_ensure_running() -> bool:
 
 @Router.post("/interaction")
 async def interaction_handler(request: Request):
-	asm_ensure_running()
+	await asm_ensure_running()
 	PUBLIC_KEY = constants.get("CLIENT_PUBLIC_KEY")
 	CHANNELS = constants.get("CHANNELS")
 	EMOJIS = constants.get("EMOJIS")
