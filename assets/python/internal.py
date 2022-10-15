@@ -1,16 +1,12 @@
 import json
 import asyncio
 import datetime
-import threading
-import nest_asyncio
 
 from types import coroutine
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from typing import Any
-
-nest_asyncio.apply()
 
 class Internal:
 	def __init__(self):
@@ -76,6 +72,9 @@ class ApplicationSyncManager:
 
 	def start(self):
 		if not self.is_running:
+			import uvloop
+			asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 			self.is_running = True
 			_fetch_loop = asyncio.get_event_loop()
 			coroutine = self._dispatch_fetch_loop()

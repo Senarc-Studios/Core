@@ -18,7 +18,6 @@ from cool_utils import Terminal
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
-# nest_asyncio.apply()
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
 Client = internal.Client(constants)
