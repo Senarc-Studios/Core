@@ -165,11 +165,11 @@ async def greet_new_members(member):
 	)
 	embed.set_author(
 		name = f"{member.name} Joined!",
-		icon_url = member.avatar_url
+		icon_url = member.display_avatar.url
 	)
 	embed.set_footer(
 		text = f"Senarc Core",
-		icon_url = bot.user.avatar_url
+		icon_url = bot.user.display_avatar.url
 	)
 	role = await member.guild.fetch_role(Constants.get("ROLES").get("MEMBER"))
 	await member.add_roles(role)
