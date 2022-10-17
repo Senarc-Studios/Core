@@ -158,10 +158,15 @@ async def startup():
 @bot.listen("on_member_join")
 async def greet_new_members(member):
 	Terminal.display(f"{member.name} has joined the guild.")
+
+	while member.pending:
+		await asyncio.sleep(1)
+		continue
+
 	embed = Embed(
 		timestamp = member.joined_at,
 		description = f"Welcome to **Senarc**'s Core Guild, we hope you have a nice stay!",
-		colour = 0x35393f
+		colour = 0x2f3136
 	)
 	embed.set_author(
 		name = f"{member.name} Joined!",
