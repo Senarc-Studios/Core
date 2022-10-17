@@ -5,7 +5,7 @@ from assets.python.internal import Internal
 from cool_utils import Terminal
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from discord import Embed, Intents
+from discord import utils, Embed, Intents
 from discord.ext.commands import Bot
 
 Internal = Internal()
@@ -171,7 +171,10 @@ async def greet_new_members(member):
 		text = f"Senarc Core",
 		icon_url = bot.user.display_avatar.url
 	)
-	role = await member.guild.fetch_role(Constants.get("ROLES").get("MEMBER"))
+	role = utils.get(
+		member.guild.roles,
+		id = int(Constants.get("ROLES").get("MEMBER"))
+	)
 	await member.add_roles(role)
 	await member.guild.system_channel.send(embed = embed)
 
