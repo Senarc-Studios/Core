@@ -33,7 +33,7 @@ class ApplicationManagementUnit:
 
 	async def start(self):
 		try:
-			self.bot.run(Constants.get("CLIENT_TOKEN"))
+			await self.bot.start(Constants.get("CLIENT_TOKEN"))
 		except Exception as error:
 			print(error)
 		await asyncio.create_task(self._loop_task_fetch())
