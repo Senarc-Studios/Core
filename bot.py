@@ -31,12 +31,12 @@ class ApplicationManagementUnit:
 		self.bot = bot
 		self.constants = Constants
 
-	def start(self):
+	async def start(self):
 		try:
 			self.bot.run(Constants.get("CLIENT_TOKEN"))
 		except Exception as error:
 			print(error)
-		asyncio.create_task(self._loop_task_fetch())
+		await asyncio.create_task(self._loop_task_fetch())
 
 	async def _loop_task_fetch(self):
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
@@ -177,4 +177,4 @@ async def greet_new_members(member):
 
 if __name__ == "__main__":
 	ApplicationManagementUnit = ApplicationManagementUnit()
-	ApplicationManagementUnit.start()
+	asyncio.run(ApplicationManagementUnit.start())
