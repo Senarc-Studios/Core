@@ -181,7 +181,10 @@ async def greet_new_members(member):
 		id = int(Constants.get("ROLES").get("MEMBER"))
 	)
 	await member.add_roles(role)
-	await member.guild.system_channel.send(embed = embed)
+	await member.guild.system_channel.send(
+		content = f"<@!{member.id}>",
+		embed = embed
+	)
 
 if __name__ == "__main__":
 	ApplicationManagementUnit = ApplicationManagementUnit()
