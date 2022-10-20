@@ -38,9 +38,12 @@ async def asm_ensure_running() -> bool:
 	else:
 		return True
 
+# @Router.on_event("startup")
+# async def startup():
+# 	await asm_ensure_running()
+
 @Router.post("/interaction")
 async def interaction_handler(request: Request):
-	await asm_ensure_running()
 	PUBLIC_KEY = constants.get("CLIENT_PUBLIC_KEY")
 	CHANNELS = constants.get("CHANNELS")
 	EMOJIS = constants.get("EMOJIS")
