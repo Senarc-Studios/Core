@@ -5,7 +5,7 @@ from assets.python.internal import Internal
 from cool_utils import Terminal
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from discord import utils, Embed, Intents
+from discord import utils, Embed, Intents, AuditLogAction
 from discord.ext.commands import Bot
 
 Internal = Internal()
@@ -187,6 +187,38 @@ async def greet_new_members(member):
 			embed = embed
 		)
 
+	else:
+		log_channel = utils.get(
+			member.guild.channels,
+			id = int(Constants.get("CHANNELS").get("LOGS"))
+		)
+		async for entry in member.guild.audit_logs(
+			limit = 1,
+			action = AuditLogAction.bot_add
+		):
+			log_entry = entry
+
+		embed = Embed(
+			timestamp = member.joined_at,
+			description = f"An Discord Bot has been added to the guild by <@!{log_entry.user.id}>.",
+			colour = 0x2f3136
+		)
+		embed.set_author(
+			name = f"{member.name} Bot Added!",
+			icon_url = member.display_avatar.url
+		)
+		embed.set_footer(
+			text = f"Senarc Core",
+			icon_url = bot.user.display_avatar.url
+		)
+		role = utils.get(
+			member.guild.roles,
+			id = int(Constants.get("ROLES").get("BOT"))
+		)
+		await member.add_roles(role)
+		await log_channel.send(
+			embed = embed
+		)
 
 if __name__ == "__main__":
 	ApplicationManagementUnit = ApplicationManagementUnit()
