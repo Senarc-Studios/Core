@@ -159,43 +159,43 @@ async def startup():
 
 @bot.listen("on_member_join")
 async def greet_new_members(member):
-	Terminal.display(f"{member.name} has joined the guild.")
+	Terminal.display(f"{member.name} has joined the guild.") if not bot else Terminal.display(f"{member.name} Bot has joined the guild.")
 
 	while member.pending:
 		await asyncio.sleep(1)
 		continue
 
 	if member.bot:
-		print("Bot joined.")
 		log_channel = utils.get(
 			member.guild.channels,
 			id = int(Constants.get("CHANNELS").get("LOGS"))
 		)
 		async for entry in member.guild.audit_logs(
-			limit = 1,
 			action = AuditLogAction.bot_add
 		):
-			log_entry = entry
-			print(f"Bot was added by {log_entry.user.name}")
+			log_entry = entry if entry.target == member and entry.target.joined_at == member.joined_at else log_entry
+
+		author = log_entry.user
+		added_bot = log_entry.target
 
 		embed = Embed(
-			timestamp = member.joined_at,
-			description = f"An Discord Bot has been added to the guild by <@!{log_entry.user.id}>.",
+			timestamp = added_bot.joined_at,
+			description = f"<@!{added_bot.id}> Bot has been added to the guild by <@!{author.id}>.",
 			colour = 0x2f3136
 		)
 		embed.set_author(
-			name = f"{member.name} Bot Added!",
-			icon_url = member.display_avatar.url
+			name = f"{added_bot.name} Bot Added!",
+			icon_url = added_bot.display_avatar.url
 		)
 		embed.set_footer(
 			text = f"Senarc Core",
 			icon_url = bot.user.display_avatar.url
 		)
 		role = utils.get(
-			member.guild.roles,
+			added_bot.guild.roles,
 			id = int(Constants.get("ROLES").get("BOT"))
 		)
-		await member.add_roles(role)
+		await added_bot.add_roles(role)
 		await log_channel.send(
 			embed = embed
 		)
