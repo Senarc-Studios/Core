@@ -1,12 +1,14 @@
+import sys
 import asyncio
+import traceback
 
 from assets.python.internal import Internal
 
 from cool_utils import Terminal
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from discord import utils, Embed, Intents, AuditLogAction
-from discord.ext.commands import Bot
+from discord import utils, Embed, Intents, AuditLogAction, HTTPException
+from discord.ext.commands import Bot, NoPrivateMessage, CommandNotFound
 
 Internal = Internal()
 Constants = Internal.Constants("./assets/json/constants.json")
@@ -219,6 +221,28 @@ async def greet_new_members(member):
 		await log_channel.send(
 			embed = embed
 		)
+
+# Source: https://gist.github.com/EvieePy/7822af90858ef65012ea500bcecf1612
+@bot.listen("on_command_error")
+async def error_handler(ctx, error):
+        if hasattr(ctx.command, 'on_error'):
+            return
+
+        ignored = (CommandNotFound)
+        error = getattr(error, 'original', error)
+
+        if isinstance(error, ignored):
+            return
+
+        elif isinstance(error, NoPrivateMessage):
+            try:
+                await ctx.author.send(f'`{ctx.command}` can not be used in Private Messages.')
+            except HTTPException:
+                pass
+
+        else:
+            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 if __name__ == "__main__":
 	ApplicationManagementUnit = ApplicationManagementUnit()
