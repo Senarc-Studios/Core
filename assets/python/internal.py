@@ -1,5 +1,5 @@
 import json
-import uvloop
+import fastapi
 import asyncio
 import datetime
 
@@ -73,11 +73,8 @@ class ApplicationSyncManager:
 
 	async def start(self):
 		if not self.is_running:
-			asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-			loop = asyncio.get_running_loop()
-			await loop.run_in_executor(None, lambda: self._dispatch_fetch_loop())
-			await loop.run_in_executor(None, lambda: self._dispatch_send_loop())
+			asyncio.create_task(self._dispatch_fetch_loop())
+			asyncio.create_task(self._dispatch_send_loop())
 
 			self.is_running = True
 

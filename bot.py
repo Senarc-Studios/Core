@@ -165,31 +165,7 @@ async def greet_new_members(member):
 		await asyncio.sleep(1)
 		continue
 
-	if not member.bot:
-		embed = Embed(
-			timestamp = member.joined_at,
-			description = f"Welcome to **Senarc**'s Core Guild, we hope you have a nice stay!",
-			colour = 0x2f3136
-		)
-		embed.set_author(
-			name = f"{member.name} Joined!",
-			icon_url = member.display_avatar.url
-		)
-		embed.set_footer(
-			text = f"Senarc Core",
-			icon_url = bot.user.display_avatar.url
-		)
-		role = utils.get(
-			member.guild.roles,
-			id = int(Constants.get("ROLES").get("MEMBER"))
-		)
-		await member.add_roles(role)
-		await member.guild.system_channel.send(
-			content = f"<@!{member.id}>",
-			embed = embed
-		)
-
-	else:
+	if member.bot:
 		log_channel = utils.get(
 			member.guild.channels,
 			id = int(Constants.get("CHANNELS").get("LOGS"))
@@ -219,6 +195,30 @@ async def greet_new_members(member):
 		)
 		await member.add_roles(role)
 		await log_channel.send(
+			embed = embed
+		)
+
+	else:
+		embed = Embed(
+			timestamp = member.joined_at,
+			description = f"Welcome to **Senarc**'s Core Guild, we hope you have a nice stay!",
+			colour = 0x2f3136
+		)
+		embed.set_author(
+			name = f"{member.name} Joined!",
+			icon_url = member.display_avatar.url
+		)
+		embed.set_footer(
+			text = f"Senarc Core",
+			icon_url = bot.user.display_avatar.url
+		)
+		role = utils.get(
+			member.guild.roles,
+			id = int(Constants.get("ROLES").get("MEMBER"))
+		)
+		await member.add_roles(role)
+		await member.guild.system_channel.send(
+			content = f"<@!{member.id}>",
 			embed = embed
 		)
 
