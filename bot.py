@@ -166,6 +166,7 @@ async def greet_new_members(member):
 		continue
 
 	if member.bot:
+		print("Bot joined.")
 		log_channel = utils.get(
 			member.guild.channels,
 			id = int(Constants.get("CHANNELS").get("LOGS"))
@@ -175,6 +176,7 @@ async def greet_new_members(member):
 			action = AuditLogAction.bot_add
 		):
 			log_entry = entry
+			print(f"Bot was added by {log_entry.user.name}")
 
 		embed = Embed(
 			timestamp = member.joined_at,
