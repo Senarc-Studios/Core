@@ -7,7 +7,8 @@
     "MONGO": "YOUR_MONGO_DB",
     "ENVIRONMENT": "PRODUCTION",
     "ROLES": {
-        "MEMBER": "SNOWFLAKE_ID"
+        "MEMBER": "SNOWFLAKE_ID",
+        "BOT": "SNOWFLAKE_ID"
     },
     "PING_ROLES": {
         "ANNOUNCEMENTS": "SNOWFLAKE_ID",
@@ -21,6 +22,7 @@
     },
     "CHANNELS": {
         "VOICE_CATEGORY": "SNOWFLAKE_ID",
-        "CREATE_VOICE": "SNOWFLAKE_ID"
+        "CREATE_VOICE": "SNOWFLAKE_ID",
+        "LOGS": "SNOWFLAKE_ID"
     }
 }
