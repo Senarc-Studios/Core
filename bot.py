@@ -1,5 +1,6 @@
 import sys
 import asyncio
+import datetime
 import traceback
 
 from assets.python.internal import Internal
@@ -221,6 +222,49 @@ async def greet_new_members(member):
 		await member.add_roles(role)
 		await member.guild.system_channel.send(
 			content = f"<@!{member.id}>",
+			embed = embed
+		)
+
+@bot.listen("on_member_remove")
+async def log_bot_removes(member):
+	Terminal.display(f"{member.name} has left the guild.") if not bot else Terminal.display(f"{member.name} Bot has been removed from the guild.")
+
+	while member.pending:
+		await asyncio.sleep(1)
+		continue
+
+	if member.bot:
+		log_channel = utils.get(
+			member.guild.channels,
+			id = int(Constants.get("CHANNELS").get("LOGS"))
+		)
+		async for entry in member.guild.audit_logs(
+			action = AuditLogAction.kick
+		):
+			log_entry = entry if entry.target == member and entry.target.joined_at == member.joined_at else log_entry
+
+		author = log_entry.user
+		added_bot = log_entry.target
+
+		embed = Embed(
+			timestamp = int(datetime.datetime.now().timestamp()),
+			description = f"<@!{added_bot.id}> Bot has been added to the guild by <@!{author.id}>.",
+			colour = 0x2f3136
+		)
+		embed.set_author(
+			name = f"{added_bot.name} Bot Added!",
+			icon_url = added_bot.display_avatar.url
+		)
+		embed.set_footer(
+			text = f"Senarc Core",
+			icon_url = bot.user.display_avatar.url
+		)
+		role = utils.get(
+			added_bot.guild.roles,
+			id = int(Constants.get("ROLES").get("BOT"))
+		)
+		await added_bot.add_roles(role)
+		await log_channel.send(
 			embed = embed
 		)
 
