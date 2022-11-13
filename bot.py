@@ -355,7 +355,7 @@ async def modmail(message):
 			)
 			await message.add_reaction("<:ModMailSent:1040971440515731456>")
 
-	elif message.channel.category == utils.get(message.guild.category, name = 'TICKETS'):
+	elif message.channel.category == utils.get(message.guild.category, name = 'MODMAIL'):
 		user = await bot.fetch_user(int(bot.modmail_channels.get(message.channel.id).get("user_id")))
 		embed = Embed(
 			timestamp = int(datetime.datetime.now().timestamp()),
