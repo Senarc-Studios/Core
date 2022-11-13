@@ -73,8 +73,8 @@ class ApplicationSyncManager:
 
 	async def start(self):
 		if not self.is_running:
-			asyncio.create_task(self._dispatch_fetch_loop())
-			asyncio.create_task(self._dispatch_send_loop())
+			#asyncio.create_task(self._dispatch_fetch_loop())
+			#asyncio.create_task(self._dispatch_send_loop())
 
 			self.is_running = True
 
