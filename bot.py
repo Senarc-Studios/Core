@@ -2,6 +2,7 @@ import sys
 import asyncio
 import datetime
 import traceback
+import discord
 
 from assets.python.internal import Internal
 
@@ -25,6 +26,7 @@ bot = Bot(
 	command_prefix = "sca!",
 	intents = intents
 )
+bot.modmail_chanels = {}
 
 for constant in fetch_list:
 	Constants.fetch(constant)
@@ -267,6 +269,122 @@ async def log_bot_removes(member):
 		await log_channel.send(
 			embed = embed
 		)
+
+@bot.listen("on_message")
+async def modmail(message):
+	if not message.author.bot and message.guild == None:
+		BAD_STRING = [" ", ">", "<", "+", "=", ";", ":", "[", "]", "*", "'", '"', ",", ".", "{", "}", "|", "(", ")", "$", "#", "@", "!", "^", "%", "&", "`", "~"]
+		nickname, category = message.author.name, utils.get(message.guild.category, name = 'TICKETS')
+		nickname_ = ""
+		for char in nickname:
+			if char in BAD_STRING:
+				continue
+			else:
+				nickname_ += char
+		channel_name = f"{nickname_}-{message.author.discriminator}"
+		guild = utils.get(bot.guilds, id=780278916173791232)
+		if not utils.get(guild.channels, name = channel_name):
+
+			channel = await guild.create_text_channel(
+				name = channel_name,
+				category = category,
+				topic = f"Modmail for {message.author.name}#{message.author.discriminator}"
+			)
+			embed = Embed(
+				timestamp = int(datetime.datetime.now().timestamp()),
+				description = f"**`{message.author.name}#{message.author.discriminator} ({message.author.id})`** has opened a modmail ticket.\n\n> **First Message:**\n{message.content}",
+				colour = 0x91b6f8
+			)
+			embed.set_author(
+				name = f"Modmail",
+				icon_url = message.author.display_avatar.url
+			)
+			embed.set_footer(
+				text = f"Senarc Core",
+				icon_url = bot.user.display_avatar.url
+			)
+			await channel.send(
+				embed = embed
+			)
+			await message.add_reaction("<:ModMailSent:1040971440515731456>")
+			bot.modmail_channels.update(
+				{
+					channel.id: {
+						"user_id": message.author.id,
+						"timestamp": int(datetime.datetime.now().timestamp()),
+						"last_message": int(datetime.datetime.now().timestamp())
+					}
+				}
+			)
+
+		else:
+			embed = Embed(
+				timestamp = int(datetime.datetime.now().timestamp()),
+				description = message.content,
+				colour = 0x91b6f8
+			)
+			embed.set_author(
+				name = f"{message.author.name}#{message.author.discriminator}",
+				icon_url = message.author.display_avatar.url
+			)
+			embed.set_footer(
+				text = f"Senarc Core",
+				icon_url = bot.user.display_avatar.url
+			)
+			if message.attachments:
+				attachments_string = ""
+				for attachment in message.attachments:
+					embed.set_image(
+						url = message.attachment.url
+					)
+					attachments_string += f"[{attachment.filename}]({attachment.url})\n"
+				embed.add_field(
+					name = f"Attachment",
+					value = f"{attachments_string}"
+				)
+			await channel.send(
+				embed = embed
+			)
+			bot.modmail_channels.update(
+				{
+					channel.id: {
+						"user_id": message.author.id,
+						"last_message": int(datetime.datetime.now().timestamp())
+					}
+				}
+			)
+			await message.add_reaction("<:ModMailSent:1040971440515731456>")
+
+	elif message.channel.category == utils.get(message.guild.category, name = 'TICKETS'):
+		user = await bot.fetch_user(int(bot.modmail_channels.get(message.channel.id).get("user_id")))
+		embed = Embed(
+			timestamp = int(datetime.datetime.now().timestamp()),
+			description = message.content,
+			colour = 0x91b6f8
+		)
+		embed.set_author(
+			name = f"Senarc Core Modmail System",
+			icon_url = bot.user.display_avatar.url
+		)
+		embed.set_footer(
+			text = f"Senarc Core",
+			icon_url = bot.user.display_avatar.url
+		)
+		if message.attachments:
+			attachments_string = ""
+			for attachment in message.attachments:
+				embed.set_image(
+					url = message.attachment.url
+				)
+				attachments_string += f"[{attachment.filename}]({attachment.url})\n"
+			embed.add_field(
+				name = f"Attachment",
+				value = f"{attachments_string}"
+			)
+		await user.send(
+			embed = embed
+		)
+		await message.add_reaction("<:ModMailSent:1040971440515731456>")
 
 # Source: https://gist.github.com/EvieePy/7822af90858ef65012ea500bcecf1612
 @bot.listen("on_command_error")

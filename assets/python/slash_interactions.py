@@ -38,9 +38,9 @@ async def asm_ensure_running() -> bool:
 	else:
 		return True
 
-# @Router.on_event("startup")
-# async def startup():
-# 	await asm_ensure_running()
+@Router.on_event("startup")
+async def startup() -> None:
+	await asm_ensure_running()
 
 @Router.post("/interaction")
 async def interaction_handler(request: Request):
