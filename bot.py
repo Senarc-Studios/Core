@@ -274,7 +274,7 @@ async def log_bot_removes(member):
 async def modmail(message):
 	if not message.author.bot and message.guild == None:
 		BAD_STRING = [" ", ">", "<", "+", "=", ";", ":", "[", "]", "*", "'", '"', ",", ".", "{", "}", "|", "(", ")", "$", "#", "@", "!", "^", "%", "&", "`", "~"]
-		nickname, category = message.author.name, utils.get(message.guild.category, name = 'TICKETS')
+		nickname, category = message.author.name, utils.get(message.guild.category, name = 'MODMAIL')
 		nickname_ = ""
 		for char in nickname:
 			if char in BAD_STRING:
