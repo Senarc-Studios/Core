@@ -13,7 +13,7 @@ Router = APIRouter(
 )
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
-constants.fetch("TOKEN")
+constants.fetch("CLIENT_TOKEN")
 
 @Router.post("/updates", include_in_schema = False)
 async def git_updates(request: Request):
@@ -71,7 +71,7 @@ async def git_updates(request: Request):
 		await session.post(
 			f"https://discord.com/api/v10/channels/1009722826208579634/messages",
 			headers = {
-				"Authorization": f"Bot {constants.get('TOKEN')}"
+				"Authorization": f"Bot {constants.get('CLIENT_TOKEN')}"
 			},
 			json = payload
 		)
