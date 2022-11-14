@@ -26,7 +26,6 @@ bot = Bot(
 	command_prefix = "sca!",
 	intents = intents
 )
-bot.modmail_chanels = {}
 
 for constant in fetch_list:
 	Constants.fetch(constant)
@@ -288,7 +287,7 @@ async def modmail(message):
 			channel = await guild.create_text_channel(
 				name = channel_name,
 				category = category,
-				topic = f"Modmail for {message.author.name}#{message.author.discriminator}"
+				topic = f"{message.author.id}"
 			)
 			embed = Embed(
 				timestamp = int(datetime.datetime.now().timestamp()),
@@ -307,17 +306,9 @@ async def modmail(message):
 				embed = embed
 			)
 			await message.add_reaction("<:ModMailSent:1040971440515731456>")
-			bot.modmail_channels.update(
-				{
-					channel.id: {
-						"user_id": message.author.id,
-						"timestamp": int(datetime.datetime.now().timestamp()),
-						"last_message": int(datetime.datetime.now().timestamp())
-					}
-				}
-			)
 
 		else:
+			channel = utils.get(guild.channels, name = channel_name)
 			embed = Embed(
 				timestamp = int(datetime.datetime.now().timestamp()),
 				description = message.content,
@@ -345,18 +336,10 @@ async def modmail(message):
 			await channel.send(
 				embed = embed
 			)
-			bot.modmail_channels.update(
-				{
-					channel.id: {
-						"user_id": message.author.id,
-						"last_message": int(datetime.datetime.now().timestamp())
-					}
-				}
-			)
 			await message.add_reaction("<:ModMailSent:1040971440515731456>")
 
 	elif message.channel.category == utils.get(message.guild.category, name = 'MODMAIL'):
-		user = await bot.fetch_user(int(bot.modmail_channels.get(message.channel.id).get("user_id")))
+		user = await bot.fetch_user(int(message.channel.topic))
 		embed = Embed(
 			timestamp = int(datetime.datetime.now().timestamp()),
 			description = message.content,
