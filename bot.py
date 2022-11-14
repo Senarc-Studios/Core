@@ -162,7 +162,7 @@ async def startup():
 
 @bot.listen("on_member_join")
 async def greet_new_members(member):
-	Terminal.display(f"{member.name} has joined the guild.") if not bot else Terminal.display(f"{member.name} Bot has joined the guild.")
+	Terminal.display(f"{member.name} has joined the guild.") if not member.bot else Terminal.display(f"{member.name} Bot has joined the guild.")
 
 	while member.pending:
 		await asyncio.sleep(1)
