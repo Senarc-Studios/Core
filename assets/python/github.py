@@ -1,7 +1,5 @@
-import os
-import json
 import datetime
-import asyncio
+import aiohttp
 
 from fastapi import APIRouter
 from fastapi import Request
@@ -67,7 +65,7 @@ async def git_updates(request: Request):
 		]
 	}
 
-	async with asyncio.ClientSession() as session:
+	async with aiohttp.ClientSession() as session:
 		await session.post(
 			f"https://discord.com/api/v10/channels/1009722826208579634/messages",
 			headers = {
