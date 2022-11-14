@@ -53,9 +53,9 @@ async def git_updates(request: Request):
 				"url": commit['compare'],
 				"timestamp": datetime.datetime.utcnow().isoformat(),
 				"author": {
-					"name": commit['repository']['name'],
-					"url": commit['repository']['url'],
-					"icon_url": commit['repository']['owner']['avatar_url']
+					"name": commit['sender']['login'],
+					"url": commit['sender']['html_url'],
+					"icon_url": commit['sender']['avatar_url']
 				},
 				"footer": {
 					"text": f"Senarc Core",
