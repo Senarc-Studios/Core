@@ -9,7 +9,7 @@ from fastapi import Request
 from assets.python.internal import Internal
 
 Router = APIRouter(
-	"/github"
+	prefix = "/github"
 )
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
