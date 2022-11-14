@@ -229,7 +229,7 @@ async def greet_new_members(member):
 
 @bot.listen("on_member_remove")
 async def log_bot_removes(member):
-	Terminal.display(f"{member.name} has left the guild.") if not bot else Terminal.display(f"{member.name} Bot has been removed from the guild.")
+	Terminal.display(f"{member.name} has left the guild.") if not member.bot else Terminal.display(f"{member.name} Bot has been removed from the guild.")
 
 	while member.pending:
 		await asyncio.sleep(1)
