@@ -230,10 +230,6 @@ async def greet_new_members(member):
 async def log_bot_removes(member):
 	Terminal.display(f"{member.name} has left the guild.") if not member.bot else Terminal.display(f"{member.name} Bot has been removed from the guild.")
 
-	while member.pending:
-		await asyncio.sleep(1)
-		continue
-
 	if member.bot:
 		log_channel = utils.get(
 			member.guild.channels,
