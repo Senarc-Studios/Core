@@ -430,9 +430,6 @@ async def interaction_handler(request: Request):
 async def register_call(request: Request):
 	admin = request.headers.get("Authorisation")
 
-	if admin not in internal.Dynamic.fetch("ADMIN_TOKENS"):
-		return 'invalid admin verification', 401
-
 	commands = [
 		{
 			"name": "voice",
@@ -486,7 +483,7 @@ async def register_call(request: Request):
 		{
 			"name": "eval",
 			"type": 1,
-			"description": "Evaluate Python code.",
+			"description": "Evaluate Python code."
 		}
 	]
 
