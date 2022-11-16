@@ -59,12 +59,9 @@ async def interaction_handler(request: Request):
 		verify_key.verify(f'{timestamp}{body}'.encode(), bytes.fromhex(signature))
 	except BadSignatureError:
 		return 'invalid request signature', 401
-	print(interaction)
 
 	if interaction["type"] == 1:
-		print(interaction)
 		if interaction.get("name") == "eval":
-			print(interaction)
 			return {
 				"type": 9,
 				"title": "Eval",
