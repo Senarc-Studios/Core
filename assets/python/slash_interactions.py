@@ -64,7 +64,7 @@ async def interaction_handler(request: Request):
 		if data.get("name") == "eval":
 			print(data)
 			return {
-				"type": 4,
+				"type": 9,
 				"title": "Eval",
 				"custom_id": "eval",
 				"components": [
