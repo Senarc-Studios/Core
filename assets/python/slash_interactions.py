@@ -60,8 +60,25 @@ async def interaction_handler(request: Request):
 	except BadSignatureError:
 		return 'invalid request signature', 401
 
-	print(interaction)
 	if interaction["type"] == 1:
+		if data.get("name") == "eval":
+			print(data)
+			return {
+				"type": 4,
+				"title": "Eval",
+				"custom_id": "eval",
+				"components": [
+					{
+						"type": 4,
+						"custom_id": "code",
+						"label": "Code",
+						"style": 2,
+						"placeholder": "Your Python Code goes here.",
+						"required": True
+					}
+				]
+			}
+
 		return {
 			"type": 1
 		}
@@ -241,24 +258,6 @@ async def interaction_handler(request: Request):
 							"flags": 64
 						}
 					}
-
-		elif data.get("name") == "eval":
-			print(data)
-			return {
-				"type": 4,
-				"title": "Eval",
-				"custom_id": "eval",
-				"components": [
-					{
-						"type": 4,
-						"custom_id": "code",
-						"label": "Code",
-						"style": 2,
-						"placeholder": "Your Python Code goes here.",
-						"required": True
-					}
-				]
-			}
 
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
