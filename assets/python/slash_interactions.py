@@ -241,6 +241,23 @@ async def interaction_handler(request: Request):
 						}
 					}
 
+		elif data.get("name") == "eval":
+			return {
+				"type": 4,
+				"title": "Eval",
+				"custom_id": "eval",
+				"components": [
+					{
+						"type": 4,
+						"custom_id": "code",
+						"label": "Code",
+						"style": 2,
+						"placeholder": "Your Python Code goes here.",
+						"required": True
+					}
+				]
+			}
+
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
 		payload = interaction["data"]
@@ -294,6 +311,120 @@ async def interaction_handler(request: Request):
 					"flags": 64
 				}
 			}
+
+	elif interaction["type"] == 9:
+		eval_code = {
+			0: EMOJIS["SUCCESS"],
+			1: EMOJIS["FAIL"],
+			2: EMOJIS["WARNING"]
+		}
+		payload = interaction["data"]
+		if payload.get("custom_id") == "eval":
+			code = payload.get("components")[0]["value"]
+			if code == "":
+				return {
+					"type": 4,
+					"data": {
+						"content": f"{EMOJIS['FAIL']} You didn't provide any code to execute.",
+						"flags": 64
+					}
+				}
+			else:
+				async with aiohttp.ClientSession() as session:
+					if code.startswith("```py") and code.endswith("```"):
+						code = (code[5:])[:3]
+					elif code.startswith("```") and code.endswith("```"):
+						code = (code[3:])[:3]
+
+					async with session.post(
+						"https://snekbox.senarc.online/eval",
+						json = {
+							"input": code,
+						}
+					):
+						response = await response.json()
+						output = response.get('stdout')
+						returncode = response.get('returncode')
+						output_ = output.split("\n")
+						modified = False
+						count = 0
+						_output = ""
+						for line in output_:
+							count += 1
+							_output = _output + f"{(3 - len(str(count)))*'0'}{count} | {line}\n"
+
+						if len(_output) > 20:
+							_output = "\n".join(_output.split("\n")[:19])
+							_output += "\n[...]"
+							async with session.post(
+								"https://api.senarc.online/paste",
+								json = {
+									"title": "Snekbox Eval Output",
+									"content": output,
+									"description": code,
+								}
+							):
+								response = await response.json()
+								full_output = response.get("url")
+								modified = True
+
+						elif len(output) > 500 and not modified:
+							_output = _output[:497]
+							_output += "..."
+							async with session.post(
+								"https://api.senarc.online/paste",
+								json = {
+									"title": "Snekbox Eval Output",
+									"content": output,
+									"description": code,
+								}
+							):
+								response = await response.json()
+								full_output = response.get("url")
+								modified = True
+
+						if _output.replace("\n", "") == "":
+							_output = "[No output]"
+							returncode = 2
+
+						if returncode == 0:
+							message = "Successfully executed code."
+
+						elif returncode == 1:
+							message = "Code execution was successful, but no output was returned."
+
+						elif returncode == 2:
+							message = "Code execution failed."
+
+						if modified:
+							return {
+								"type": 4,
+								"data": {
+									"content": f"{eval_code[returncode]} {message}\n\n```py\n{_output}```",
+									"components": [
+										{
+											"type": 2,
+											"label": "Full Output",
+											"style": 5,
+											"url": full_output
+										},
+										{
+											"type": 2,
+											"label": "Delete",
+											"style": 4,
+											"custom_id": f"delete_{response.get('key')}_{response.get('deletion_token')}"
+										}
+									]
+								}
+							}
+
+						return {
+							"type": 4,
+							"data": {
+								"content": f"{eval_code[returncode]} {message}\n\n```py\n{_output}```",
+								"flags": 64
+							}
+						}
 
 @Router.get("/register")
 async def register_call(request: Request):
@@ -353,12 +484,9 @@ async def register_call(request: Request):
 			]
 		},
 		{
-			"name": "token",
-			"options": []
-		},
-		{
-			"name": "generate-token",
-			"description": "Generate Senarc API Token."
+			"name": "eval",
+			"type": 1,
+			"description": "Evaluate Python code.",
 		}
 	]
 
