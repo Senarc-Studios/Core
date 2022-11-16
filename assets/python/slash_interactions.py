@@ -312,7 +312,7 @@ async def interaction_handler(request: Request):
 				}
 			}
 
-	elif interaction["type"] == 9:
+	elif interaction["type"] == 5:
 		eval_code = {
 			0: EMOJIS["SUCCESS"],
 			1: EMOJIS["FAIL"],
