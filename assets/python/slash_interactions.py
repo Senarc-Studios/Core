@@ -519,7 +519,6 @@ async def register_call(request: Request):
 					json = command
 				) as response_:
 					print(await response_.json())
-					return await response_.json()
 	except:
 		return {
 			"success": False
