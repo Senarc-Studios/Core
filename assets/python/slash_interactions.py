@@ -63,6 +63,7 @@ async def interaction_handler(request: Request):
 
 	if interaction["type"] == 1:
 		if interaction.get("data").get("name") == "eval":
+			print("eval")
 			return {
 				"type": 9,
 				"title": "Eval",
