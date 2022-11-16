@@ -60,6 +60,7 @@ async def interaction_handler(request: Request):
 	except BadSignatureError:
 		return 'invalid request signature', 401
 
+	print(interaction)
 	if interaction["type"] == 1:
 		return {
 			"type": 1
@@ -242,6 +243,7 @@ async def interaction_handler(request: Request):
 					}
 
 		elif data.get("name") == "eval":
+			print(data)
 			return {
 				"type": 4,
 				"title": "Eval",
