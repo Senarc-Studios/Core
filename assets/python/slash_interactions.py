@@ -329,7 +329,7 @@ async def interaction_handler(request: Request):
 						await session.delete(
 							f"https://api.senarc.online/bin/{key}",
 							headers = {
-								"Authorisation": deletion_token
+								"deletion_token": deletion_token
 							}
 						)
 						await session.delete(
