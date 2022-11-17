@@ -362,7 +362,7 @@ async def interaction_handler(request: Request):
 							count += 1
 							_output = _output + f"{(3 - len(str(count)))*'0'}{count} | {line}\n"
 
-						if len(_output) > 20:
+						if len(_output.split("\n")) > 20:
 							_output = "\n".join(_output.split("\n")[:19])
 							_output += "\n[...]"
 							async with session.post(
