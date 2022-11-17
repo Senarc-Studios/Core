@@ -350,7 +350,7 @@ async def interaction_handler(request: Request):
 						json = {
 							"input": code,
 						}
-					):
+					) as response:
 						response = await response.json()
 						output = response.get('stdout')
 						returncode = response.get('returncode')
@@ -372,9 +372,9 @@ async def interaction_handler(request: Request):
 									"content": output,
 									"description": code,
 								}
-							):
-								response = await response.json()
-								full_output = response.get("url")
+							) as paste:
+								paste = await paste.json()
+								full_output = paste.get("url")
 								modified = True
 
 						elif len(output) > 500 and not modified:
@@ -387,9 +387,9 @@ async def interaction_handler(request: Request):
 									"content": output,
 									"description": code,
 								}
-							):
-								response = await response.json()
-								full_output = response.get("url")
+							) as paste:
+								paste = await paste.json()
+								full_output = paste.get("url")
 								modified = True
 
 						if _output.replace("\n", "") == "":
@@ -421,7 +421,7 @@ async def interaction_handler(request: Request):
 											"type": 2,
 											"label": "Delete",
 											"style": 4,
-											"custom_id": f"delete_{response.get('key')}_{response.get('deletion_token')}"
+											"custom_id": f"delete_{paste.get('key')}_{paste.get('deletion_token')}"
 										}
 									]
 								}
