@@ -62,28 +62,9 @@ async def interaction_handler(request: Request):
 	print(json.dumps(interaction, indent=4))
 
 	if interaction["type"] == 1:
-		if interaction.get("data").get("name") == "eval":
-			print("eval")
-			return {
-				"type": 9,
-				"title": "Eval",
-				"custom_id": "eval",
-				"components": [
-					{
-						"type": 4,
-						"custom_id": "code",
-						"label": "Code",
-						"style": 2,
-						"placeholder": "Your Python Code goes here.",
-						"required": True
-					}
-				]
-			}
-
-		else:
-			return {
-				"type": 1
-			}
+		return {
+			"type": 1
+		}
 
 	if interaction["type"] == 2:
 		data = interaction.get("data")
@@ -167,7 +148,7 @@ async def interaction_handler(request: Request):
 									"flags": 64
 								}
 							}
-		
+
 		elif data.get("name") == "voice" and data["options"][0]["name"] == "permit":
 			sub_action = data["options"][0]["options"][0]
 			if sub_action["name"] == "approve":
@@ -199,7 +180,7 @@ async def interaction_handler(request: Request):
 									"flags": 64
 								}
 							}
-			
+
 			elif sub_action["name"] == "deny":
 				async with aiohttp.ClientSession() as session:
 					async with session.get(
@@ -261,6 +242,24 @@ async def interaction_handler(request: Request):
 						}
 					}
 
+		elif interaction.get("data").get("name") == "eval":
+			print("eval")
+			return {
+				"type": 9,
+				"title": "Eval",
+				"custom_id": "eval",
+				"components": [
+					{
+						"type": 4,
+						"custom_id": "code",
+						"label": "Code",
+						"style": 2,
+						"placeholder": "Your Python Code goes here.",
+						"required": True
+					}
+				]
+			}
+
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
 		payload = interaction["data"]
@@ -298,7 +297,7 @@ async def interaction_handler(request: Request):
 								"flags": 64
 							}
 						}
-		
+
 		elif payload.get("custom_id") == "CLEAR_ALL":
 			async with aiohttp.ClientSession() as session:
 				for custom_id, _id in constants.get("PING_ROLES").items():
