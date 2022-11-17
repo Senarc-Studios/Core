@@ -97,10 +97,9 @@ class ApplicationSyncManager:
 			while True:
 				document = collection.find_one(
 					{
-						"task_id": packet["task_id"],
-						"status": "completed"
+						"task_id": packet["task_id"]
 					}
 				)
-				if document is not None:
+				if document is not None and document.get("status") != "pending":
 					await collection.delete_one(document)
-					return document.get("data")
+					return document
