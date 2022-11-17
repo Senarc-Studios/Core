@@ -512,7 +512,7 @@ async def interaction_handler(request: Request):
 						return {
 							"type": 4,
 							"data": {
-								"content": f"{eval_code[returncode]} {message}\n\n```py\n{_output}```",
+								"content": f"{message}\n\n```py\n{_output}```",
 								"components": [
 									{
 										"type": 1,
