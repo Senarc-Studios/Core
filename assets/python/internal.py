@@ -95,7 +95,7 @@ class ApplicationSyncManager:
 			collection = mongo["core"]["tasks"]
 			await collection.insert_one(packet)
 			while True:
-				document = collection.find_one(
+				document = await collection.find_one(
 					{
 						"task_id": packet["task_id"]
 					}
