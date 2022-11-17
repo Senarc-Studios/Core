@@ -335,6 +335,7 @@ async def interaction_handler(request: Request):
 					)
 					await session.delete(
 						f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
+						headers = DISCORD_HEADERS
 					)
 
 					return {
@@ -349,6 +350,7 @@ async def interaction_handler(request: Request):
 				async with aiohttp.ClientSession() as session:
 					await session.delete(
 						f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
+						headers = DISCORD_HEADERS
 					)
 
 					return {
