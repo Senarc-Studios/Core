@@ -250,12 +250,17 @@ async def interaction_handler(request: Request):
 				"custom_id": "eval",
 				"components": [
 					{
-						"type": 4,
-						"custom_id": "code",
-						"label": "Code",
-						"style": 2,
-						"placeholder": "Your Python Code goes here.",
-						"required": True
+						"type": 1,
+						"components": [
+							{
+								"type": 4,
+								"custom_id": "code",
+								"label": "Code",
+								"style": 2,
+								"placeholder": "Your Python Code goes here.",
+								"required": True
+							}
+						]
 					}
 				]
 			}
