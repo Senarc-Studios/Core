@@ -321,6 +321,29 @@ async def interaction_handler(request: Request):
 				}
 			}
 
+		elif payload.get("custom_id").startswith("delete_"):
+			args = payload.get("custom_id").split("_")[1:]
+			key = args[0]
+			deletion_token = args[1]
+			async with aiohttp.ClientSession() as session:
+				await session.delete(
+					f"https://api.senarc.online/bin/{key}",
+					headers = {
+						"Authorisation": deletion_token
+					}
+				)
+				await session.delete(
+					f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
+				)
+
+				return {
+					"type": 4,
+					"data":{
+						"content": f"{EMOJIS['SUCCESS']} Deleted pastebin and message.",
+						"flags": 64
+					}
+				}
+
 	elif interaction["type"] == 5:
 		eval_code = {
 			0: EMOJIS["SUCCESS"],
