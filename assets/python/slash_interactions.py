@@ -325,37 +325,46 @@ async def interaction_handler(request: Request):
 			args = payload.get("custom_id").split("_")[1:]
 			key = args[0] if not args[-1] == "message" else None
 			deletion_token = args[1] if not args[-1] == "message" else None
-			if not args[-1] == "message":
-				async with aiohttp.ClientSession() as session:
-					await session.delete(
-						f"https://api.senarc.online/bin/{key}",
-						headers = {
-							"Authorisation": deletion_token
-						}
-					)
-					await session.delete(
-						f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
-						headers = DISCORD_HEADERS
-					)
+			if interaction.get("member").get("user").get("id") == interaction.get("message").get("interaction").get("user").get("id"):	
+				if not args[-1] == "message":
+					async with aiohttp.ClientSession() as session:
+						await session.delete(
+							f"https://api.senarc.online/bin/{key}",
+							headers = {
+								"Authorisation": deletion_token
+							}
+						)
+						await session.delete(
+							f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
+							headers = DISCORD_HEADERS
+						)
 
-					return {
-						"type": 4,
-						"data":{
-							"content": f"{EMOJIS['SUCCESS']} Deleted pastebin and message.",
-							"flags": 64
+						return {
+							"type": 4,
+							"data":{
+								"content": f"{EMOJIS['SUCCESS']} Deleted pastebin and message.",
+								"flags": 64
+							}
 						}
-					}
 
+				else:
+					async with aiohttp.ClientSession() as session:
+						await session.delete(
+							f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
+							headers = DISCORD_HEADERS
+						)
+
+						return {
+							"type": 1
+						}
 			else:
-				async with aiohttp.ClientSession() as session:
-					await session.delete(
-						f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
-						headers = DISCORD_HEADERS
-					)
-
-					return {
-						"type": 1
+				return {
+					"type": 4,
+					"data": {
+						"content": f"{EMOJIS['ERROR']} Only the interaction author can delete this message.",
+						"flags": 64
 					}
+				}
 
 	elif interaction["type"] == 5:
 		eval_code = {
