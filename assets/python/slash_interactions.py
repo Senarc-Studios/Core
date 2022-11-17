@@ -246,23 +246,25 @@ async def interaction_handler(request: Request):
 			print("eval")
 			return {
 				"type": 9,
-				"title": "Eval",
-				"custom_id": "eval",
-				"components": [
-					{
-						"type": 1,
-						"components": [
-							{
-								"type": 4,
-								"custom_id": "code",
-								"label": "Code",
-								"style": 2,
-								"placeholder": "Your Python Code goes here.",
-								"required": True
-							}
-						]
-					}
-				]
+				"data": {
+					"title": "Eval",
+					"custom_id": "eval",
+					"components": [
+						{
+							"type": 1,
+							"components": [
+								{
+									"type": 4,
+									"custom_id": "code",
+									"label": "Code",
+									"style": 2,
+									"placeholder": "Your Python Code goes here.",
+									"required": True
+								}
+							]
+						}
+					]
+				}
 			}
 
 	elif interaction["type"] == 3:
