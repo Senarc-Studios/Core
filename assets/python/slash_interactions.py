@@ -361,7 +361,7 @@ async def interaction_handler(request: Request):
 			return {
 				"type": 4,
 				"data": {
-					"content": f"{EMOJIS['ERROR']} Only the interaction author can delete this message.",
+					"content": f"{EMOJIS['FAIL']} Only the interaction author can delete this message.",
 					"flags": 64
 				}
 			}
