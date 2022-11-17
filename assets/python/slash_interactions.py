@@ -434,7 +434,7 @@ async def interaction_handler(request: Request):
 													},
 													{
 														"type": 2,
-														"emoji": "wastebasket",
+														"emoji": ":wastebasket:",
 														"style": 4,
 														"custom_id": f"delete_{paste.get('key')}_{paste.get('deletion_token')}"
 													}
@@ -504,7 +504,7 @@ async def interaction_handler(request: Request):
 												},
 												{
 													"type": 2,
-													"emoji": "wastebasket",
+													"emoji": ":wastebasket:",
 													"style": 4,
 													"custom_id": f"delete_{paste.get('key')}_{paste.get('deletion_token')}"
 												}
@@ -524,7 +524,7 @@ async def interaction_handler(request: Request):
 										"components": [
 											{
 												"type": 2,
-												"emoji": "wastebasket",
+												"emoji": ":wastebasket:",
 												"style": 4,
 												"custom_id": "delete_message"
 											}
