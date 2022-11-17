@@ -245,13 +245,9 @@ async def interaction_handler(request: Request):
 		elif interaction.get("data").get("name") == "eval":
 			print("eval")
 			return {
-				"id": interaction["id"],
 				"type": 9,
 				"title": "Eval",
 				"custom_id": "eval",
-				"application_id": interaction["application_id"],
-				"token": interaction["token"],
-				"version": 1,
 				"components": [
 					{
 						"type": 4,
