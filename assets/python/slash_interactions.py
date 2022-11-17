@@ -369,8 +369,7 @@ async def interaction_handler(request: Request):
 	elif interaction["type"] == 5:
 		eval_code = {
 			0: EMOJIS["SUCCESS"],
-			1: EMOJIS["FAIL"],
-			2: EMOJIS["WARNING"]
+			1: EMOJIS["WARNING"]
 		}
 		payload = interaction["data"]
 		if payload.get("custom_id") == "eval":
@@ -476,22 +475,18 @@ async def interaction_handler(request: Request):
 
 						if _output.replace("\n", "") == "":
 							_output = "[No output]"
-							returncode = 2
 
 						if returncode == 0:
-							message = "Successfully executed code."
+							message = f"{eval_code[0]} Successfully executed code."
 
-						elif returncode == 1:
-							message = "Code execution failed."
-
-						elif returncode == 2:
-							message = "Code execution was successful, but no output was returned."
+						else:
+							message = f"{eval_code[1]} Code execution returned code `{returncode}`."
 
 						if modified:
 							return {
 								"type": 4,
 								"data": {
-									"content": f"{eval_code[returncode]} {message}\n\n```py\n{_output}```",
+									"content": f"{message}\n\n```py\n{_output}```",
 									"components": [
 										{
 											"type": 1,
