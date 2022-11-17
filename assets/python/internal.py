@@ -67,48 +67,6 @@ class ApplicationSyncManager:
 		constants = internal.Constants("./assets/json/constants.json")
 		constants.fetch("MONGO")
 		self.constants = constants
-		self._send_queue = []
-		self._completed_task_queue = []
-		self.is_running = False
-
-	async def start(self):
-		if not self.is_running:
-			#asyncio.create_task(self._dispatch_fetch_loop())
-			#asyncio.create_task(self._dispatch_send_loop())
-
-			self.is_running = True
-
-		else:
-			raise RuntimeError("ASM is already running.")
-
-	async def _dispatch_fetch_loop(self):
-		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
-		collection = mongo["senarc-core"]["tasks"]
-		while True:
-			if await collection.count_documents(
-				{
-					"status": "pending"
-				}
-			) == 0:
-				continue
-
-			documents = collection.find(
-				{
-					"status": "completed"
-				}
-			)
-			for payload in documents:
-				self._completed_task_queue.append(payload)
-				await collection.delete_one(payload)
-
-	async def _dispatch_send_loop(self):
-		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
-		collection = mongo["senarc-core"]["tasks"]
-		while True:
-			for payload in self._send_queue:
-				await collection.insert_one(payload)
-				self._send_queue.remove(payload)
-			continue
 
 	async def send_action_packet(self, packet: dict):
 		"""
@@ -133,11 +91,16 @@ class ApplicationSyncManager:
 					"status": "pending"
 				}
 			)
-			self._send_queue.append(packet)
+			mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
+			collection = mongo["core"]["tasks"]
+			await collection.insert_one(packet)
 			while True:
-				for payload in self._completed_task_queue:
-					if payload.get("task_id") == task_id:
-						return payload.get("data")
-
-					else:
-						continue
+				document = collection.find_one(
+					{
+						"task_id": packet["task_id"],
+						"status": "completed"
+					}
+				)
+				if document is not None:
+					await collection.delete_one(document)
+					return document.get("data")
