@@ -44,7 +44,7 @@ class ApplicationManagementUnit:
 
 	async def _loop_task_fetch(self):
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
-		collection = mongo["senarc-core"]["tasks"]
+		collection = mongo["core"]["tasks"]
 		while True:
 			if await collection.count_documents(
 				{
