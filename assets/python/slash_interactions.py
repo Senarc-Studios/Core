@@ -329,7 +329,7 @@ async def interaction_handler(request: Request):
 		}
 		payload = interaction["data"]
 		if payload.get("custom_id") == "eval":
-			code = payload.get("components")[0]["value"]
+			code = payload.get("components")[0]["components"][0]["value"]
 			if code == "":
 				return {
 					"type": 4,
