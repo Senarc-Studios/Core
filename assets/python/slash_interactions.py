@@ -357,14 +357,14 @@ async def interaction_handler(request: Request):
 						return {
 							"type": 1
 						}
-			else:
-				return {
-					"type": 4,
-					"data": {
-						"content": f"{EMOJIS['ERROR']} Only the interaction author can delete this message.",
-						"flags": 64
-					}
+
+			return {
+				"type": 4,
+				"data": {
+					"content": f"{EMOJIS['ERROR']} Only the interaction author can delete this message.",
+					"flags": 64
 				}
+			}
 
 	elif interaction["type"] == 5:
 		eval_code = {
