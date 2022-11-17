@@ -362,6 +362,43 @@ async def interaction_handler(request: Request):
 							count += 1
 							_output = _output + f"{(3 - len(str(count)))*'0'}{count} | {line}\n"
 
+						if "```" in _output:
+							async with session.post(
+								"https://api.senarc.online/paste",
+								json = {
+									"title": "Snekbox Eval Output",
+									"content": output,
+									"description": code,
+								}
+							) as paste:
+								paste = await paste.json()
+								full_output = paste.get("url")
+								return {
+									"type": 4,
+									"data": {
+										"content": f"{EMOJIS['FAIL']} Detected attempt to escape code block, code will not be send in discord.",
+										"components": [
+											{
+												"type": 1,
+												"components": [
+													{
+														"type": 2,
+														"label": "View Output",
+														"style": 5,
+														"url": paste.get("url")
+													},
+													{
+														"type": 2,
+														"label": "Delete",
+														"style": 4,
+														"custom_id": f"delete_{paste.get('key')}_{paste.get('deletion_token')}"
+													}
+												]
+											}
+										]
+									}
+								}
+
 						if len(_output.split("\n")) > 20:
 							_output = "\n".join(_output.split("\n")[:19])
 							_output += "\n[...]"
