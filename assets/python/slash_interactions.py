@@ -245,10 +245,13 @@ async def interaction_handler(request: Request):
 		elif interaction.get("data").get("name") == "eval":
 			print("eval")
 			return {
+				"id": interaction["id"],
 				"type": 9,
 				"title": "Eval",
 				"custom_id": "eval",
-				"content": "Opened modal menu for code input.",
+				"application_id": interaction["application_id"],
+				"token": interaction["token"],
+				"version": 1,
 				"components": [
 					{
 						"type": 4,
