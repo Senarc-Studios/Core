@@ -348,13 +348,13 @@ async def interaction_handler(request: Request):
 					async with session.post(
 						"https://snekbox.senarc.online/eval",
 						json = {
-							"input": code,
+							"input": code
 						}
 					) as response:
 						response = await response.json()
 						output = response.get('stdout')
 						returncode = response.get('returncode')
-						output_ = output.split("\n")
+						output_ = output[:-2].split("\n")
 						modified = False
 						count = 0
 						_output = ""
@@ -377,8 +377,8 @@ async def interaction_handler(request: Request):
 								full_output = paste.get("url")
 								modified = True
 
-						elif len(output) > 500 and not modified:
-							_output = _output[:497]
+						elif len(output) > 1500 and not modified:
+							_output = _output[:1497]
 							_output += "..."
 							async with session.post(
 								"https://api.senarc.online/paste",
@@ -400,10 +400,10 @@ async def interaction_handler(request: Request):
 							message = "Successfully executed code."
 
 						elif returncode == 1:
-							message = "Code execution was successful, but no output was returned."
+							message = "Code execution failed."
 
 						elif returncode == 2:
-							message = "Code execution failed."
+							message = "Code execution was successful, but no output was returned."
 
 						if modified:
 							return {
@@ -412,16 +412,21 @@ async def interaction_handler(request: Request):
 									"content": f"{eval_code[returncode]} {message}\n\n```py\n{_output}```",
 									"components": [
 										{
-											"type": 2,
-											"label": "Full Output",
-											"style": 5,
-											"url": full_output
-										},
-										{
-											"type": 2,
-											"label": "Delete",
-											"style": 4,
-											"custom_id": f"delete_{paste.get('key')}_{paste.get('deletion_token')}"
+											"type": 1,
+											"components": [
+												{
+													"type": 2,
+													"label": "Full Output",
+													"style": 5,
+													"url": full_output
+												},
+												{
+													"type": 2,
+													"label": "Delete",
+													"style": 4,
+													"custom_id": f"delete_{paste.get('key')}_{paste.get('deletion_token')}"
+												}
+											]
 										}
 									]
 								}
@@ -430,8 +435,7 @@ async def interaction_handler(request: Request):
 						return {
 							"type": 4,
 							"data": {
-								"content": f"{eval_code[returncode]} {message}\n\n```py\n{_output}```",
-								"flags": 64
+								"content": f"{eval_code[returncode]} {message}\n\n```py\n{_output}```"
 							}
 						}
 
