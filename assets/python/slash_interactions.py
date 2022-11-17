@@ -323,26 +323,37 @@ async def interaction_handler(request: Request):
 
 		elif payload.get("custom_id").startswith("delete_"):
 			args = payload.get("custom_id").split("_")[1:]
-			key = args[0]
-			deletion_token = args[1]
-			async with aiohttp.ClientSession() as session:
-				await session.delete(
-					f"https://api.senarc.online/bin/{key}",
-					headers = {
-						"Authorisation": deletion_token
-					}
-				)
-				await session.delete(
-					f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
-				)
+			key = args[0] if not args[-1] == "message" else None
+			deletion_token = args[1] if not args[-1] == "message" else None
+			if not args[-1] == "message":
+				async with aiohttp.ClientSession() as session:
+					await session.delete(
+						f"https://api.senarc.online/bin/{key}",
+						headers = {
+							"Authorisation": deletion_token
+						}
+					)
+					await session.delete(
+						f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
+					)
 
-				return {
-					"type": 4,
-					"data":{
-						"content": f"{EMOJIS['SUCCESS']} Deleted pastebin and message.",
-						"flags": 64
+					return {
+						"type": 4,
+						"data":{
+							"content": f"{EMOJIS['SUCCESS']} Deleted pastebin and message.",
+							"flags": 64
+						}
 					}
-				}
+
+			else:
+				async with aiohttp.ClientSession() as session:
+					await session.delete(
+						f"{ENDPOINT_URL}/channels/{interaction.get('message').get('channel_id')}/messages/{interaction.get('message').get('id')}",
+					)
+
+					return {
+						"type": 1
+					}
 
 	elif interaction["type"] == 5:
 		eval_code = {
@@ -495,7 +506,20 @@ async def interaction_handler(request: Request):
 						return {
 							"type": 4,
 							"data": {
-								"content": f"{eval_code[returncode]} {message}\n\n```py\n{_output}```"
+								"content": f"{eval_code[returncode]} {message}\n\n```py\n{_output}```",
+								"components": [
+									{
+										"type": 1,
+										"components": [
+											{
+												"type": 2,
+												"label": "Delete",
+												"style": 4,
+												"custom_id": "delete_message"
+											}
+										]
+									}
+								]
 							}
 						}
 
