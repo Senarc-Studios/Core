@@ -420,7 +420,7 @@ async def interaction_handler(request: Request):
 								return {
 									"type": 4,
 									"data": {
-										"content": f"{EMOJIS['WARNING']} Detected attempt to escape code block, code will not be send in discord.",
+										"content": f"{EMOJIS['WARNING']} Detected attempt to escape code block, output will not be sent in discord.",
 										"components": [
 											{
 												"type": 1,
