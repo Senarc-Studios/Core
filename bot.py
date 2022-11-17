@@ -36,11 +36,11 @@ class ApplicationManagementUnit:
 		self.constants = Constants
 
 	async def start(self):
-		await asyncio.create_task(self._loop_task_fetch())
 		try:
 			await self.bot.start(Constants.get("CLIENT_TOKEN"))
 		except Exception as error:
 			print(error)
+		await asyncio.create_task(self._loop_task_fetch())
 
 	async def _loop_task_fetch(self):
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
