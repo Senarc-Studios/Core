@@ -411,6 +411,9 @@ async def interaction_handler(request: Request):
 									"title": "Snekbox Eval Output",
 									"content": output,
 									"description": code,
+									"background_colour": 0x1c1e26,
+									"text_colour": 0xdda487,
+									"embed_colour": 0x90B5F8
 								}
 							) as paste:
 								paste = await paste.json()
