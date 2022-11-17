@@ -338,11 +338,7 @@ async def interaction_handler(request: Request):
 						)
 
 						return {
-							"type": 4,
-							"data":{
-								"content": f"{EMOJIS['SUCCESS']} Deleted pastebin and message.",
-								"flags": 64
-							}
+							"type": 1
 						}
 
 				else:
