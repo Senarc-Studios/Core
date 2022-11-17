@@ -396,7 +396,7 @@ async def interaction_handler(request: Request):
 						response = await response.json()
 						output = response.get('stdout')
 						returncode = response.get('returncode')
-						output_ = output[:-2].split("\n")
+						output_ = output.split("\n")[:-1]
 						modified = False
 						count = 0
 						_output = ""
