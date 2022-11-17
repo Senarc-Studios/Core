@@ -248,6 +248,7 @@ async def interaction_handler(request: Request):
 				"type": 9,
 				"title": "Eval",
 				"custom_id": "eval",
+				"content": "Opened modal menu for code input.",
 				"components": [
 					{
 						"type": 4,
