@@ -340,16 +340,36 @@ async def log_bot_removes(member):
 			)
 
 		else:
-			await collection.delete_one(
+			member_data = await collection.find_one(
 				{
 					"member_id": member.id
 				}
 			)
-			await collection.insert_one(
+			not_in_user = [
+				role
+				for role in member_data["roles"] if role not in [
+						role.id
+						for role in member.roles
+					]
+			]
+			new_roles = [
+				role.id
+				for role in member.roles if role.id not in member_data["roles"]
+			]
+			await collection.update_one(
 				{
-					"member_id": member.id,
-					"roles": {
-						"roles": [role.id for role in member.roles]
+					"member_id": member.id
+				},
+				{
+					"$addToSet": {
+						"roles": {
+							"roles": new_roles
+						}
+					},
+					"$pull": {
+						"roles": {
+							"roles": not_in_user
+						}
 					}
 				}
 			)
