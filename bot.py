@@ -162,14 +162,15 @@ class ApplicationManagementUnit:
 						}
 					)
 
-@bot.listen("on_ready")
-async def startup():
-	Terminal.display("Bot is ready.")
-
 @tasks.loop(seconds = 1)
 async def task_fetch():
 	print("Running task fetch.")
 	ApplicationManagementUnit()._loop_task_fetch()
+
+@bot.listen("on_ready")
+async def startup():
+	Terminal.display("Bot is ready.")
+	task_fetch.start()
 
 @bot.listen("on_member_join")
 async def greet_new_members(member):
