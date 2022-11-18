@@ -51,6 +51,8 @@ class ApplicationManagementUnit:
 			print(error)
 
 	async def _loop_task_fetch(self):
+		self.constants.fetch("CORE_GUILD")
+		print(self.constants.get("CORE_GUILD"))
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
 		collection = mongo["core"]["tasks"]
 		while True:
