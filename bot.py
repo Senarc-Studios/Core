@@ -165,7 +165,7 @@ class ApplicationManagementUnit:
 @tasks.loop(seconds = 1)
 async def task_fetch():
 	print("Running task fetch.")
-	ApplicationManagementUnit()._loop_task_fetch()
+	return ApplicationManagementUnit()._loop_task_fetch()
 
 @bot.listen("on_ready")
 async def startup():
