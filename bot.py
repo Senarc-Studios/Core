@@ -17,7 +17,7 @@ Internal = Internal()
 Constants = Internal.Constants("./assets/json/constants.json")
 fetch_list = (
 	"CLIENT_TOKEN",
-	"CORE_GUILD",
+	"CORE_GUILD_ID",
 	"CHANNELS",
 	"MONGO",
 	"ROLES",
@@ -70,10 +70,11 @@ class ApplicationManagementUnit:
 				print(payload)
 				action_type = payload["action"]
 				if action_type == 101:
-					data = payload["data"]
-					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD")))
-					member = await core_guild.fetch_member(int(data["member_id"]))
-					channel = await self.bot.fetch_channel(int(data["channel_id"]))
+					member_id = int(payload["data"]["member_id"])
+					channel_id = int(payload["data"]["channel_id"])
+					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
+					member = await core_guild.fetch_member(member_id)
+					channel = await self.bot.fetch_channel(channel_id)
 					if channel is None:
 						await collection.update_one(
 							{
@@ -121,9 +122,9 @@ class ApplicationManagementUnit:
 				elif action_type == 102:
 					print(payload)
 					try:
-						member_id = payload["data"]["member_id"]
-						channel_id = payload["data"]["channel_id"]
-						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD")))
+						member_id = int(payload["data"]["member_id"])
+						channel_id = int(payload["data"]["channel_id"])
+						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
 						member = await core_guild.fetch_member(member_id)
 						channel = await self.bot.fetch_channel(channel_id)
 						if channel is None:
