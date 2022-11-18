@@ -22,7 +22,7 @@ async def git_updates(request: Request):
 	for commit_ in commit['commits']:
 		count = count + 1
 
-		if count == 5:
+		if count == 20:
 			commit_string = commit_string + "..."
 			break
 
