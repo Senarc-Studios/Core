@@ -67,7 +67,6 @@ class ApplicationManagementUnit:
 				}
 			)
 			if payload is not None:
-				print(payload)
 				action_type = payload["action"]
 				if action_type == 101:
 					member_id = int(payload["data"]["member_id"])
@@ -120,57 +119,53 @@ class ApplicationManagementUnit:
 						continue
 
 				elif action_type == 102:
-					print(payload)
-					try:
-						member_id = int(payload["data"]["member_id"])
-						channel_id = int(payload["data"]["channel_id"])
-						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
-						member = await core_guild.fetch_member(member_id)
-						channel = await self.bot.fetch_channel(channel_id)
-						if channel is None:
-							await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "failed",
-										"result": {
-											"reason": "Channel not found."
-										}
+					member_id = int(payload["data"]["member_id"])
+					channel_id = int(payload["data"]["channel_id"])
+					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
+					member = await core_guild.fetch_member(member_id)
+					channel = await self.bot.fetch_channel(channel_id)
+					if channel is None:
+						await collection.update_one(
+							{
+								"task_id": payload["task_id"]
+							},
+							{
+								"$set": {
+									"status": "failed",
+									"result": {
+										"reason": "Channel not found."
 									}
 								}
-							)
-							continue
-						if member in channel.members:
-							await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "completed"
+							}
+						)
+						continue
+					if member in channel.members:
+						await collection.update_one(
+							{
+								"task_id": payload["task_id"]
+							},
+							{
+								"$set": {
+									"status": "completed"
+								}
+							}
+						)
+						continue
+					else:
+						await collection.update_one(
+							{
+								"task_id": payload["task_id"]
+							},
+							{
+								"$set": {
+									"status": "failed",
+									"result": {
+										"reason": "User not in voice channel."
 									}
 								}
-							)
-							continue
-						else:
-							await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "failed",
-										"result": {
-											"reason": "User not in voice channel."
-										}
-									}
-								}
-							)
-							continue
-					except Exception as error:
-						print(error)
+							}
+						)
+						continue
 			else:
 				continue
 
