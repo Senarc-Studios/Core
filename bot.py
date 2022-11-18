@@ -121,9 +121,9 @@ class ApplicationManagementUnit:
 					print(payload)
 					try:
 						data = payload["data"]
-						print(data)
+						print(data["member_id"])
 						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD")))
-						member = await core_guild.fetch_member(int(data["member_id"]))
+						member = await core_guild.fetch_member(int(data.get("member_id")))
 						channel = await self.bot.fetch_channel(int(data["channel_id"]))
 						if channel is None:
 							await collection.update_one(
