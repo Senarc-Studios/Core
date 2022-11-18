@@ -218,6 +218,22 @@ async def greet_new_members(member):
 		)
 
 	else:
+		mongo = AsyncIOMotorClient(bot.ApplicationManagementUnit.constants.get("MONGO"))
+		collection = mongo["senarc"]["members"]
+		member_data = await collection.find_one(
+			{
+				"member_id": member.id
+			}
+		)
+
+		if member_data is not None:
+			for role in member_data["roles"]:
+				role = utils.get(
+					member.guild.roles,
+					id = int(role)
+				)
+				await member.add_roles(role)
+
 		embed = Embed(
 			timestamp = member.joined_at,
 			description = f"Welcome to **Senarc**'s Core Guild, we hope you have a nice stay!",
