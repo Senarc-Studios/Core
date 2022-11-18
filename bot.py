@@ -70,7 +70,7 @@ class ApplicationManagementUnit:
 				action_type = payload["action"]
 				if action_type == 101:
 					data = payload["data"]
-					core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
+					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD")))
 					member = await core_guild.fetch_member(int(data["member_id"]))
 					channel = await self.bot.fetch_channel(int(data["channel_id"]))
 					if channel is None:
@@ -119,7 +119,7 @@ class ApplicationManagementUnit:
 
 				elif action_type == 102:
 					data = payload["data"]
-					core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
+					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD")))
 					member = await core_guild.fetch_member(int(data["member_id"]))
 					channel = await self.bot.fetch_channel(int(data["channel_id"]))
 					if channel is None:
