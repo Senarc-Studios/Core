@@ -31,7 +31,7 @@ class Senarc(Bot):
 		super().start(*args, **kwargs)
 
 	async def setup_hook(self) -> None:
-		await asyncio.create_task(self._loop_task_fetch())
+		await asyncio.create_task(ApplicationManagementUnit()._loop_task_fetch())
 
 bot = Bot(
 	command_prefix = "sca!",
