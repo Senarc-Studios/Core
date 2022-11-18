@@ -71,8 +71,8 @@ class ApplicationManagementUnit:
 				if action_type == 101:
 					data = payload["data"]
 					core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
-					member = await core_guild.fetch_member(data["member_id"])
-					channel = await self.bot.fetch_channel(data["channel_id"])
+					member = await core_guild.fetch_member(int(data["member_id"]))
+					channel = await self.bot.fetch_channel(int(data["channel_id"]))
 					if channel is None:
 						await collection.update_one(
 							{
@@ -120,8 +120,8 @@ class ApplicationManagementUnit:
 				elif action_type == 102:
 					data = payload["data"]
 					core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
-					member = await core_guild.fetch_member(data["member_id"])
-					channel = await self.bot.fetch_channel(data["channel_id"])
+					member = await core_guild.fetch_member(int(data["member_id"]))
+					channel = await self.bot.fetch_channel(int(data["channel_id"]))
 					if channel is None:
 						await collection.update_one(
 							{
