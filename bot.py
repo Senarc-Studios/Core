@@ -58,7 +58,7 @@ class ApplicationManagementUnit:
 				{
 					"status": "pending"
 				}
-			) > 0:
+			) == 0:
 				return
 			payload = await collection.find_one(
 				{
