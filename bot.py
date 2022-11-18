@@ -119,52 +119,55 @@ class ApplicationManagementUnit:
 
 				elif action_type == 102:
 					print(payload)
-					data = payload["data"]
-					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD")))
-					member = await core_guild.fetch_member(int(data["member_id"]))
-					channel = await self.bot.fetch_channel(int(data["channel_id"]))
-					if channel is None:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "Channel not found."
+					try:
+						data = payload["data"]
+						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD")))
+						member = await core_guild.fetch_member(int(data["member_id"]))
+						channel = await self.bot.fetch_channel(int(data["channel_id"]))
+						if channel is None:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "failed",
+										"result": {
+											"reason": "Channel not found."
+										}
 									}
 								}
-							}
-						)
-						continue
-					if member in channel.members:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "completed"
-								}
-							}
-						)
-						continue
-					else:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "User not in voice channel."
+							)
+							continue
+						if member in channel.members:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "completed"
 									}
 								}
-							}
-						)
-						continue
+							)
+							continue
+						else:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "failed",
+										"result": {
+											"reason": "User not in voice channel."
+										}
+									}
+								}
+							)
+							continue
+					except Exception as error:
+						print(error)
 			else:
 				continue
 
