@@ -306,6 +306,38 @@ async def log_bot_removes(member):
 		)
 
 	else:
+		mongo = AsyncIOMotorClient(bot.ApplicationManagementUnit.constants.get("MONGO"))
+		collection = mongo["senarc"]["members"]
+
+		if await collection.count_documents(
+			{
+				"member_id": member.id
+			}
+		) == 0:
+			await collection.insert_one(
+				{
+					"member_id": member.id,
+					"roles": {
+						"roles": [role.id for role in member.roles]
+					}
+				}
+			)
+
+		else:
+			await collection.delete_one(
+				{
+					"member_id": member.id
+				}
+			)
+			await collection.insert_one(
+				{
+					"member_id": member.id,
+					"roles": {
+						"roles": [role.id for role in member.roles]
+					}
+				}
+			)
+
 		log_channel = utils.get(
 			member.guild.channels,
 			id = int(Constants.get("CHANNELS").get("MEMBER_LOGS"))
