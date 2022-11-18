@@ -162,7 +162,7 @@ class ApplicationManagementUnit:
 @bot.listen("on_ready")
 async def startup():
 	Terminal.display("Bot is ready.")
-	bot.ApplicationManagementUnit._loop_task_fetch()
+	await bot.ApplicationManagementUnit._loop_task_fetch()
 
 @bot.listen("on_member_join")
 async def greet_new_members(member):
