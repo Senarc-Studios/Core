@@ -168,6 +168,7 @@ async def startup():
 
 @tasks.loop(seconds = 1)
 async def task_fetch():
+	print("Running task fetch.")
 	ApplicationManagementUnit()._loop_task_fetch()
 
 @bot.listen("on_member_join")
