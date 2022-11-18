@@ -121,6 +121,7 @@ class ApplicationManagementUnit:
 					print(payload)
 					try:
 						data = payload["data"]
+						print(data)
 						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD")))
 						member = await core_guild.fetch_member(int(data["member_id"]))
 						channel = await self.bot.fetch_channel(int(data["channel_id"]))
