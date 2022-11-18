@@ -164,6 +164,8 @@ class ApplicationManagementUnit:
 							}
 						)
 						continue
+			else:
+				continue
 
 @bot.listen("on_ready")
 async def startup():
