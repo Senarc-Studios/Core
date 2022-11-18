@@ -17,6 +17,7 @@ Internal = Internal()
 Constants = Internal.Constants("./assets/json/constants.json")
 fetch_list = (
 	"CLIENT_TOKEN",
+	"CORE_GUILD",
 	"CHANNELS",
 	"MONGO",
 	"ROLES",
@@ -51,8 +52,6 @@ class ApplicationManagementUnit:
 			print(error)
 
 	async def _loop_task_fetch(self):
-		self.constants.fetch("CORE_GUILD")
-		print(self.constants.get("CORE_GUILD"))
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
 		collection = mongo["core"]["tasks"]
 		while True:
