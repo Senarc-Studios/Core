@@ -59,7 +59,7 @@ class ApplicationManagementUnit:
 					"status": "pending"
 				}
 			) == 0:
-				return
+				continue
 			payload = await collection.find_one(
 				{
 					"status": "pending"
@@ -87,6 +87,7 @@ class ApplicationManagementUnit:
 								}
 							}
 						)
+						continue
 					try:
 						await member.move_to(channel)
 						await collection.update_one(
@@ -99,6 +100,7 @@ class ApplicationManagementUnit:
 								}
 							}
 						)
+						continue
 					except:
 						await collection.update_one(
 							{
@@ -113,6 +115,7 @@ class ApplicationManagementUnit:
 								}
 							}
 						)
+						continue
 
 				elif action_type == 102:
 					data = payload["data"]
@@ -133,6 +136,7 @@ class ApplicationManagementUnit:
 								}
 							}
 						)
+						continue
 					if member in channel.members:
 						await collection.update_one(
 							{
@@ -144,6 +148,7 @@ class ApplicationManagementUnit:
 								}
 							}
 						)
+						continue
 					else:
 						await collection.update_one(
 							{
@@ -158,6 +163,7 @@ class ApplicationManagementUnit:
 								}
 							}
 						)
+						continue
 
 @bot.listen("on_ready")
 async def startup():
