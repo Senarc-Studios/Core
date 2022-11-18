@@ -9,6 +9,7 @@ from assets.python.internal import Internal
 from cool_utils import Terminal
 from motor.motor_asyncio import AsyncIOMotorClient
 
+from discord.ext import tasks
 from discord import utils, Embed, Intents, AuditLogAction, HTTPException
 from discord.ext.commands import Bot, NoPrivateMessage, CommandNotFound
 
@@ -31,7 +32,8 @@ class Senarc(Bot):
 		super().start(*args, **kwargs)
 
 	async def setup_hook(self) -> None:
-		await asyncio.create_task(ApplicationManagementUnit()._loop_task_fetch())
+		self.ApplicationManagementUnit = ApplicationManagementUnit()
+		await asyncio.create_task(self.ApplicationManagementUnit._loop_task_fetch())
 
 bot = Bot(
 	command_prefix = "sca!",
@@ -55,119 +57,118 @@ class ApplicationManagementUnit:
 	async def _loop_task_fetch(self):
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
 		collection = mongo["core"]["tasks"]
-		while True:
-			if await collection.count_documents(
-				{
-					"status": "pending"
-				}
-			) > 0:
-				continue
-			payload = await collection.find_one(
-				{
-					"status": "pending"
-				}
-			)
-			if payload is not None:
-				print(payload)
-				action_type = payload["action"]
-				if action_type == 101:
-					data = payload["data"]
-					core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
-					member = await core_guild.fetch_member(data["member_id"])
-					channel = await self.bot.fetch_channel(data["channel_id"])
-					if channel is None:
-						await collection.update_one(
-							{
-								"_id": payload["_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "Channel not found."
-									}
+		if await collection.count_documents(
+			{
+				"status": "pending"
+			}
+		) > 0:
+			return
+		payload = await collection.find_one(
+			{
+				"status": "pending"
+			}
+		)
+		if payload is not None:
+			print(payload)
+			action_type = payload["action"]
+			if action_type == 101:
+				data = payload["data"]
+				core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
+				member = await core_guild.fetch_member(data["member_id"])
+				channel = await self.bot.fetch_channel(data["channel_id"])
+				if channel is None:
+					await collection.update_one(
+						{
+							"_id": payload["_id"]
+						},
+						{
+							"$set": {
+								"status": "failed",
+								"result": {
+									"reason": "Channel not found."
 								}
 							}
-						)
-						continue
-					try:
-						await member.move_to(channel)
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "completed"
+						}
+					)
+				try:
+					await member.move_to(channel)
+					await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "completed"
+							}
+						}
+					)
+				except:
+					await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "failed",
+								"result": {
+									"reason": "User not in voice channel."
 								}
 							}
-						)
-					except:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "User not in voice channel."
-									}
-								}
-							}
-						)
-					continue
+						}
+					)
 
-				elif action_type == 102:
-					data = payload["data"]
-					core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
-					member = await core_guild.fetch_member(data["member_id"])
-					channel = await self.bot.fetch_channel(data["channel_id"])
-					if channel is None:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "Channel not found."
-									}
+			elif action_type == 102:
+				data = payload["data"]
+				core_guild = await self.bot.fetch_guild(self.constants.get("CORE_GUILD"))
+				member = await core_guild.fetch_member(data["member_id"])
+				channel = await self.bot.fetch_channel(data["channel_id"])
+				if channel is None:
+					await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "failed",
+								"result": {
+									"reason": "Channel not found."
 								}
 							}
-						)
-						continue
-					if member in channel.members:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "completed"
+						}
+					)
+				if member in channel.members:
+					await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "completed"
+							}
+						}
+					)
+				else:
+					await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "failed",
+								"result": {
+									"reason": "User not in voice channel."
 								}
 							}
-						)
-					else:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "User not in voice channel."
-									}
-								}
-							}
-						)
-					continue
+						}
+					)
 
 @bot.listen("on_ready")
 async def startup():
 	Terminal.display("Bot is ready.")
+
+@tasks.loop(seconds = 1)
+async def task_fetch():
+	ApplicationManagementUnit()._loop_task_fetch()
 
 @bot.listen("on_member_join")
 async def greet_new_members(member):
