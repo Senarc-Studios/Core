@@ -29,7 +29,6 @@ class Senarc(Bot):
 		super().__init__(*args, **kwargs)
 
 	async def start(self, *args, **kwargs):
-		self.ApplicationManagementUnit = ApplicationManagementUnit()
 		super().start(*args, **kwargs)
 
 bot = Bot(
@@ -163,7 +162,7 @@ class ApplicationManagementUnit:
 @bot.listen("on_ready")
 async def startup():
 	Terminal.display("Bot is ready.")
-	bot.loop.create_task(bot.ApplicationManagementUnit._loop_task_fetch())
+	bot.ApplicationManagementUnit._loop_task_fetch()
 
 @bot.listen("on_member_join")
 async def greet_new_members(member):
@@ -394,5 +393,5 @@ async def error_handler(ctx, error):
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 if __name__ == "__main__":
-	ApplicationManagementUnit = ApplicationManagementUnit()
-	asyncio.run(ApplicationManagementUnit.start())
+	bot.ApplicationManagementUnit = ApplicationManagementUnit()
+	asyncio.run(bot.ApplicationManagementUnit.start())
