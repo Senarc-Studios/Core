@@ -76,7 +76,7 @@ class ApplicationManagementUnit:
 					if channel is None:
 						await collection.update_one(
 							{
-								"_id": payload["_id"]
+								"task_id": payload["task_id"]
 							},
 							{
 								"$set": {
@@ -118,6 +118,7 @@ class ApplicationManagementUnit:
 						continue
 
 				elif action_type == 102:
+					print(payload)
 					data = payload["data"]
 					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD")))
 					member = await core_guild.fetch_member(int(data["member_id"]))
