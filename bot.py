@@ -241,6 +241,31 @@ async def greet_new_members(member):
 			embed = embed
 		)
 
+		log_channel = utils.get(
+			member.guild.channels,
+			id = int(Constants.get("CHANNELS").get("MEMBER_LOGS"))
+		)
+
+		embed = Embed(
+			timestamp = int(datetime.datetime.now().timestamp()),
+			description = f"{member.name}#{member.discriminator} (`{member.id}`) has joined the guild.",
+			colour = 0x2f3136
+		)
+
+		embed.set_author(
+			name = f"{member.name} Joined",
+			icon_url = member.display_avatar.url
+		)
+
+		embed.set_footer(
+			text = f"Senarc Core",
+			icon_url = bot.user.display_avatar.url
+		)
+
+		await log_channel.send(
+			embed = embed
+		)
+
 @bot.listen("on_member_remove")
 async def log_bot_removes(member):
 	Terminal.display(f"{member.name} has left the guild.") if not member.bot else Terminal.display(f"{member.name} Bot has been removed from the guild.")
@@ -276,6 +301,32 @@ async def log_bot_removes(member):
 			id = int(Constants.get("ROLES").get("BOT"))
 		)
 		await added_bot.add_roles(role)
+		await log_channel.send(
+			embed = embed
+		)
+
+	else:
+		log_channel = utils.get(
+			member.guild.channels,
+			id = int(Constants.get("CHANNELS").get("MEMBER_LOGS"))
+		)
+
+		embed = Embed(
+			timestamp = int(datetime.datetime.now().timestamp()),
+			description = f"{member.name}#{member.discriminator} (`{member.id}`) has left the guild.",
+			colour = 0x2f3136
+		)
+
+		embed.set_author(
+			name = f"{member.name} Left",
+			icon_url = member.display_avatar.url
+		)
+
+		embed.set_footer(
+			text = f"Senarc Core",
+			icon_url = bot.user.display_avatar.url
+		)
+
 		await log_channel.send(
 			embed = embed
 		)
