@@ -120,6 +120,15 @@ async def interaction_handler(request: Request):
 									]
 								}
 							) as resp:
+								await ApplicationSyncManager.send_action_packet(
+									{
+										"action": 101,
+										"data": {
+											"channel_id": (await resp.json())["id"],
+											"member_id": interaction["member"]["user"]["id"]
+										}
+									}
+								)
 								return {
 									"type": 4,
 									"data": {
