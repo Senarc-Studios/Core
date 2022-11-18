@@ -22,6 +22,17 @@ fetch_list = (
 	"ENVIRONMENT"
 )
 intents = Intents.all()
+
+class Senarc(Bot):
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+	async def start(self, *args, **kwargs):
+		super().start(*args, **kwargs)
+
+	async def setup_hook(self) -> None:
+		await asyncio.create_task(self._loop_task_fetch())
+
 bot = Bot(
 	command_prefix = "sca!",
 	intents = intents
@@ -40,7 +51,6 @@ class ApplicationManagementUnit:
 			await self.bot.start(Constants.get("CLIENT_TOKEN"))
 		except Exception as error:
 			print(error)
-		await asyncio.create_task(self._loop_task_fetch())
 
 	async def _loop_task_fetch(self):
 		mongo = AsyncIOMotorClient(self.constants.get("MONGO"))
