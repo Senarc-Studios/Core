@@ -586,6 +586,40 @@ async def register_call(request: Request):
 			"name": "eval",
 			"type": 1,
 			"description": "Evaluate Python code."
+		},
+		{
+			"name": "token",
+			"description": "Manage your token.",
+			"options": [
+				{
+					"name": "generate",
+					"type": 2,
+					"description": "Generate a new token.",
+					"options": [
+						{
+							"name": "email",
+							"description": "Your email connected to Discord.",
+							"required": True
+						},
+						{
+							"name": "type",
+							"description": "Do you have a Dynamic or Static IP?",
+							"type": 3,
+							"required": True,
+							"choices": [
+								{
+									"name": "Dynamic IP",
+									"value": "dynamic"
+								},
+								{
+									"name": "Static IP",
+									"value": "static"
+								}
+							]
+						}
+					]
+				}
+			]
 		}
 	]
 
