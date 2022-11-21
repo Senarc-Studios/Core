@@ -238,6 +238,40 @@ async def interaction_handler(request: Request):
 						}
 					}
 
+		elif data.get("name") == "token" and data["options"][0]["name"] == "generate":
+			async with aiohttp.ClientSession() as session:
+				async with session.post(
+					f"https://api.senarc.online/admin/token/create",
+					headers = {
+						"Authorisation": constants.get["API_TOKEN"]
+					},
+					json = {
+						"discord": {
+							"id": interaction["member"]["user"]["id"],
+							"username": interaction["member"]["user"]["username"],
+							"discriminator": interaction["member"]["user"]["discriminator"],
+						},
+						"email": data["options"][0]["options"][0]["value"],
+						"ip_type": data["options"][0]["options"][1]["value"],
+					}
+				) as response_:
+					response = await response_.json()
+					if response_["status"] == 400:
+						return {
+							"type": 4,
+							"data": {
+								"content": f"{EMOJIS['FAIL']} You already have a Senarc Token with this Discord or Email.",
+								"flags": 64
+							}
+						}
+					return {
+						"type": 4,
+						"data": {
+							"content": f"{EMOJIS['SUCCESS']} Your token is `{response['token']}` activate it before use, and please keep it safe.",
+							"flags": 64
+						}
+					}
+
 		elif interaction.get("data").get("name") == "eval":
 			return {
 				"type": 9,
