@@ -633,6 +633,7 @@ async def register_call(request: Request):
 						{
 							"name": "email",
 							"description": "Your email connected to Discord.",
+							"type": 3,
 							"required": True
 						},
 						{
