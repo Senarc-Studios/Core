@@ -243,7 +243,7 @@ async def interaction_handler(request: Request):
 				async with session.post(
 					f"https://api.senarc.online/admin/token/create",
 					headers = {
-						"Authorisation": constants.get["API_TOKEN"]
+						"Authorisation": constants.get("API_TOKEN")
 					},
 					json = {
 						"discord": {
