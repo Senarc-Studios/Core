@@ -13,10 +13,17 @@ from assets.python.internal import Internal, ApplicationSyncManager
 
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
-constants.fetch("CLIENT_PUBLIC_KEY")
-constants.fetch("PING_ROLES")
-constants.fetch("EMOJIS")
-constants.fetch("CHANNELS")
+fetch_list = (
+	"CLIENT_PUBLIC_KEY",
+	"API_TOKEN",
+	"PING_ROLES",
+	"CHANNELS",
+	"EMOJIS"
+)
+
+for constant in fetch_list:
+	constants.fetch(constant)
+
 Client = internal.Client(constants)
 ApplicationSyncManager = ApplicationSyncManager()
 
@@ -252,7 +259,7 @@ async def interaction_handler(request: Request):
 							"discriminator": interaction["member"]["user"]["discriminator"],
 						},
 						"email": data["options"][0]["options"][0]["value"],
-						"ip_type": data["options"][0]["options"][1]["value"],
+						"ip_type": data["options"][0]["options"][1]["value"]
 					}
 				) as response_:
 					response = await response_.json()
