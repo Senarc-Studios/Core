@@ -627,13 +627,13 @@ async def register_call(request: Request):
 			"options": [
 				{
 					"name": "generate",
-					"type": 2,
+					"type": 1,
 					"description": "Generate a new token.",
 					"options": [
 						{
 							"name": "email",
 							"description": "Your email connected to Discord.",
-							"type": 1,
+							"type": 3,
 							"required": True
 						},
 						{
