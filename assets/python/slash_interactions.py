@@ -263,6 +263,7 @@ async def interaction_handler(request: Request):
 					}
 				) as response_:
 					response = await response_.json()
+					print(response)
 					if response_.status == 400:
 						return {
 							"type": 4,
