@@ -322,58 +322,6 @@ async def log_bot_removes(member):
 		)
 
 	else:
-		mongo = AsyncIOMotorClient(bot.ApplicationManagementUnit.constants.get("MONGO"))
-		collection = mongo["senarc"]["members"]
-
-		if await collection.count_documents(
-			{
-				"member_id": member.id
-			}
-		) == 0:
-			await collection.insert_one(
-				{
-					"member_id": member.id,
-					"roles": {
-						"roles": [role.id for role in member.roles]
-					}
-				}
-			)
-
-		else:
-			member_data = await collection.find_one(
-				{
-					"member_id": member.id
-				}
-			)
-			not_in_user = [
-				role
-				for role in member_data["roles"] if role not in [
-						role.id
-						for role in member.roles
-					]
-			]
-			new_roles = [
-				role.id
-				for role in member.roles if role.id not in member_data["roles"]
-			]
-			await collection.update_one(
-				{
-					"member_id": member.id
-				},
-				{
-					"$addToSet": {
-						"roles": {
-							"roles": new_roles
-						}
-					},
-					"$pull": {
-						"roles": {
-							"roles": not_in_user
-						}
-					}
-				}
-			)
-
 		log_channel = utils.get(
 			member.guild.channels,
 			id = int(Constants.get("CHANNELS").get("MEMBER_LOGS"))
@@ -413,7 +361,6 @@ async def modmail(message):
 		channel_name = f"{nickname_}-{message.author.discriminator}"
 		guild = utils.get(bot.guilds, id=780278916173791232)
 		if not utils.get(guild.channels, name = channel_name):
-
 			channel = await guild.create_text_channel(
 				name = channel_name,
 				category = category,
@@ -498,6 +445,61 @@ async def modmail(message):
 			embed = embed
 		)
 		await message.add_reaction("<:ModMailSent:1040971440515731456>")
+
+	else:
+		mongo = AsyncIOMotorClient(bot.ApplicationManagementUnit.constants.get("MONGO"))
+		collection = mongo["senarc"]["members"]
+
+		if await collection.count_documents(
+			{
+				"member_id": message.author.id
+			}
+		) == 0:
+			if len(message.author.roles) <= 1:
+				pass
+
+			else:
+				await collection.insert_one(
+					{
+						"member_id": message.author.id,
+						"roles": [role.id for role in message.author.roles]
+					}
+				)
+
+		else:
+			member_data = await collection.find_one(
+				{
+					"member_id": message.author.id
+				}
+			)
+			not_in_user = [
+				role
+				for role in member_data["roles"] if role not in [
+						role.id
+						for role in message.author.roles
+					]
+			]
+			new_roles = [
+				role.id
+				for role in message.author.roles if role.id not in member_data["roles"]
+			]
+			await collection.update_one(
+				{
+					"member_id": message.author.id
+				},
+				{
+					"$addToSet": {
+						"roles": {
+							"roles": new_roles
+						}
+					},
+					"$pull": {
+						"roles": {
+							"roles": not_in_user
+						}
+					}
+				}
+			)
 
 # Source: https://gist.github.com/EvieePy/7822af90858ef65012ea500bcecf1612
 @bot.listen("on_command_error")
