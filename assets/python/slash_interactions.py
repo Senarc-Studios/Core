@@ -283,7 +283,7 @@ async def interaction_handler(request: Request):
 			return {
 				"type": 4,
 				"data": {
-					"content": f"{EMOJIS['MAINTENANCE']} Eval has been disabled due to ongoing maintanence on Senarc Systems.",
+					"content": f"{EMOJIS['MAINTENANCE']} Eval has been disabled due to ongoing maintenance on Senarc Systems.",
 				}
 			}
 			# return {
