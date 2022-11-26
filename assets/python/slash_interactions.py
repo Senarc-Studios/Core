@@ -281,33 +281,37 @@ async def interaction_handler(request: Request):
 
 		elif interaction.get("data").get("name") == "eval":
 			return {
-				"type": 4,
+				"type": 9,
 				"data": {
-					"content": f"{EMOJIS['MAINTENANCE']} Eval has been disabled due to ongoing maintenance on Senarc Systems.",
+					"title": "Eval",
+					"custom_id": "eval",
+					"components": [
+						{
+							"type": 1,
+							"components": [
+								{
+									"type": 4,
+									"custom_id": "code",
+									"label": "Code",
+									"style": 2,
+									"placeholder": "Your Python Code goes here.",
+									"required": True
+								}
+							]
+						}
+					]
 				}
 			}
-			# return {
-			# 	"type": 9,
-			# 	"data": {
-			# 		"title": "Eval",
-			# 		"custom_id": "eval",
-			# 		"components": [
-			# 			{
-			# 				"type": 1,
-			# 				"components": [
-			# 					{
-			# 						"type": 4,
-			# 						"custom_id": "code",
-			# 						"label": "Code",
-			# 						"style": 2,
-			# 						"placeholder": "Your Python Code goes here.",
-			# 						"required": True
-			# 					}
-			# 				]
-			# 			}
-			# 		]
-			# 	}
-			# }
+
+		elif interaction.get("data").get("name") == "maintenance":
+
+			return {
+				"type": 4,
+				"data": {
+					"content": f"{EMOJIS['SUCCESS']} Invite Senarc to your server: https://senarc.online/invite",
+					"flags": 64
+				}
+			}
 
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
@@ -666,6 +670,15 @@ async def register_call(request: Request):
 							]
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "maintenance",
+			"description": "Manage the bot's maintenance.",
+			"options": [
+				{
+					"name": "toggle"
 				}
 			]
 		}
