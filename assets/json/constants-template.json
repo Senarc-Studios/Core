@@ -20,7 +20,8 @@
     "EMOJIS": {
         "SUCCESS": "EMOJI_NAME_AND_ID",
         "FAIL": "EMOJI_NAME_AND_ID",
-        "WARNING": "EMOJI_NAME_AND_ID"
+        "WARNING": "EMOJI_NAME_AND_ID",
+        "MAINTENANCE": "EMOJI_NAME_AND_ID"
     },
     "CHANNELS": {
         "VOICE_CATEGORY": "SNOWFLAKE_ID",
