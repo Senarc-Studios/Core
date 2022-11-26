@@ -281,27 +281,33 @@ async def interaction_handler(request: Request):
 
 		elif interaction.get("data").get("name") == "eval":
 			return {
-				"type": 9,
+				"type": 4,
 				"data": {
-					"title": "Eval",
-					"custom_id": "eval",
-					"components": [
-						{
-							"type": 1,
-							"components": [
-								{
-									"type": 4,
-									"custom_id": "code",
-									"label": "Code",
-									"style": 2,
-									"placeholder": "Your Python Code goes here.",
-									"required": True
-								}
-							]
-						}
-					]
+					"content": f"{EMOJIS['MAINTENANCE']} Eval has been disabled due to ongoing maintanence on Senarc Systems.",
 				}
 			}
+			# return {
+			# 	"type": 9,
+			# 	"data": {
+			# 		"title": "Eval",
+			# 		"custom_id": "eval",
+			# 		"components": [
+			# 			{
+			# 				"type": 1,
+			# 				"components": [
+			# 					{
+			# 						"type": 4,
+			# 						"custom_id": "code",
+			# 						"label": "Code",
+			# 						"style": 2,
+			# 						"placeholder": "Your Python Code goes here.",
+			# 						"required": True
+			# 					}
+			# 				]
+			# 			}
+			# 		]
+			# 	}
+			# }
 
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
