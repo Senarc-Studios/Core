@@ -350,81 +350,84 @@ async def log_bot_removes(member):
 @bot.listen("on_message")
 async def modmail(message):
 	if not message.author.bot and message.guild == None:
-		BAD_STRING = [" ", ">", "<", "+", "=", ";", ":", "[", "]", "*", "'", '"', ",", ".", "{", "}", "|", "(", ")", "$", "#", "@", "!", "^", "%", "&", "`", "~"]
-		guild = await bot.fetch_guild(int(Constants.get("CORE_GUILD_ID")))
-		nickname, category = message.author.name, utils.get(guild.categories, id = int(Constants.get("CHANNELS").get("MODMAIL_CATEGORY")))
-		nickname_ = ""
-		for char in nickname:
-			if char in BAD_STRING:
-				continue
-			else:
-				nickname_ += char
-		channel_name = f"{nickname_}-{message.author.discriminator}"
-		if not utils.get(guild.channels, name = channel_name):
-			channel = await guild.create_text_channel(
-				name = channel_name,
-				category = category,
-				topic = f"{message.author.id}"
-			)
-			embed = Embed(
-				timestamp = int(datetime.datetime.now().timestamp()),
-				description = f"**`{message.author.name}#{message.author.discriminator} ({message.author.id})`** has opened a modmail ticket.\n\n> **First Message:**\n{message.content}",
-				colour = 0x91b6f8
-			)
-			embed.set_author(
-				name = f"Modmail",
-				icon_url = message.author.display_avatar.url
-			)
-			if message.attachments:
-				attachments_string = ""
-				for attachment in message.attachments:
-					embed.set_image(
-						url = message.attachment.url
-					)
-					attachments_string += f"[{attachment.filename}]({attachment.url})\n"
-				embed.add_field(
-					name = f"Attachment",
-					value = f"{attachments_string}"
+		try:
+			BAD_STRING = [" ", ">", "<", "+", "=", ";", ":", "[", "]", "*", "'", '"', ",", ".", "{", "}", "|", "(", ")", "$", "#", "@", "!", "^", "%", "&", "`", "~"]
+			guild = await bot.fetch_guild(int(Constants.get("CORE_GUILD_ID")))
+			nickname, category = message.author.name, utils.get(guild.categories, id = int(Constants.get("CHANNELS").get("MODMAIL_CATEGORY")))
+			nickname_ = ""
+			for char in nickname:
+				if char in BAD_STRING:
+					continue
+				else:
+					nickname_ += char
+			channel_name = f"{nickname_}-{message.author.discriminator}"
+			if not utils.get(guild.channels, name = channel_name):
+				channel = await guild.create_text_channel(
+					name = channel_name,
+					category = category,
+					topic = f"{message.author.id}"
 				)
-			embed.set_footer(
-				text = f"Senarc Core",
-				icon_url = bot.user.display_avatar.url
-			)
-			await channel.send(
-				embed = embed
-			)
-			await message.add_reaction("<:ModMailSent:1040971440515731456>")
+				embed = Embed(
+					timestamp = int(datetime.datetime.now().timestamp()),
+					description = f"**`{message.author.name}#{message.author.discriminator} ({message.author.id})`** has opened a modmail ticket.\n\n> **First Message:**\n{message.content}",
+					colour = 0x91b6f8
+				)
+				embed.set_author(
+					name = f"Modmail",
+					icon_url = message.author.display_avatar.url
+				)
+				if message.attachments:
+					attachments_string = ""
+					for attachment in message.attachments:
+						embed.set_image(
+							url = message.attachment.url
+						)
+						attachments_string += f"[{attachment.filename}]({attachment.url})\n"
+					embed.add_field(
+						name = f"Attachment",
+						value = f"{attachments_string}"
+					)
+				embed.set_footer(
+					text = f"Senarc Core",
+					icon_url = bot.user.display_avatar.url
+				)
+				await channel.send(
+					embed = embed
+				)
+				await message.add_reaction("<:ModMailSent:1040971440515731456>")
 
-		else:
-			channel = utils.get(guild.channels, name = channel_name)
-			embed = Embed(
-				timestamp = int(datetime.datetime.now().timestamp()),
-				description = message.content,
-				colour = 0x91b6f8
-			)
-			embed.set_author(
-				name = f"{message.author.name}#{message.author.discriminator}",
-				icon_url = message.author.display_avatar.url
-			)
-			embed.set_footer(
-				text = f"Senarc Core",
-				icon_url = bot.user.display_avatar.url
-			)
-			if message.attachments:
-				attachments_string = ""
-				for attachment in message.attachments:
-					embed.set_image(
-						url = message.attachment.url
-					)
-					attachments_string += f"[{attachment.filename}]({attachment.url})\n"
-				embed.add_field(
-					name = f"Attachment",
-					value = f"{attachments_string}"
+			else:
+				channel = utils.get(guild.channels, name = channel_name)
+				embed = Embed(
+					timestamp = int(datetime.datetime.now().timestamp()),
+					description = message.content,
+					colour = 0x91b6f8
 				)
-			await channel.send(
-				embed = embed
-			)
-			await message.add_reaction("<:ModMailSent:1040971440515731456>")
+				embed.set_author(
+					name = f"{message.author.name}#{message.author.discriminator}",
+					icon_url = message.author.display_avatar.url
+				)
+				embed.set_footer(
+					text = f"Senarc Core",
+					icon_url = bot.user.display_avatar.url
+				)
+				if message.attachments:
+					attachments_string = ""
+					for attachment in message.attachments:
+						embed.set_image(
+							url = message.attachment.url
+						)
+						attachments_string += f"[{attachment.filename}]({attachment.url})\n"
+					embed.add_field(
+						name = f"Attachment",
+						value = f"{attachments_string}"
+					)
+				await channel.send(
+					embed = embed
+				)
+				await message.add_reaction("<:ModMailSent:1040971440515731456>")
+		except Exception as error:
+			traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 	elif message.channel.category == utils.get(message.guild.category, name = 'MODMAIL'):
 		user = await bot.fetch_user(int(message.channel.topic))
@@ -515,24 +518,21 @@ async def modmail(message):
 # Source: https://gist.github.com/EvieePy/7822af90858ef65012ea500bcecf1612
 @bot.listen("on_command_error")
 async def error_handler(ctx, error):
-        if hasattr(ctx.command, 'on_error'):
-            return
+	ignored = (CommandNotFound)
+	error = getattr(error, 'original', error)
 
-        ignored = (CommandNotFound)
-        error = getattr(error, 'original', error)
+	if isinstance(error, ignored):
+		return
 
-        if isinstance(error, ignored):
-            return
+	elif isinstance(error, NoPrivateMessage):
+		try:
+			await ctx.author.send(f'`{ctx.command}` can not be used in Private Messages.')
+		except HTTPException:
+			pass
 
-        elif isinstance(error, NoPrivateMessage):
-            try:
-                await ctx.author.send(f'`{ctx.command}` can not be used in Private Messages.')
-            except HTTPException:
-                pass
-
-        else:
-            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+	else:
+		print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
+		traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 if __name__ == "__main__":
 	bot.ApplicationManagementUnit = ApplicationManagementUnit()
