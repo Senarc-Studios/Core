@@ -263,7 +263,7 @@ async def greet_new_members(member):
 		)
 
 		embed = Embed(
-			timestamp = datetime.datetime.utcnow().timestamp(),
+			timestamp = datetime.datetime.utcnow(),
 			description = f"{member.name}#{member.discriminator} (`{member.id}`) has joined the guild.",
 			colour = 0x2f3136
 		)
@@ -300,7 +300,7 @@ async def log_bot_removes(member):
 		added_bot = log_entry.target
 
 		embed = Embed(
-			timestamp = datetime.datetime.utcnow().timestamp(),
+			timestamp = datetime.datetime.utcnow(),
 			description = f"<@!{added_bot.id}> Bot has been added to the guild by <@!{author.id}>.",
 			colour = 0x2f3136
 		)
@@ -368,7 +368,7 @@ async def modmail(message):
 					topic = f"{message.author.id}"
 				)
 				embed = Embed(
-					timestamp = datetime.datetime.utcnow().timestamp(),
+					timestamp = datetime.datetime.utcnow(),
 					description = f"**`{message.author.name}#{message.author.discriminator} ({message.author.id})`** has opened a modmail ticket.\n\n> **First Message:**\n{message.content}",
 					colour = 0x91b6f8
 				)
@@ -399,7 +399,7 @@ async def modmail(message):
 			else:
 				channel = utils.get(guild.channels, name = channel_name)
 				embed = Embed(
-					timestamp = datetime.datetime.utcnow().timestamp(),
+					timestamp = datetime.datetime.utcnow(),
 					description = message.content,
 					colour = 0x91b6f8
 				)
@@ -432,7 +432,7 @@ async def modmail(message):
 	elif message.channel.category == utils.get(message.guild.category, name = 'MODMAIL'):
 		user = await bot.fetch_user(int(message.channel.topic))
 		embed = Embed(
-			timestamp = datetime.datetime.utcnow().timestamp(),
+			timestamp = datetime.datetime.utcnow(),
 			description = message.content,
 			colour = 0x91b6f8
 		)
