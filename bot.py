@@ -375,6 +375,17 @@ async def modmail(message):
 				name = f"Modmail",
 				icon_url = message.author.display_avatar.url
 			)
+			if message.attachments:
+				attachments_string = ""
+				for attachment in message.attachments:
+					embed.set_image(
+						url = message.attachment.url
+					)
+					attachments_string += f"[{attachment.filename}]({attachment.url})\n"
+				embed.add_field(
+					name = f"Attachment",
+					value = f"{attachments_string}"
+				)
 			embed.set_footer(
 				text = f"Senarc Core",
 				icon_url = bot.user.display_avatar.url
