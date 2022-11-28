@@ -328,7 +328,7 @@ async def log_bot_removes(member):
 		)
 
 		embed = Embed(
-			timestamp = datetime.datetime.utcnow().timestamp(),
+			timestamp = datetime.datetime.utcnow(),
 			description = f"{member.name}#{member.discriminator} (`{member.id}`) has left the guild.",
 			colour = 0x2f3136
 		)
