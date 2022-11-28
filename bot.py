@@ -434,7 +434,7 @@ async def modmail(message):
 			colour = 0x91b6f8
 		)
 		embed.set_author(
-			name = f"Senarc Core Modmail System",
+			name = f"Modmail System",
 			icon_url = bot.user.display_avatar.url
 		)
 		embed.set_footer(
@@ -467,7 +467,7 @@ async def modmail(message):
 			}
 		) == 0:
 			if len(message.author.roles) <= 1:
-				pass
+				return
 
 			else:
 				await collection.insert_one(
@@ -486,9 +486,9 @@ async def modmail(message):
 			not_in_user = [
 				role
 				for role in member_data["roles"] if role not in [
-						role.id
-						for role in message.author.roles
-					]
+					role.id
+					for role in message.author.roles
+				]
 			]
 			new_roles = [
 				role.id
