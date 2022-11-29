@@ -762,7 +762,7 @@ async def register_call(request: Request):
 								{
 									"name": "Suggestion",
 									"value": "suggestion"
-								}
+								},
 								{
 									"name": "Report/Bug",
 									"value": "report"
