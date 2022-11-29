@@ -341,10 +341,11 @@ async def interaction_handler(request: Request):
 					f"{ENDPOINT_URL}/channels/{CHANNELS['MODMAIL_FORUM']}/threads",
 					headers = DISCORD_HEADERS,
 					json = {
-						"name": f"{interaction['user']['id']}",
+						"name": f"{interaction['user']['username']}#{interaction['user']['discriminator']}",
 						"applied_tags": [OPTION_TO_TAG[interaction.get("data").get("options")[0].get("options")[0].get("value")]],
 						"auto_archive_duration": 1440,
 						"message": {
+							"content": interaction['user']['id'],
 							"embeds": [
 								{
 									"author": {
