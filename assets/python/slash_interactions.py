@@ -344,7 +344,6 @@ async def interaction_handler(request: Request):
 						"name": f"{interaction['user']['username']}#{interaction['user']['discriminator']}",
 						"applied_tags": [OPTION_TO_TAG[interaction.get("data").get("options")[0].get("options")[0].get("value")]],
 						"auto_archive_duration": 1440,
-						"type": 11,
 						"message": {
 							"content": interaction['user']['id'],
 							"embeds": [
