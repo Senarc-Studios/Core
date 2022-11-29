@@ -753,7 +753,7 @@ async def register_call(request: Request):
 							"name": "topic",
 							"description": "Pick the topic you're opening a Modmail about.",
 							"type": 3,
-							"required": True
+							"required": True,
 							"choices": [
 								{
 									"name": "Moderation",
