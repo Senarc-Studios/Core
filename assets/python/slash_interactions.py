@@ -304,8 +304,80 @@ async def interaction_handler(request: Request):
 			}
 
 	elif interaction.get("data").get("name") == "modmail" and interaction.get("data").get("options")[0].get("name") == "create":
+		client = AsyncIOMotorClient(constants.get("MONGO_URL"))
+		collection = client["core"]["blacklists"]
+		if interaction["member"]["user"]["id"] in await collection.find_one({"_id": "modmail"})["users"]:
+			return {
+				"type": 4,
+				"data": {
+					"content": f"{EMOJIS['WARNING']} You are blacklisted from using this command.",
+					"flags": 64
+				}
+			}
+
+		if not interaction.get("guild_id") == None:
+			return {
+				"type": 4,
+				"data": {
+					"content": f"{EMOJIS['WARNING']} This interaction command is DM Only.",
+					"flags": 64
+				}
+			}
+
 		async with aiohttp.ClientSession() as session:
-			pass
+			OPTION_TO_TAG = {
+				"moderation": "1047030629210005587",
+				"suggestion": "1047030788685832243",
+				"report": "1047030857128476694",
+				"questions": "1047031376639164427",
+				"other": "1047031455139758092"
+			}
+			async with session.post(
+				f"{ENDPOINT_URL}/channels/{CHANNELS['MODMAIL_FORUM']}/threads",
+				headers = DISCORD_HEADERS,
+				json = {
+					"name": f"{interaction['member']['user']['username']}#{interaction['member']['user']['discriminator']}",
+					"applied_tags": [interaction.get("data").get("options")[0].get("options")[0].get("value")]
+					"auto_archive_duration": 1440,
+					"type": 11,
+					"message": {
+						"content": f"{interaction['member']['user']['id']}",
+						"embeds": [
+							{
+								"author": {
+									"name": "Modmail",
+									"icon_url": interaction["member"]["user"]["avatar"]
+								},
+								"description": f"**`{message.author.name}#{message.author.discriminator}` (`{message.author.id}`)** has created a modmail.\n\nYou may now start talking and interact with the user.",
+								"footer": {
+									"text": f"Senarc Core",
+									"icon_url": "https://images-ext-2.discordapp.net/external/ww8h71y3iQC3iyNQ_y1Od1kh1AcDQUHIQ7ii3IBr-Xk/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/891952531926843402/e630b5d282b157a1d4b904f63add0d3f.png"
+								},
+								"timestamp": datetime.datetime.utcnow().isoformat()
+							}
+						]
+					},
+				}
+			) as thread:
+				thread = await thread.json()
+				return {
+					"type": 4,
+					"data": {
+						"embeds": [
+							{
+								"author": {
+									"name": "Modmail System",
+									"icon_url": "https://i.ibb.co/LhPgDhS/Cloud.png"
+								},
+								"description": "Your DMs have now been connected to Senarc's Modmail System. Senarc Staff members will get in touch with you shortly.\n\n*Please note that your conversation with us will be recorded for future referance, training purposes, and quality improvements.*",
+								"footer": {
+									"text": "Senarc Core",
+									"icon_url": "https://images-ext-2.discordapp.net/external/ww8h71y3iQC3iyNQ_y1Od1kh1AcDQUHIQ7ii3IBr-Xk/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/891952531926843402/e630b5d282b157a1d4b904f63add0d3f.png"
+								}
+							},
+						],
+					}
+				}
 
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
