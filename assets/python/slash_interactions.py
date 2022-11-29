@@ -305,7 +305,7 @@ async def interaction_handler(request: Request):
 
 	elif interaction.get("data").get("name") == "modmail" and interaction.get("data").get("options")[0].get("name") == "create":
 		async with aiohttp.ClientSession() as session:
-			...
+			pass
 
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")

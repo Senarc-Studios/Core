@@ -28,6 +28,6 @@
         "CREATE_VOICE": "SNOWFLAKE_ID",
         "LOGS": "SNOWFLAKE_ID",
         "MEMBER_LOGS": "SNOWFLAKE_ID",
-        "MODMAIL_CATEGORY": "SNOWFLAKE_ID"
+        "MODMAIL_FORUM": "SNOWFLAKE_ID"
     }
 }
