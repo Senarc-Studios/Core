@@ -350,14 +350,14 @@ async def modmail(message):
 	if not message.author.bot and message.guild == None:
 		try:
 			guild = await bot.fetch_guild(int(Constants.get("CORE_GUILD_ID")))
-			thread_name = str(message.author.id)
+			thread_author_id = str(message.author.id)
 
 			for channel in guild.forums:
 				if channel.id == int(Constants.get("CHANNELS").get("MODMAIL_FORUM")):
 					forum_channel = channel
 
 			for thread in forum_channel.threads:
-				if thread_name == thread.name and (not thread.locked and not thread.archived):
+				if thread_author_id == thread.starter_message.content and (not thread.locked and not thread.archived):
 					thread = thread
 					thread_exists = True
 					break
@@ -370,7 +370,7 @@ async def modmail(message):
 				embed = Embed(
 					timestamp = datetime.datetime.utcnow(),
 					description = message.content,
-					colour = 0x91b6f8
+					colour = 0x303136
 				)
 				embed.set_author(
 					name = f"{message.author.name}#{message.author.discriminator}",
@@ -406,7 +406,7 @@ async def modmail(message):
 				# embed = Embed(
 				# 	timestamp = datetime.datetime.utcnow(),
 				# 	description = f"**`{message.author.name}#{message.author.discriminator} ({message.author.id})`** has opened a modmail ticket.\n\n> **First Message:**\n{message.content}",
-				# 	colour = 0x91b6f8
+				# 	colour = 0x303136
 				# )
 				# embed.set_author(
 				# 	name = f"Modmail",
@@ -442,7 +442,7 @@ async def modmail(message):
 					embed = Embed(
 						timestamp = datetime.datetime.utcnow(),
 						description = message.content,
-						colour = 0x91b6f8
+						colour = 0x303136
 					)
 					embed.set_author(
 						name = f"Modmail System",
