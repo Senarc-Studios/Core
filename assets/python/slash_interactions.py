@@ -311,7 +311,7 @@ async def interaction_handler(request: Request):
 			print(json.dumps(interaction, indent=4))
 			client = AsyncIOMotorClient(constants.get("MONGO_URL"))
 			collection = client["core"]["blacklists"]
-			if interaction["user"]["id"] in await collection.find_one({"_id": "modmail"})["users"]:
+			if interaction["user"]["id"] in (await collection.find_one({"_id": "modmail"}))["users"]:
 				return {
 					"type": 4,
 					"data": {
