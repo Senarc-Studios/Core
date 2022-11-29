@@ -751,10 +751,32 @@ async def register_call(request: Request):
 					"description": "Create a modmail thread. (DM Only)",
 					"options": [
 						{
-							"name": "first message",
-							"description": "The first message of the modmail thread.",
+							"name": "topic",
+							"description": "Pick the topic you're opening a Modmail about.",
 							"type": 3,
 							"required": True
+							"choices": [
+								{
+									"name": "Moderation",
+									"value": "moderation"
+								},
+								{
+									"name": "Suggestion",
+									"value": "suggestion"
+								}
+								{
+									"name": "Report/Bug",
+									"value": "report"
+								},
+								{
+									"name": "Question",
+									"value": "question"
+								},
+								{
+									"name": "Other",
+									"value": "other"
+								}
+							]
 						}
 					]
 				},
