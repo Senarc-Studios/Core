@@ -346,6 +346,7 @@ async def interaction_handler(request: Request):
 						"auto_archive_duration": 1440,
 						"type": 11,
 						"message": {
+							"content": interaction['user']['id'],
 							"embeds": [
 								{
 									"author": {
