@@ -367,39 +367,40 @@ async def modmail(message):
 				if channel_name == channel_.name:
 					channel = channel_
 			if not channel_exists:
-				channel = await guild.create_text_channel(
-					name = channel_name,
-					category = category,
-					topic = f"{message.author.id}"
-				)
-				embed = Embed(
-					timestamp = datetime.datetime.utcnow(),
-					description = f"**`{message.author.name}#{message.author.discriminator} ({message.author.id})`** has opened a modmail ticket.\n\n> **First Message:**\n{message.content}",
-					colour = 0x91b6f8
-				)
-				embed.set_author(
-					name = f"Modmail",
-					icon_url = message.author.display_avatar.url
-				)
-				if message.attachments:
-					attachments_string = ""
-					for attachment in message.attachments:
-						embed.set_image(
-							url = attachment.url
-						)
-						attachments_string += f"[{attachment.filename}]({attachment.url})\n"
-					embed.add_field(
-						name = f"Attachment",
-						value = f"{attachments_string}"
-					)
-				embed.set_footer(
-					text = f"Senarc Core",
-					icon_url = bot.user.display_avatar.url
-				)
-				await channel.send(
-					embed = embed
-				)
-				await message.add_reaction("<:ModMailSent:1040971440515731456>")
+				return
+				# channel = await guild.create_text_channel(
+				# 	name = channel_name,
+				# 	category = category,
+				# 	topic = f"{message.author.id}"
+				# )
+				# embed = Embed(
+				# 	timestamp = datetime.datetime.utcnow(),
+				# 	description = f"**`{message.author.name}#{message.author.discriminator} ({message.author.id})`** has opened a modmail ticket.\n\n> **First Message:**\n{message.content}",
+				# 	colour = 0x91b6f8
+				# )
+				# embed.set_author(
+				# 	name = f"Modmail",
+				# 	icon_url = message.author.display_avatar.url
+				# )
+				# if message.attachments:
+				# 	attachments_string = ""
+				# 	for attachment in message.attachments:
+				# 		embed.set_image(
+				# 			url = attachment.url
+				# 		)
+				# 		attachments_string += f"[{attachment.filename}]({attachment.url})\n"
+				# 	embed.add_field(
+				# 		name = f"Attachment",
+				# 		value = f"{attachments_string}"
+				# 	)
+				# embed.set_footer(
+				# 	text = f"Senarc Core",
+				# 	icon_url = bot.user.display_avatar.url
+				# )
+				# await channel.send(
+				# 	embed = embed
+				# )
+				# await message.add_reaction("<:ModMailSent:1040971440515731456>")
 
 			else:
 				embed = Embed(

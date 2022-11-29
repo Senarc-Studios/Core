@@ -583,7 +583,7 @@ async def interaction_handler(request: Request):
 @Router.get("/register")
 async def register_call(request: Request):
 
-	commands = [
+	guild_commands = [
 		{
 			"name": "voice",
 			"description": "Voice Channel controller.",
@@ -672,13 +672,38 @@ async def register_call(request: Request):
 					]
 				}
 			]
-		},
+		}
+	]
+
+	global_commands = [
 		{
-			"name": "maintenance",
-			"description": "Manage the bot's maintenance.",
+			"name": "modmail",
 			"options": [
 				{
-					"name": "toggle"
+					"name": "create",
+					"type": 1,
+					"description": "Create a modmail thread. (DM Only)",
+					"options": [
+						{
+							"name": "first message",
+							"description": "The first message of the modmail thread.",
+							"type": 3,
+							"required": True
+						}
+					]
+				},
+				{
+					"name": "close",
+					"type": 1,
+					"description": "Close a modmail thread. (DM Only)",
+					"options": [
+						{
+							"name": "reason",
+							"description": "The reason for closing the modmail thread.",
+							"type": 3,
+							"required": False
+						}
+					]
 				}
 			]
 		}
@@ -706,9 +731,17 @@ async def register_call(request: Request):
 						headers = DISCORD_HEADERS
 					)
 
-			for command in commands:
+			for command in guild_commands:
 				async with session.post(
 					f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands",
+					headers = DISCORD_HEADERS,
+					json = command
+				) as response_:
+					print(await response_.json())
+
+			for command in global_commands:
+				async with session.post(
+					f"{ENDPOINT_URL}/applications/{Client.id}/commands",
 					headers = DISCORD_HEADERS,
 					json = command
 				) as response_:
