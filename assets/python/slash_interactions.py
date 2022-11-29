@@ -352,7 +352,7 @@ async def interaction_handler(request: Request):
 										"name": "Modmail",
 										"icon_url": interaction["user"]["avatar"]
 									},
-									"description": f"**`{message.author.name}#{message.author.discriminator}` (`{message.author.id}`)** has created a modmail.\n\nYou may now start talking and interact with the user.",
+									"description": f"**`{interaction['user']['username']}#{interaction['user']['discriminator']}` (`{interaction['user']['id']}`)** has created a modmail.\n\nYou may now start talking and interact with the user.",
 									"footer": {
 										"text": f"Senarc Core",
 										"icon_url": "https://images-ext-2.discordapp.net/external/ww8h71y3iQC3iyNQ_y1Od1kh1AcDQUHIQ7ii3IBr-Xk/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/891952531926843402/e630b5d282b157a1d4b904f63add0d3f.png"
