@@ -5,6 +5,7 @@ import aiohttp
 
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from fastapi import APIRouter
 from fastapi import Request
