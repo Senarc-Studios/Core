@@ -353,7 +353,7 @@ async def modmail(message):
 		try:
 			BAD_STRING = [" ", ">", "<", "+", "=", ";", ":", "[", "]", "*", "'", '"', ",", ".", "{", "}", "|", "(", ")", "$", "#", "@", "!", "^", "%", "&", "`", "~"]
 			guild = await bot.fetch_guild(int(Constants.get("CORE_GUILD_ID")))
-			nickname, category = message.author.name, utils.get(guild.categories, id = int(Constants.get("CHANNELS").get("MODMAIL_CATEGORY")))
+			nickname, category = (message.author.name).lower(), bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_CATEGORY")))
 			nickname_ = ""
 			for char in nickname:
 				if char in BAD_STRING:
@@ -361,7 +361,12 @@ async def modmail(message):
 				else:
 					nickname_ += char
 			channel_name = f"{nickname_}-{message.author.discriminator}"
-			if not utils.get(guild.channels, name = channel_name):
+			all_channels = await guild.fetch_channels()
+			channel_exists = True if channel_name in [channel.name for channel in all_channels] else False
+			for channel_ in all_channels:
+				if channel_name == channel_.name:
+					channel = channel_
+			if not channel_exists:
 				channel = await guild.create_text_channel(
 					name = channel_name,
 					category = category,
@@ -380,7 +385,7 @@ async def modmail(message):
 					attachments_string = ""
 					for attachment in message.attachments:
 						embed.set_image(
-							url = message.attachment.url
+							url = attachment.url
 						)
 						attachments_string += f"[{attachment.filename}]({attachment.url})\n"
 					embed.add_field(
@@ -397,7 +402,6 @@ async def modmail(message):
 				await message.add_reaction("<:ModMailSent:1040971440515731456>")
 
 			else:
-				channel = utils.get(guild.channels, name = channel_name)
 				embed = Embed(
 					timestamp = datetime.datetime.utcnow(),
 					description = message.content,
@@ -415,7 +419,7 @@ async def modmail(message):
 					attachments_string = ""
 					for attachment in message.attachments:
 						embed.set_image(
-							url = message.attachment.url
+							url = attachment.url
 						)
 						attachments_string += f"[{attachment.filename}]({attachment.url})\n"
 					embed.add_field(
@@ -429,36 +433,40 @@ async def modmail(message):
 		except Exception as error:
 			traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
-	elif message.channel.category == utils.get(message.guild.category, name = 'MODMAIL'):
-		user = await bot.fetch_user(int(message.channel.topic))
-		embed = Embed(
-			timestamp = datetime.datetime.utcnow(),
-			description = message.content,
-			colour = 0x91b6f8
-		)
-		embed.set_author(
-			name = f"Modmail System",
-			icon_url = bot.user.display_avatar.url
-		)
-		embed.set_footer(
-			text = f"Senarc Core",
-			icon_url = bot.user.display_avatar.url
-		)
-		if message.attachments:
-			attachments_string = ""
-			for attachment in message.attachments:
-				embed.set_image(
-					url = message.attachment.url
+	elif message.channel.category == bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_CATEGORY"))):
+		try:
+			if not message.author.bot:
+				user = await bot.fetch_user(int(message.channel.topic))
+				embed = Embed(
+					timestamp = datetime.datetime.utcnow(),
+					description = message.content,
+					colour = 0x91b6f8
 				)
-				attachments_string += f"[{attachment.filename}]({attachment.url})\n"
-			embed.add_field(
-				name = f"Attachment",
-				value = f"{attachments_string}"
-			)
-		await user.send(
-			embed = embed
-		)
-		await message.add_reaction("<:ModMailSent:1040971440515731456>")
+				embed.set_author(
+					name = f"Modmail System",
+					icon_url = bot.user.display_avatar.url
+				)
+				embed.set_footer(
+					text = f"Senarc Core",
+					icon_url = bot.user.display_avatar.url
+				)
+				if message.attachments:
+					attachments_string = ""
+					for attachment in message.attachments:
+						embed.set_image(
+							url = attachment.url
+						)
+						attachments_string += f"[{attachment.filename}]({attachment.url})\n"
+					embed.add_field(
+						name = f"Attachment",
+						value = f"{attachments_string}"
+					)
+				await user.send(
+					embed = embed
+				)
+				await message.add_reaction("<:ModMailSent:1040971440515731456>")
+		except Exception as error:
+			traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 	else:
 		mongo = AsyncIOMotorClient(bot.ApplicationManagementUnit.constants.get("MONGO"))
