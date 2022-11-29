@@ -308,17 +308,17 @@ async def interaction_handler(request: Request):
 			}
 
 		elif interaction.get("data").get("name") == "modmail" and interaction.get("data").get("options")[0].get("name") == "create":
-			print(json.dumps(interaction, indent=4))
-			client = AsyncIOMotorClient(constants.get("MONGO_URL"))
-			collection = client["core"]["blacklists"]
-			if interaction["user"]["id"] in (await collection.find_one({"_id": "modmail"}))["users"]:
-				return {
-					"type": 4,
-					"data": {
-						"content": f"{EMOJIS['WARNING']} You are blacklisted from using this command.",
-						"flags": 64
-					}
-				}
+			# print(json.dumps(interaction, indent=4))
+			# client = AsyncIOMotorClient(constants.get("MONGO_URL"))
+			# collection = client["core"]["blacklists"]
+			# if interaction["user"]["id"] in (await collection.find_one({"_id": "modmail"}))["users"]:
+			# 	return {
+			# 		"type": 4,
+			# 		"data": {
+			# 			"content": f"{EMOJIS['WARNING']} You are blacklisted from using this command.",
+			# 			"flags": 64
+			# 		}
+			# 	}
 
 			if not interaction.get("guild_id") == None:
 				return {
