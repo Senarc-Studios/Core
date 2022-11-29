@@ -743,6 +743,7 @@ async def register_call(request: Request):
 	global_commands = [
 		{
 			"name": "modmail",
+			"description": "Modmail Ticket management.",
 			"options": [
 				{
 					"name": "create",
