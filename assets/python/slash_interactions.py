@@ -350,7 +350,7 @@ async def interaction_handler(request: Request):
 								{
 									"author": {
 										"name": "Modmail",
-										"icon_url": interaction["user"]["avatar"]
+										"icon_url": f"https://cdn.discordapp.com/avatars/{interaction['user']['id']}/{interaction['user']['avatar']}.png"
 									},
 									"color": 3158326,
 									"description": f"**`{interaction['user']['username']}#{interaction['user']['discriminator']}` (`{interaction['user']['id']}`)** has created a modmail.\n\nYou may now start talking and interact with the user.",
