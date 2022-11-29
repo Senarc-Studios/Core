@@ -352,6 +352,7 @@ async def interaction_handler(request: Request):
 										"name": "Modmail",
 										"icon_url": interaction["user"]["avatar"]
 									},
+									"color": 3158326,
 									"description": f"**`{interaction['user']['username']}#{interaction['user']['discriminator']}` (`{interaction['user']['id']}`)** has created a modmail.\n\nYou may now start talking and interact with the user.",
 									"footer": {
 										"text": f"Senarc Core",
@@ -373,7 +374,8 @@ async def interaction_handler(request: Request):
 										"name": "Modmail System",
 										"icon_url": "https://i.ibb.co/LhPgDhS/Cloud.png"
 									},
-									"description": "Your DMs have now been connected to Senarc's Modmail System. Senarc Staff members will get in touch with you shortly.\n\n*Please note that your conversation with us will be recorded for future referance, training purposes, and quality improvements.*",
+									"color": 3158326,
+									"description": "Your DMs have now been connected to Senarc's Modmail System.\nSenarc Staff members will get in touch with you shortly.\n\n*Please note that your conversation with us will be recorded for future referance, training purposes, and quality improvements.*",
 									"footer": {
 										"text": "Senarc Core",
 										"icon_url": "https://images-ext-2.discordapp.net/external/ww8h71y3iQC3iyNQ_y1Od1kh1AcDQUHIQ7ii3IBr-Xk/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/891952531926843402/e630b5d282b157a1d4b904f63add0d3f.png"
