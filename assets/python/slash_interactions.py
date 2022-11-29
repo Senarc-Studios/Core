@@ -337,11 +337,10 @@ async def interaction_handler(request: Request):
 				headers = DISCORD_HEADERS,
 				json = {
 					"name": f"{interaction['member']['user']['username']}#{interaction['member']['user']['discriminator']}",
-					"applied_tags": [interaction.get("data").get("options")[0].get("options")[0].get("value")]
+					"applied_tags": [interaction.get("data").get("options")[0].get("options")[0].get("value")],
 					"auto_archive_duration": 1440,
 					"type": 11,
 					"message": {
-						"content": f"{interaction['member']['user']['id']}",
 						"embeds": [
 							{
 								"author": {
