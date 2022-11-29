@@ -380,6 +380,7 @@ async def interaction_handler(request: Request):
 										"text": "Senarc Core",
 										"icon_url": "https://images-ext-2.discordapp.net/external/ww8h71y3iQC3iyNQ_y1Od1kh1AcDQUHIQ7ii3IBr-Xk/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/891952531926843402/e630b5d282b157a1d4b904f63add0d3f.png"
 									}
+									"timestamp": datetime.datetime.utcnow().isoformat()
 								},
 							],
 						}
