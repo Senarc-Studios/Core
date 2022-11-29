@@ -303,15 +303,9 @@ async def interaction_handler(request: Request):
 				}
 			}
 
-		elif interaction.get("data").get("name") == "maintenance":
-
-			return {
-				"type": 4,
-				"data": {
-					"content": f"{EMOJIS['SUCCESS']} Invite Senarc to your server: https://senarc.online/invite",
-					"flags": 64
-				}
-			}
+	elif interaction.get("data").get("name") == "modmail" and interaction.get("data").get("options")[0].get("name") == "create":
+		async with aiohttp.ClientSession() as session:
+			...
 
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
