@@ -352,7 +352,7 @@ async def modmail(message):
 			guild = await bot.fetch_guild(int(Constants.get("CORE_GUILD_ID")))
 			thread_author_id = str(message.author.id)
 
-			for channel in guild.forums:
+			for channel in await guild.get_channels():
 				if channel.id == int(Constants.get("CHANNELS").get("MODMAIL_FORUM")):
 					forum_channel = channel
 
@@ -438,7 +438,7 @@ async def modmail(message):
 		if message.channel.parent_id == int(Constants.get("CHANNELS").get("MODMAIL_FORUM")):
 			try:
 				if not message.author.bot:
-					user = await bot.fetch_user(int(message.channel.name))
+					user = await bot.fetch_user(int(message.channel.starter_message.content))
 					embed = Embed(
 						timestamp = datetime.datetime.utcnow(),
 						description = message.content,
