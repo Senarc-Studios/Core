@@ -310,7 +310,7 @@ async def interaction_handler(request: Request):
 			print(json.dumps(interaction, indent=4))
 			client = AsyncIOMotorClient(constants.get("MONGO_URL"))
 			collection = client["core"]["blacklists"]
-			if interaction["member"]["user"]["id"] in await collection.find_one({"_id": "modmail"})["users"]:
+			if interaction["user"]["id"] in await collection.find_one({"_id": "modmail"})["users"]:
 				return {
 					"type": 4,
 					"data": {
@@ -340,7 +340,7 @@ async def interaction_handler(request: Request):
 					f"{ENDPOINT_URL}/channels/{CHANNELS['MODMAIL_FORUM']}/threads",
 					headers = DISCORD_HEADERS,
 					json = {
-						"name": f"{interaction['member']['user']['username']}#{interaction['member']['user']['discriminator']}",
+						"name": f"{interaction['user']['username']}#{interaction['user']['discriminator']}",
 						"applied_tags": [OPTION_TO_TAG[interaction.get("data").get("options")[0].get("options")[0].get("value")]],
 						"auto_archive_duration": 1440,
 						"type": 11,
@@ -349,7 +349,7 @@ async def interaction_handler(request: Request):
 								{
 									"author": {
 										"name": "Modmail",
-										"icon_url": interaction["member"]["user"]["avatar"]
+										"icon_url": interaction["user"]["avatar"]
 									},
 									"description": f"**`{message.author.name}#{message.author.discriminator}` (`{message.author.id}`)** has created a modmail.\n\nYou may now start talking and interact with the user.",
 									"footer": {
