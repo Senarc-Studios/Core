@@ -352,9 +352,7 @@ async def modmail(message):
 			guild = await bot.fetch_guild(int(Constants.get("CORE_GUILD_ID")))
 			thread_author_id = str(message.author.id)
 
-			for channel in await guild.get_channels():
-				if channel.id == int(Constants.get("CHANNELS").get("MODMAIL_FORUM")):
-					forum_channel = channel
+			forum_channel = await guild.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
 			for thread in forum_channel.threads:
 				if thread_author_id == thread.starter_message.content and (not thread.locked and not thread.archived):
