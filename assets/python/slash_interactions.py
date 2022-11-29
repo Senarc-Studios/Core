@@ -55,6 +55,8 @@ async def interaction_handler(request: Request):
 	except BadSignatureError:
 		return 'invalid request signature', 401
 
+	print(json.dumps(interaction, indent=4))
+
 	if interaction["type"] == 1:
 		return {
 			"type": 1
@@ -304,6 +306,7 @@ async def interaction_handler(request: Request):
 			}
 
 	elif interaction.get("data").get("name") == "modmail" and interaction.get("data").get("options")[0].get("name") == "create":
+		print(json.dumps(interaction, indent=4))
 		client = AsyncIOMotorClient(constants.get("MONGO_URL"))
 		collection = client["core"]["blacklists"]
 		if interaction["member"]["user"]["id"] in await collection.find_one({"_id": "modmail"})["users"]:
