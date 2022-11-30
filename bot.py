@@ -172,7 +172,7 @@ class ApplicationManagementUnit:
 					thread_exists = False
 					for thread in forum_channel.threads:
 						starter_message = await thread.fetch_message(thread.id)
-						if (member_id == starter_message.content) and (not thread.locked and not thread.archived):
+						if (str(member_id) == starter_message.content) and (not thread.locked and not thread.archived):
 							thread_exists = True
 							break
 
