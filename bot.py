@@ -202,6 +202,9 @@ class ApplicationManagementUnit:
 					)
 					continue
 
+				else:
+					continue
+
 			else:
 				continue
 
