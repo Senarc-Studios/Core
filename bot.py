@@ -167,7 +167,7 @@ class ApplicationManagementUnit:
 
 				elif action_type == 103:
 					member_id = payload["data"]["member_id"]
-					forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
+					forum_channel = bot.fetch_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
 					thread_exists = False
 					print(forum_channel)
