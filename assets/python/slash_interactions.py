@@ -320,6 +320,23 @@ async def interaction_handler(request: Request):
 			# 		}
 			# 	}
 
+			if (await ApplicationSyncManager.send_action_packet(
+				{
+					"action": 103,
+					"data": {
+						"channel_id": CHANNELS["CREATE_VOICE"],
+						"member_id": interaction["member"]["user"]["id"]
+					}
+				}
+			))["status"] == "failed":
+				return {
+					"type": 4,
+					"data": {
+						"content": f"{EMOJIS['WARNING']} Your DMs are already connected to the Modmail system.",
+						"flags": 64
+					}
+				}
+
 			if not interaction.get("guild_id") == None:
 				return {
 					"type": 4,
