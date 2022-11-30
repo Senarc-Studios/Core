@@ -349,17 +349,15 @@ async def log_bot_removes(member):
 async def modmail(message):
 	if not message.author.bot and message.guild == None:
 		try:
-			guild = await bot.fetch_guild(int(Constants.get("CORE_GUILD_ID")))
 			thread_author_id = str(message.author.id)
 
-			forum_channel = await guild.fetch_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
+			forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
 			thread_exists = False
-			for thread_ in forum_channel.threads:
-				thread = (await thread_.fetch_message(thread_.id)).content
+			for thread in forum_channel.threads:
+				starter_message = await thread.fetch_message(thread.id)
 				print(thread)
-				if (thread_author_id == thread) and (not thread_.locked and not thread_.archived):
-					thread = await thread_.fetch_message(thread_.id)
+				if (thread_author_id == starter_message.content) and (not thread.locked and not thread.archived):
 					thread_exists = True
 					break
 
