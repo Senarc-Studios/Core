@@ -437,7 +437,7 @@ async def modmail(message):
 			try:
 				if not message.author.bot:
 					channel = await bot.fetch_channel(message.channel.id)
-					user = await bot.fetch_user(int(channel.content))
+					user = await bot.fetch_user(int(channel.starter_message.content))
 					embed = Embed(
 						timestamp = datetime.datetime.utcnow(),
 						description = message.content,
