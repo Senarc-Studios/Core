@@ -356,7 +356,9 @@ async def modmail(message):
 
 			thread_exists = False
 			for thread in forum_channel.threads:
-				if (thread_author_id == (await thread.fetch_message(thread.id)).content) and (not thread.locked and not thread.archived):
+				thread = (await thread.fetch_message(thread.id)).content
+				print(thread)
+				if (thread_author_id == thread) and (not thread.locked and not thread.archived):
 					thread = await thread.fetch_message(thread.id)
 					thread_exists = True
 					break
