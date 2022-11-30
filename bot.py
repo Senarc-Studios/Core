@@ -356,7 +356,7 @@ async def modmail(message):
 
 			for thread in forum_channel.threads:
 				if (thread_author_id == (await thread.fetch_message(thread.id)).content) and (not thread.locked and not thread.archived):
-					thread = thread
+					thread = await thread.fetch_message(thread.id)
 					thread_exists = True
 					break
 
@@ -436,7 +436,7 @@ async def modmail(message):
 		if message.channel.parent_id == int(Constants.get("CHANNELS").get("MODMAIL_FORUM")):
 			try:
 				if not message.author.bot:
-					user = await bot.fetch_user(int(message.channel.starter_message.content))
+					user = await bot.fetch_user(int(message.channel.content))
 					embed = Embed(
 						timestamp = datetime.datetime.utcnow(),
 						description = message.content,
