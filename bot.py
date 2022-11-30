@@ -355,11 +355,11 @@ async def modmail(message):
 			forum_channel = await guild.fetch_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
 			thread_exists = False
-			for thread in forum_channel.threads:
-				thread = (await thread.fetch_message(thread.id)).content
+			for thread_ in forum_channel.threads:
+				thread = (await thread_.fetch_message(thread_.id)).content
 				print(thread)
-				if (thread_author_id == thread) and (not thread.locked and not thread.archived):
-					thread = await thread.fetch_message(thread.id)
+				if (thread_author_id == thread) and (not thread_.locked and not thread_.archived):
+					thread = await thread_.fetch_message(thread_.id)
 					thread_exists = True
 					break
 
