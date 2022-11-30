@@ -170,6 +170,7 @@ class ApplicationManagementUnit:
 					forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
 					thread_exists = False
+					print(forum_channel)
 					for thread in forum_channel.threads:
 						starter_message = await thread.fetch_message(thread.id)
 						print(payload, thread, starter_message)
@@ -199,6 +200,8 @@ class ApplicationManagementUnit:
 							}
 						}
 					)
+					continue
+
 			else:
 				continue
 
