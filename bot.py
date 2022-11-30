@@ -164,6 +164,40 @@ class ApplicationManagementUnit:
 							}
 						)
 						continue
+
+				elif action_type == 103:
+					member_id = payload["data"]["member_id"]
+					forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
+
+					thread_exists = False
+					for thread in forum_channel.threads:
+						starter_message = await thread.fetch_message(thread.id)
+						if (member_id == starter_message.content) and (not thread.locked and not thread.archived):
+							thread_exists = True
+							break
+
+					await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "completed"
+							}
+						}
+					) if thread_exists else await collection.update_one(
+						{
+							"task_id": payload["task_id"]
+						},
+						{
+							"$set": {
+								"status": "failed",
+								"result": {
+									"reason": "Thread not found."
+								}
+							}
+						}
+					)
 			else:
 				continue
 
@@ -356,7 +390,6 @@ async def modmail(message):
 			thread_exists = False
 			for thread in forum_channel.threads:
 				starter_message = await thread.fetch_message(thread.id)
-				print(thread)
 				if (thread_author_id == starter_message.content) and (not thread.locked and not thread.archived):
 					thread_exists = True
 					break
