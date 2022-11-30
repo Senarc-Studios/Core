@@ -167,10 +167,10 @@ class ApplicationManagementUnit:
 
 				elif action_type == 103:
 					member_id = payload["data"]["member_id"]
-					forum_channel = await bot.fetch_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
+					forum_channel = await bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
 					thread_exists = False
-					print(forum_channel)
+					print(forum_channel.threads)
 					for thread in forum_channel.threads:
 						starter_message = await thread.fetch_message(thread.id)
 						print(payload, thread, starter_message)
