@@ -324,8 +324,7 @@ async def interaction_handler(request: Request):
 				{
 					"action": 103,
 					"data": {
-						"channel_id": CHANNELS["CREATE_VOICE"],
-						"member_id": interaction["member"]["user"]["id"]
+						"member_id": interaction["user"]["id"]
 					}
 				}
 			))["status"] == "failed":
