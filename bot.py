@@ -354,15 +354,12 @@ async def modmail(message):
 
 			forum_channel = await guild.fetch_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
+			thread_exists = False
 			for thread in forum_channel.threads:
 				if (thread_author_id == (await thread.fetch_message(thread.id)).content) and (not thread.locked and not thread.archived):
 					thread = await thread.fetch_message(thread.id)
 					thread_exists = True
 					break
-
-				else:
-					thread_exists = False
-					continue
 
 			if thread_exists:
 				embed = Embed(
