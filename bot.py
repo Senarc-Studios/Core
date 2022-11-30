@@ -436,7 +436,9 @@ async def modmail(message):
 		if message.channel.parent_id == int(Constants.get("CHANNELS").get("MODMAIL_FORUM")):
 			try:
 				if not message.author.bot:
-					starter_message = await bot.fetch_message(message.channel.id)
+					if not message.channel.starter_message:
+						await message.channel.fetch_message(message.channel.id)
+					starter_message = message.channel.starter_message
 					user = await bot.fetch_user(int(starter_message.content))
 					embed = Embed(
 						timestamp = datetime.datetime.utcnow(),
