@@ -65,6 +65,7 @@ class ApplicationManagementUnit:
 				}
 			)
 			if payload is not None:
+				print(payload)
 				action_type = payload["action"]
 				if action_type == 101:
 					member_id = int(payload["data"]["member_id"])
