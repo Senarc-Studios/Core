@@ -170,7 +170,7 @@ class ApplicationManagementUnit:
 					print(payload)
 					try:
 						member_id = payload["data"]["member_id"]
-						forum_channel = await bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
+						forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
 						thread_exists = False
 						print(forum_channel.threads)
