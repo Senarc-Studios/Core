@@ -171,10 +171,8 @@ class ApplicationManagementUnit:
 						forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
 						thread_exists = False
-						print(forum_channel.threads)
 						for thread in forum_channel.threads:
 							starter_message = await thread.fetch_message(thread.id)
-							print(payload, thread, starter_message)
 							if (str(member_id) == starter_message.content) and (not thread.locked and not thread.archived):
 								thread_exists = True
 								break
@@ -203,7 +201,7 @@ class ApplicationManagementUnit:
 									"$set": {
 										"status": "failed",
 										"result": {
-											"reason": "Thread not found."
+											"reason": "Thread already exists."
 										}
 									}
 								}
