@@ -431,7 +431,10 @@ async def modmail(message):
 						)
 						attachments_string += f"[{attachment.filename}]({attachment.url})\n"
 					embed.add_field(
-						name = f"Attachment",
+						name = f"> Attachments",
+						value = f"{attachments_string}"
+					) if len(message.attachments) > 1 else embed.add_field(
+						name = f"> Attachment",
 						value = f"{attachments_string}"
 					)
 				await thread.send(
@@ -506,7 +509,10 @@ async def modmail(message):
 							)
 							attachments_string += f"[{attachment.filename}]({attachment.url})\n"
 						embed.add_field(
-							name = f"Attachment",
+							name = f"> Attachments",
+							value = f"{attachments_string}"
+						) if len(message.attachments) > 1 else embed.add_field(
+							name = f"> Attachment",
 							value = f"{attachments_string}"
 						)
 					await user.send(
