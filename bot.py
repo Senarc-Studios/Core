@@ -165,7 +165,7 @@ class ApplicationManagementUnit:
 						)
 						continue
 
-				elif action_type == 103:
+				elif action_type == 201:
 					try:
 						member_id = payload["data"]["member_id"]
 						forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))

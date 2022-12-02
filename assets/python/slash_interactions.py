@@ -322,7 +322,7 @@ async def interaction_handler(request: Request):
 
 			if (await ApplicationSyncManager.send_action_packet(
 				{
-					"action": 103,
+					"action": 201,
 					"data": {
 						"member_id": interaction["user"]["id"]
 					}
