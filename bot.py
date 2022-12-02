@@ -178,29 +178,36 @@ class ApplicationManagementUnit:
 							thread_exists = True
 							break
 
-					await collection.update_one(
-						{
-							"task_id": payload["task_id"]
-						},
-						{
-							"$set": {
-								"status": "completed"
-							}
-						}
-					) if thread_exists else await collection.update_one(
-						{
-							"task_id": payload["task_id"]
-						},
-						{
-							"$set": {
-								"status": "failed",
-								"result": {
-									"reason": "Thread not found."
+					print(thread_exists)
+
+					if thread_exists:
+						await collection.update_one(
+							{
+								"task_id": payload["task_id"]
+							},
+							{
+								"$set": {
+									"status": "completed"
 								}
 							}
-						}
-					)
-					continue
+						)
+						continue
+
+					else:
+						await collection.update_one(
+							{
+								"task_id": payload["task_id"]
+							},
+							{
+								"$set": {
+									"status": "failed",
+									"result": {
+										"reason": "Thread not found."
+									}
+								}
+							}
+						)
+						continue
 
 				else:
 					continue
