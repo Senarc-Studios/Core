@@ -12,6 +12,7 @@ from fastapi import APIRouter
 from fastapi import Request
 
 from assets.python.internal import Internal, ApplicationSyncManager
+from assets.python.type import Modmail
 
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
@@ -414,11 +415,11 @@ async def interaction_handler(request: Request):
 
 			if interaction.get("guild_id") == None:
 				member_id = interaction['user']['id']
-				interaction_type = 1
+				interaction_type = Modmail.InteractionType.DM
 
 			else:
 				member_id = interaction['channel_id']
-				interaction_type = 2
+				interaction_type = Modmail.InteractionType.THREAD
 
 			if (await ApplicationSyncManager.send_action_packet(
 				{
