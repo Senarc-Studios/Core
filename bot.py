@@ -65,7 +65,6 @@ class ApplicationManagementUnit:
 				}
 			)
 			if payload is not None:
-				print(payload)
 				action_type = payload["action"]
 				if action_type == 101:
 					member_id = int(payload["data"]["member_id"])
@@ -167,7 +166,6 @@ class ApplicationManagementUnit:
 						continue
 
 				elif action_type == 103:
-					print(payload)
 					try:
 						member_id = payload["data"]["member_id"]
 						forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
