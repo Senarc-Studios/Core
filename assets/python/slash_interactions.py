@@ -320,6 +320,15 @@ async def interaction_handler(request: Request):
 			# 		}
 			# 	}
 
+			if not interaction.get("guild_id") == None:
+				return {
+					"type": 4,
+					"data": {
+						"content": f"{EMOJIS['WARNING']} This interaction command is DM Only.",
+						"flags": 64
+					}
+				}
+
 			if (await ApplicationSyncManager.send_action_packet(
 				{
 					"action": 103,
@@ -332,15 +341,6 @@ async def interaction_handler(request: Request):
 					"type": 4,
 					"data": {
 						"content": f"{EMOJIS['WARNING']} Your DMs are already connected to the Modmail system.",
-						"flags": 64
-					}
-				}
-
-			if not interaction.get("guild_id") == None:
-				return {
-					"type": 4,
-					"data": {
-						"content": f"{EMOJIS['WARNING']} This interaction command is DM Only.",
 						"flags": 64
 					}
 				}
