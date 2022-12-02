@@ -167,48 +167,52 @@ class ApplicationManagementUnit:
 						continue
 
 				elif action_type == 103:
-					member_id = payload["data"]["member_id"]
-					forum_channel = await bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
+					print(payload)
+					try:
+						member_id = payload["data"]["member_id"]
+						forum_channel = await bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
-					thread_exists = False
-					print(forum_channel.threads)
-					for thread in forum_channel.threads:
-						starter_message = await thread.fetch_message(thread.id)
-						print(payload, thread, starter_message)
-						if (str(member_id) == starter_message.content) and (not thread.locked and not thread.archived):
-							thread_exists = True
-							break
+						thread_exists = False
+						print(forum_channel.threads)
+						for thread in forum_channel.threads:
+							starter_message = await thread.fetch_message(thread.id)
+							print(payload, thread, starter_message)
+							if (str(member_id) == starter_message.content) and (not thread.locked and not thread.archived):
+								thread_exists = True
+								break
 
-					print(thread_exists)
+						print(thread_exists)
 
-					if thread_exists:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "completed"
-								}
-							}
-						)
-						continue
-
-					else:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "Thread not found."
+						if thread_exists:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "completed"
 									}
 								}
-							}
-						)
-						continue
+							)
+							continue
+
+						else:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "failed",
+										"result": {
+											"reason": "Thread not found."
+										}
+									}
+								}
+							)
+							continue
+					except Exception as e:
+						print(e)
 
 				else:
 					continue
