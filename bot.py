@@ -453,12 +453,12 @@ async def modmail(message):
 							image_embeds.append(image_embed)
 
 				if len(image_embeds) > 0:
-					await user.send(
+					await thread.send(
 						embeds = image_embeds
 					)
 
 				else:
-					await user.send(
+					await thread.send(
 						embed = embed
 					)
 				await message.add_reaction("<:ModMailSent:1040971440515731456>")
