@@ -458,55 +458,35 @@ async def modmail(message):
 					user = await bot.fetch_user(int(starter_message.content))
 					embed = Embed(
 						timestamp = datetime.datetime.utcnow(),
+						description = message.content,
 						colour = 0x303136
 					)
 					embed.set_author(
 						name = f"Modmail System",
 						icon_url = bot.user.display_avatar.url
 					)
-					embed.add_field(
-						name = f"> Message",
-						value = f"{message.content}"
-					)
 					embed.set_footer(
 						text = f"Senarc Core",
 						icon_url = bot.user.display_avatar.url
 					)
-					image_embeds = [embed]
 					if message.attachments:
-						if not len(message.attachments) > 1:
-							embed.add_field(
-								name = f"> Attachment",
-								value = f"[{message.attachments[0].filename}]({message.attachments[0].url})"
-							)
+						attachments_string = ""
+						for attachment in message.attachments:
 							embed.set_image(
-								url = message.attachments[0].url
+								url = attachment.url
 							)
-
-						else:
-							for attachment in message.attachments:
-								image_embed = Embed(
-									timestamp = datetime.datetime.utcnow(),
-									colour = 0x303136
-								)
-								image_embed.set_author(
-									name = f"{attachment.filename}",
-									url = attachment.url
-								)
-								image_embed.set_image(
-									url = attachment.url
-								)
-								image_embeds.append(image_embed)
-
-					if len(image_embeds) > 0:
-						await user.send(
-							embeds = image_embeds
+							attachments_string += f"[{attachment.filename}]({attachment.url})\n"
+						embed.add_field(
+							name = f"> Attachments",
+							value = f"{attachments_string}"
+						) if len(message.attachments) > 1 else embed.add_field(
+							name = f"> Attachment",
+							value = f"{attachments_string}"
 						)
 					await user.send(
 						embed = embed
 					)
 					await message.add_reaction("<:ModMailSent:1040971440515731456>")
-
 			except Exception as error:
 				traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
