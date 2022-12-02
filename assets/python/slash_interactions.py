@@ -402,6 +402,52 @@ async def interaction_handler(request: Request):
 						}
 					}
 
+		elif interaction.get("data").get("name") == "modmail" and interaction.get("data").get("options")[0].get("name") == "close":
+			if not interaction.get("guild_id") == None and not interaction.get("channel_id") == CHANNELS['MODMAIL_FORUM']:
+				return {
+					"type": 4,
+					"data": {
+						"content": f"{EMOJIS['WARNING']} This interaction command is DM Only.",
+						"flags": 64
+					}
+				}
+
+			if interaction.get("guild_id") == None:
+				member_id = interaction['user']['id']
+				interaction_type = 1
+
+			else:
+				member_id = interaction['channel_id']
+				interaction_type = 2
+
+			if (await ApplicationSyncManager.send_action_packet(
+				{
+					"action": 202,
+					"data": {
+						"type": interaction_type,
+						"id": member_id
+					}
+				}
+			))["status"] == "completed":
+				return {
+					"type": 4,
+					"data": {
+						{
+							"author": {
+								"name": "Modmail System",
+								"icon_url": "https://i.ibb.co/LhPgDhS/Cloud.png"
+							},
+							"color": 3158326,
+							"description": "Your DMs have been disconnected from Senarc's Modmail System.\nYour Messages will no longer be linked to any chat or logs.",
+							"footer": {
+								"text": "Senarc Core",
+								"icon_url": "https://images-ext-2.discordapp.net/external/ww8h71y3iQC3iyNQ_y1Od1kh1AcDQUHIQ7ii3IBr-Xk/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/891952531926843402/e630b5d282b157a1d4b904f63add0d3f.png"
+							},
+							"timestamp": datetime.datetime.utcnow().isoformat()
+						},
+					}
+				}
+
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
 		payload = interaction["data"]
