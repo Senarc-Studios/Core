@@ -444,39 +444,7 @@ async def modmail(message):
 
 			else:
 				return
-				# channel = await guild.create_text_channel(
-				# 	name = thread_name,
-				# 	category = category,
-				# 	topic = f"{message.author.id}"
-				# )
-				# embed = Embed(
-				# 	timestamp = datetime.datetime.utcnow(),
-				# 	description = f"**`{message.author.name}#{message.author.discriminator} ({message.author.id})`** has opened a modmail ticket.\n\n> **First Message:**\n{message.content}",
-				# 	colour = 0x303136
-				# )
-				# embed.set_author(
-				# 	name = f"Modmail",
-				# 	icon_url = message.author.display_avatar.url
-				# )
-				# if message.attachments:
-				# 	attachments_string = ""
-				# 	for attachment in message.attachments:
-				# 		embed.set_image(
-				# 			url = attachment.url
-				# 		)
-				# 		attachments_string += f"[{attachment.filename}]({attachment.url})\n"
-				# 	embed.add_field(
-				# 		name = f"Attachment",
-				# 		value = f"{attachments_string}"
-				# 	)
-				# embed.set_footer(
-				# 	text = f"Senarc Core",
-				# 	icon_url = bot.user.display_avatar.url
-				# )
-				# await channel.send(
-				# 	embed = embed
-				# )
-				# await message.add_reaction("<:ModMailSent:1040971440515731456>")
+
 		except Exception as error:
 			traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
