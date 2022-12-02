@@ -478,7 +478,7 @@ async def modmail(message):
 			traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 	elif isinstance(message.channel, Thread):
-		if message.channel.parent_id == int(Constants.get("CHANNELS").get("MODMAIL_FORUM")):
+		if message.channel.parent_id == int(Constants.get("CHANNELS").get("MODMAIL_FORUM")) and not message.content.startswith("!"):
 			try:
 				if not message.author.bot:
 					starter_message = message.channel.starter_message
