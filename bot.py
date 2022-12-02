@@ -412,11 +412,8 @@ async def modmail(message):
 			if thread_exists:
 				embed = Embed(
 					timestamp = datetime.datetime.utcnow(),
+					description = message.content,
 					colour = 0x303136
-				)
-				embed.add_field(
-					name = f"> Message",
-					value = f"{message.content}"
 				)
 				embed.set_author(
 					name = f"{message.author.name}#{message.author.discriminator}",
@@ -479,15 +476,12 @@ async def modmail(message):
 					user = await bot.fetch_user(int(starter_message.content))
 					embed = Embed(
 						timestamp = datetime.datetime.utcnow(),
+						description = message.content,
 						colour = 0x303136
 					)
 					embed.set_author(
 						name = f"Modmail System",
 						icon_url = bot.user.display_avatar.url
-					)
-					embed.add_field(
-						name = f"> Message",
-						value = f"{message.content}"
 					)
 					embed.set_footer(
 						text = f"Senarc Core",
