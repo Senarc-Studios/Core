@@ -183,7 +183,7 @@ class ApplicationManagementUnit:
 
 						print(thread_exists)
 
-						if thread_exists:
+						if not thread_exists:
 							await collection.update_one(
 								{
 									"task_id": payload["task_id"]
