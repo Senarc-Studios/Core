@@ -412,8 +412,11 @@ async def modmail(message):
 			if thread_exists:
 				embed = Embed(
 					timestamp = datetime.datetime.utcnow(),
-					description = message.content,
 					colour = 0x303136
+				)
+				embed.add_field(
+					name = f"> Message",
+					value = f"{message.content}"
 				)
 				embed.set_author(
 					name = f"{message.author.name}#{message.author.discriminator}",
