@@ -12,6 +12,7 @@ class Modmail:
 class ActionPacket(Enum):
 	CALLBACK = 1
 	HANDOFF = 2
+
 class CreateVoice(Enum):
 	MOVE_USER = 101
 	USER_PRESENCE = 102

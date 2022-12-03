@@ -66,121 +66,32 @@ class ApplicationManagementUnit:
 				}
 			)
 			if payload is not None:
+				interaction_type = payload["interaction"]
 				action_type = payload["action"]
-				if action_type == CreateVoice.MOVE_USER:
-					member_id = int(payload["data"]["member_id"])
-					channel_id = int(payload["data"]["channel_id"])
-					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
-					member = await core_guild.fetch_member(member_id)
-					channel = await self.bot.fetch_channel(channel_id)
-					if channel is None:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "Channel not found."
+				if interaction_type is ActionPacket.CALLBACK:
+					if action_type == CreateVoice.MOVE_USER:
+						member_id = int(payload["data"]["member_id"])
+						channel_id = int(payload["data"]["channel_id"])
+						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
+						member = await core_guild.fetch_member(member_id)
+						channel = await self.bot.fetch_channel(channel_id)
+						if channel is None:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "failed",
+										"result": {
+											"reason": "Channel not found."
+										}
 									}
 								}
-							}
-						)
-						continue
-					try:
-						await member.move_to(channel)
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "completed"
-								}
-							}
-						)
-						continue
-					except:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "User not in voice channel."
-									}
-								}
-							}
-						)
-						continue
-
-				elif action_type == CreateVoice.USER_PRESENCE:
-					member_id = int(payload["data"]["member_id"])
-					channel_id = int(payload["data"]["channel_id"])
-					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
-					member = await core_guild.fetch_member(member_id)
-					channel = await self.bot.fetch_channel(channel_id)
-					if channel is None:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "Channel not found."
-									}
-								}
-							}
-						)
-						continue
-					if member in channel.members:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "completed"
-								}
-							}
-						)
-						continue
-					else:
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "User not in voice channel."
-									}
-								}
-							}
-						)
-						continue
-
-				elif action_type == Modmail.Action.CHECK_THREAD_EXISTANCE:
-					try:
-						member_id = payload["data"]["member_id"]
-						forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
-
-						thread_exists = False
-						for thread in forum_channel.threads:
-							starter_message = await thread.fetch_message(thread.id)
-							if (str(member_id) == starter_message.content) and (not thread.locked and not thread.archived):
-								thread_exists = True
-								break
-
-						print(thread_exists)
-
-						if not thread_exists:
+							)
+							continue
+						try:
+							await member.move_to(channel)
 							await collection.update_one(
 								{
 									"task_id": payload["task_id"]
@@ -192,7 +103,55 @@ class ApplicationManagementUnit:
 								}
 							)
 							continue
+						except:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "failed",
+										"result": {
+											"reason": "User not in voice channel."
+										}
+									}
+								}
+							)
+							continue
 
+					elif action_type == CreateVoice.USER_PRESENCE:
+						member_id = int(payload["data"]["member_id"])
+						channel_id = int(payload["data"]["channel_id"])
+						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
+						member = await core_guild.fetch_member(member_id)
+						channel = await self.bot.fetch_channel(channel_id)
+						if channel is None:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "failed",
+										"result": {
+											"reason": "Channel not found."
+										}
+									}
+								}
+							)
+							continue
+						if member in channel.members:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "completed"
+									}
+								}
+							)
+							continue
 						else:
 							await collection.update_one(
 								{
@@ -202,89 +161,132 @@ class ApplicationManagementUnit:
 									"$set": {
 										"status": "failed",
 										"result": {
-											"reason": "Thread already exists."
+											"reason": "User not in voice channel."
 										}
 									}
 								}
 							)
 							continue
-					except Exception as e:
-						print(e)
 
-				elif action_type == Modmail.Action.THREAD_DELETE:
-					try:
-						member_id = payload["data"]["id"]
-						payload_type = payload["data"]["type"]
-						forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
+					elif action_type == Modmail.Action.CHECK_THREAD_EXISTANCE:
+						try:
+							member_id = payload["data"]["member_id"]
+							forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
 
-						if payload_type == Modmail.InteractionType.DM:
+							thread_exists = False
 							for thread in forum_channel.threads:
 								starter_message = await thread.fetch_message(thread.id)
 								if (str(member_id) == starter_message.content) and (not thread.locked and not thread.archived):
-									await thread.edit(archived = True)
-									await collection.update_one(
-										{
-											"task_id": payload["task_id"]
-										},
-										{
-											"$set": {
-												"status": "completed"
+									thread_exists = True
+									break
+
+							print(thread_exists)
+
+							if not thread_exists:
+								await collection.update_one(
+									{
+										"task_id": payload["task_id"]
+									},
+									{
+										"$set": {
+											"status": "completed"
+										}
+									}
+								)
+								continue
+
+							else:
+								await collection.update_one(
+									{
+										"task_id": payload["task_id"]
+									},
+									{
+										"$set": {
+											"status": "failed",
+											"result": {
+												"reason": "Thread already exists."
 											}
 										}
-									)
-									continue
+									}
+								)
+								continue
+						except Exception as e:
+							print(e)
 
-						elif payload_type == Modmail.InteractionType.THREAD:
-							thread = await forum_channel.fetch_thread(payload["data"]["id"])
-							await thread.edit(archived = True)
+					elif action_type == Modmail.Action.THREAD_DELETE:
+						try:
+							member_id = payload["data"]["id"]
+							payload_type = payload["data"]["type"]
+							forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
+
+							if payload_type == Modmail.InteractionType.DM:
+								for thread in forum_channel.threads:
+									starter_message = await thread.fetch_message(thread.id)
+									if (str(member_id) == starter_message.content) and (not thread.locked and not thread.archived):
+										await thread.edit(archived = True)
+										await collection.update_one(
+											{
+												"task_id": payload["task_id"]
+											},
+											{
+												"$set": {
+													"status": "completed"
+												}
+											}
+										)
+										continue
+
+							elif payload_type == Modmail.InteractionType.THREAD:
+								thread = await forum_channel.fetch_thread(payload["data"]["id"])
+								await thread.edit(archived = True)
+								await collection.update_one(
+									{
+										"task_id": payload["task_id"]
+									},
+									{
+										"$set": {
+											"status": "completed"
+										}
+									}
+								)
+								continue
+
 							await collection.update_one(
 								{
 									"task_id": payload["task_id"]
 								},
 								{
 									"$set": {
-										"status": "completed"
+										"status": "failed",
+										"result": {
+											"reason": "Thread not found."
+										}
+									}
+								}
+							)
+							continue
+						except Exception as e:
+							print(e)
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "failed",
+										"result": {
+											"reason": "Thread not found."
+										}
 									}
 								}
 							)
 							continue
 
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "Thread not found."
-									}
-								}
-							}
-						)
-						continue
-					except Exception as e:
-						print(e)
-						await collection.update_one(
-							{
-								"task_id": payload["task_id"]
-							},
-							{
-								"$set": {
-									"status": "failed",
-									"result": {
-										"reason": "Thread not found."
-									}
-								}
-							}
-						)
+					else:
 						continue
 
 				else:
 					continue
-
-			else:
-				continue
 
 @bot.listen("on_ready")
 async def startup():
