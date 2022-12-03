@@ -289,7 +289,7 @@ async def interaction_handler(request: Request):
 						"member_id": interaction["user"]["id"]
 					}
 				}
-			))["status"] == "completed":
+			))["status"] == "failed":
 				return {
 					"type": 4,
 					"data": {

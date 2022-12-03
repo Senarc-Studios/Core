@@ -14,7 +14,5 @@ class ActionPacket(Enum):
 	HANDOFF = 2
 
 class CreateVoice(Enum):
-	MOVE_USER = 101
-	USER_PRESENCE = 102
-	CREATE_CHANNEL = 1001
+	CREATE_CHANNEL = 101
 

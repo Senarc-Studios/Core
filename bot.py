@@ -71,106 +71,7 @@ class ApplicationManagementUnit:
 				interaction_type = payload["interaction"]
 				action_type = payload["action"]
 				if interaction_type is ActionPacket.CALLBACK:
-					if action_type == CreateVoice.MOVE_USER:
-						member_id = int(payload["data"]["member_id"])
-						channel_id = int(payload["data"]["channel_id"])
-						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
-						member = await core_guild.fetch_member(member_id)
-						channel = await self.bot.fetch_channel(channel_id)
-						if channel is None:
-							await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "failed",
-										"result": {
-											"reason": "Channel not found."
-										}
-									}
-								}
-							)
-							continue
-						try:
-							await member.move_to(channel)
-							await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "completed"
-									}
-								}
-							)
-							continue
-						except:
-							await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "failed",
-										"result": {
-											"reason": "User not in voice channel."
-										}
-									}
-								}
-							)
-							continue
-
-					elif action_type == CreateVoice.USER_PRESENCE:
-						member_id = int(payload["data"]["member_id"])
-						channel_id = int(payload["data"]["channel_id"])
-						core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
-						member = await core_guild.fetch_member(member_id)
-						channel = await self.bot.fetch_channel(channel_id)
-						if channel is None:
-							await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "failed",
-										"result": {
-											"reason": "Channel not found."
-										}
-									}
-								}
-							)
-							continue
-						if member in channel.members:
-							await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "completed"
-									}
-								}
-							)
-							continue
-						else:
-							await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "failed",
-										"result": {
-											"reason": "User not in voice channel."
-										}
-									}
-								}
-							)
-							continue
-
-					elif action_type == Modmail.Action.CHECK_THREAD_EXISTANCE:
+					if action_type == Modmail.Action.CHECK_THREAD_EXISTANCE:
 						try:
 							member_id = payload["data"]["member_id"]
 							forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
@@ -184,7 +85,7 @@ class ApplicationManagementUnit:
 
 							print(thread_exists)
 
-							if not thread_exists:
+							if thread_exists:
 								await collection.update_one(
 									{
 										"task_id": payload["task_id"]
