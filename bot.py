@@ -3,13 +3,14 @@ import asyncio
 import datetime
 import traceback
 
-from assets.python.internal import Internal
-
 from cool_utils import Terminal
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from discord import utils, Thread, Embed, Intents, AuditLogAction, HTTPException
 from discord.ext.commands import Bot, NoPrivateMessage, CommandNotFound
+
+from assets.python.internal import Internal
+from assets.python.type import Modmail, CreateVoice
 
 Internal = Internal()
 Constants = Internal.Constants("./assets/json/constants.json")
@@ -66,7 +67,7 @@ class ApplicationManagementUnit:
 			)
 			if payload is not None:
 				action_type = payload["action"]
-				if action_type == 101:
+				if action_type == CreateVoice.MOVE_USER:
 					member_id = int(payload["data"]["member_id"])
 					channel_id = int(payload["data"]["channel_id"])
 					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
@@ -116,7 +117,7 @@ class ApplicationManagementUnit:
 						)
 						continue
 
-				elif action_type == 102:
+				elif action_type == CreateVoice.USER_PRESENCE:
 					member_id = int(payload["data"]["member_id"])
 					channel_id = int(payload["data"]["channel_id"])
 					core_guild = await self.bot.fetch_guild(int(self.constants.get("CORE_GUILD_ID")))
@@ -165,7 +166,7 @@ class ApplicationManagementUnit:
 						)
 						continue
 
-				elif action_type == 201:
+				elif action_type == Modmail.Action.CHECK_THREAD_EXISTANCE:
 					try:
 						member_id = payload["data"]["member_id"]
 						forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
@@ -209,6 +210,75 @@ class ApplicationManagementUnit:
 							continue
 					except Exception as e:
 						print(e)
+
+				elif action_type == Modmail.Action.THREAD_DELETE:
+					try:
+						member_id = payload["data"]["id"]
+						payload_type = payload["data"]["type"]
+						forum_channel = bot.get_channel(int(Constants.get("CHANNELS").get("MODMAIL_FORUM")))
+
+						if payload_type == Modmail.InteractionType.DM:
+							for thread in forum_channel.threads:
+								starter_message = await thread.fetch_message(thread.id)
+								if (str(member_id) == starter_message.content) and (not thread.locked and not thread.archived):
+									await thread.edit(archived = True)
+									await collection.update_one(
+										{
+											"task_id": payload["task_id"]
+										},
+										{
+											"$set": {
+												"status": "completed"
+											}
+										}
+									)
+									continue
+
+						elif payload_type == Modmail.InteractionType.THREAD:
+							thread = await forum_channel.fetch_thread(payload["data"]["id"])
+							await thread.edit(archived = True)
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "completed"
+									}
+								}
+							)
+							continue
+
+						await collection.update_one(
+							{
+								"task_id": payload["task_id"]
+							},
+							{
+								"$set": {
+									"status": "failed",
+									"result": {
+										"reason": "Thread not found."
+									}
+								}
+							}
+						)
+						continue
+					except Exception as e:
+						print(e)
+						await collection.update_one(
+							{
+								"task_id": payload["task_id"]
+							},
+							{
+								"$set": {
+									"status": "failed",
+									"result": {
+										"reason": "Thread not found."
+									}
+								}
+							}
+						)
+						continue
 
 				else:
 					continue

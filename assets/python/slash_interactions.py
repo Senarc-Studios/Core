@@ -12,7 +12,7 @@ from fastapi import APIRouter
 from fastapi import Request
 
 from assets.python.internal import Internal, ApplicationSyncManager
-from assets.python.type import Modmail
+from assets.python.type import Modmail, ActionPacket, CreateVoice
 
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
@@ -104,7 +104,8 @@ async def interaction_handler(request: Request):
 
 						if (await ApplicationSyncManager.send_action_packet(
 							{
-								"action": 102,
+								"interaction": ActionPacket.CALLBACK,
+								"action": CreateVoice.USER_PRESENCE,
 								"data": {
 									"channel_id": CHANNELS["CREATE_VOICE"],
 									"member_id": interaction["member"]["user"]["id"]
@@ -134,7 +135,8 @@ async def interaction_handler(request: Request):
 							) as resp:
 								await ApplicationSyncManager.send_action_packet(
 									{
-										"action": 101,
+										"interaction": ActionPacket.CALLBACK,
+										"action": CreateVoice.MOVE_USER,
 										"data": {
 											"channel_id": (await resp.json())["id"],
 											"member_id": interaction["member"]["user"]["id"]
@@ -323,12 +325,13 @@ async def interaction_handler(request: Request):
 
 			if (await ApplicationSyncManager.send_action_packet(
 				{
-					"action": 201,
+					"interaction": ActionPacket.CALLBACK,
+					"action": Modmail.Action.CHECK_THREAD_EXISTANCE,
 					"data": {
 						"member_id": interaction["user"]["id"]
 					}
 				}
-			))["status"] == "failed":
+			))["status"] == "completed":
 				return {
 					"type": 4,
 					"data": {
@@ -423,7 +426,8 @@ async def interaction_handler(request: Request):
 
 			if (await ApplicationSyncManager.send_action_packet(
 				{
-					"action": 202,
+					"interaction": ActionPacket.CALLBACK,
+					"action": Modmail.Action.THREAD_DELETE,
 					"data": {
 						"type": interaction_type,
 						"id": member_id
