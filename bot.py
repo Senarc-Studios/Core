@@ -83,8 +83,6 @@ class ApplicationManagementUnit:
 									thread_exists = True
 									break
 
-							print(thread_exists)
-
 							if thread_exists:
 								await collection.update_one(
 									{
