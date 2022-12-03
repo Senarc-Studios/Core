@@ -1,4 +1,5 @@
 import sys
+import aiohttp
 import asyncio
 import datetime
 import traceback
@@ -10,7 +11,7 @@ from discord import utils, Thread, Embed, Intents, AuditLogAction, HTTPException
 from discord.ext.commands import Bot, NoPrivateMessage, CommandNotFound
 
 from assets.python.internal import Internal
-from assets.python.type import Modmail, CreateVoice
+from assets.python.type import ActionPacket, Modmail, CreateVoice
 
 Internal = Internal()
 Constants = Internal.Constants("./assets/json/constants.json")
@@ -23,6 +24,7 @@ fetch_list = (
 	"ENVIRONMENT"
 )
 intents = Intents.all()
+ENDPOINT_URL = "https://discord.com/api/v10"
 
 class Senarc(Bot):
 	def __init__(self, *args, **kwargs):
@@ -284,6 +286,97 @@ class ApplicationManagementUnit:
 
 					else:
 						continue
+
+				elif interaction_type == ActionPacket.HANDOFF:
+					action_type = payload["action_type"]
+					if action_type == CreateVoice.CREATE_CHANNEL:
+						try:
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "completed"
+									}
+								}
+							)
+							member_id = payload["data"]["id"]
+							interaction = payload["data"]["interaction"]
+							guild = bot.get_guild(int(Constants.get("CORE_GUILD_ID")))
+							member = await guild.fetch_member(member_id)
+							channel = await bot.fetch_channel(interaction["channel_id"])
+							if member in channel.members:
+								async with aiohttp.ClientSession() as session:
+									async with session.post(
+										f"{ENDPOINT_URL}/guilds/{Constants.get('CORE_GUILD_ID')}/channels",
+										headers={
+											"Authorization": f"BOT {Constants.get('CLIENT_TOKEN')}"
+										},
+										json={
+											"name": f"{interaction['member']['user']['username']}'s VC",
+											"type": 2,
+											"parent_id": Constants.get("CHANNELS")['VOICE_CATEGORY'],
+											"permission_overwrites": [
+												{
+													"id": interaction["member"]["user"]["id"],
+													"type": 1,
+													"allow": 554385280784
+												},
+												{
+													"id": Constants.get('CORE_GUILD_ID'),
+													"type": 0,
+													"deny": 1024
+												}
+											]
+										}
+									) as resp:
+										await session.post(
+											f"{ENDPOINT_URL}/interactions/{interaction['id']}/{interaction['token']}/callback",
+											headers={
+												"Authorization": f"BOT {Constants.get('CLIENT_TOKEN')}"
+											},
+											json = {
+												"type": 4,
+												"data": {
+													"content": f"{Constants.get('EMOJIS')['SUCCESS']} Your Voice Channel has been created! <#{resp['id']}>"
+												}
+											}
+										)
+										channel = await bot.fetch_channel(resp.json()["id"])
+										await member.move_to(channel)
+										continue
+							else:
+								async with aiohttp.ClientSession() as session:
+									await session.post(
+										f"{ENDPOINT_URL}/interactions/{interaction['id']}/{interaction['token']}/callback",
+										headers={
+											"Authorization": f"BOT {Constants.get('CLIENT_TOKEN')}"
+										},
+										json = {
+											"type": 4,
+											"data": {
+												"content": f"{Constants.get('EMOJIS')['FAIL']} You must be in the voice channel to create your voice channel."
+											}
+										}
+									)
+									continue
+						except Exception as e:
+							print(e)
+							await collection.update_one(
+								{
+									"task_id": payload["task_id"]
+								},
+								{
+									"$set": {
+										"status": "failed",
+										"result": {
+											"reason": "Failed to create voice channel."
+										}
+									}
+								}
+							)
+							continue
 
 				else:
 					continue

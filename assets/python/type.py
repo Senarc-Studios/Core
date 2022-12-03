@@ -16,4 +16,5 @@ class ActionPacket(Enum):
 class CreateVoice(Enum):
 	MOVE_USER = 101
 	USER_PRESENCE = 102
+	CREATE_CHANNEL = 1001
 

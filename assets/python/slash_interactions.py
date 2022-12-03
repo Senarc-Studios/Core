@@ -102,62 +102,20 @@ async def interaction_handler(request: Request):
 							else:
 								continue
 
-						if (await ApplicationSyncManager.send_action_packet(
+						await ApplicationSyncManager.send_action_packet(
 							{
-								"interaction": ActionPacket.CALLBACK,
-								"action": CreateVoice.USER_PRESENCE,
+								"interaction": ActionPacket.HANDOFF,
+								"action": CreateVoice.CREATE_CHANNEL,
 								"data": {
 									"channel_id": CHANNELS["CREATE_VOICE"],
-									"member_id": interaction["member"]["user"]["id"]
+									"member_id": interaction["member"]["user"]["id"],
+									"interaction": interaction
 								}
 							}
-						))["status"] == "completed":
-							async with session.post(
-								f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/channels",
-								headers=DISCORD_HEADERS,
-								json={
-									"name": f"{interaction['member']['user']['username']}'s VC",
-									"type": 2,
-									"parent_id": CHANNELS['VOICE_CATEGORY'],
-									"permission_overwrites": [
-										{
-											"id": interaction["member"]["user"]["id"],
-											"type": 1,
-											"allow": 554385280784
-										},
-										{
-											"id": Client.core_guild_id,
-											"type": 0,
-											"deny": 1024
-										}
-									]
-								}
-							) as resp:
-								await ApplicationSyncManager.send_action_packet(
-									{
-										"interaction": ActionPacket.CALLBACK,
-										"action": CreateVoice.MOVE_USER,
-										"data": {
-											"channel_id": (await resp.json())["id"],
-											"member_id": interaction["member"]["user"]["id"]
-										}
-									}
-								)
-								return {
-									"type": 4,
-									"data": {
-										"content": f"{EMOJIS['SUCCESS']} Created a voice channel: <#{(await resp.json())['id']}>",
-										"flags": 64
-									}
-								}
-						else:
-							return {
-								"type": 4,
-								"data": {
-									"content": f"{EMOJIS['FAIL']} You need to join the VC to create yours.",
-									"flags": 64
-								}
-							}
+						)
+						return {
+							"type": 5
+						}
 
 		elif data.get("name") == "voice" and data["options"][0]["name"] == "permit":
 			sub_action = data["options"][0]["options"][0]
