@@ -24,8 +24,8 @@ constants = internal.Constants("./assets/json/constants.json")
 Client = internal.Client(constants)
 
 SERVER_PORT = {
-	"DEVELOPMENT": 88,
-	"PRODUCTION": 80 
+	"DEVELOPMENT": 8080,
+	"PRODUCTION": 8000
 }
 
 app = FastAPI(
@@ -33,8 +33,12 @@ app = FastAPI(
 	redoc_url = None
 )
 
-@app.get("/", response_class=HTMLResponse, include_in_schema=False)
-async def home(request : Request):
+@app.get(
+	"/",
+	response_class = HTMLResponse,
+	include_in_schema = False
+)
+async def home(request: Request):
 	return "This is Senarc Core API."
 
 app.include_router(github_handler.Router)

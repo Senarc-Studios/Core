@@ -79,11 +79,7 @@ class ApplicationSyncManager:
 			}
 		}
 		"""
-		if (
-			str(packet.get("action")).startswith("1") and len(str(packet.get("action"))) >= 3
-		) and (
-			packet.get("data") is not None
-		):
+		if packet.get("data") is not None:
 			task_id = f"{int(datetime.datetime.utcnow().timestamp())}"
 			packet.update(
 				{
