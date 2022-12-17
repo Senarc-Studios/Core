@@ -111,11 +111,20 @@ async def interaction_handler(request: Request):
 									"member_id": interaction["member"]["user"]["id"],
 									"interaction": interaction
 								}
+					print(await ApplicationSyncManager.send_action_packet(
+						{
+							"interaction": ActionPacket.HANDOFF,
+							"action": CreateVoice.CREATE_CHANNEL,
+							"data": {
+								"channel_id": CHANNELS["CREATE_VOICE"],
+								"member_id": interaction["member"]["user"]["id"],
+								"interaction": interaction
 							}
-						)
-						return {
-							"type": 5
 						}
+					))
+					return {
+						"type": 5
+					}
 
 		elif data.get("name") == "voice" and data["options"][0]["name"] == "permit":
 			sub_action = data["options"][0]["options"][0]
