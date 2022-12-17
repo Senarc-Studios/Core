@@ -242,7 +242,7 @@ class ApplicationManagementUnit:
 										}
 									) as resp:
 										await session.post(
-											f"{ENDPOINT_URL}/interactions/{interaction['id']}/{interaction['token']}/callback",
+											f"{ENDPOINT_URL}/interactions/{interaction['data']['id']}/{interaction['token']}/callback",
 											headers={
 												"Authorization": f"BOT {Constants.get('CLIENT_TOKEN')}"
 											},
