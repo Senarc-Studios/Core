@@ -191,11 +191,6 @@ class ApplicationManagementUnit:
 					action_type = payload["action"]
 					if action_type == CreateVoice.CREATE_CHANNEL:
 						try:
-							member_id = payload["data"].get("member_id")
-							interaction = payload["data"].get("interaction")
-							guild = bot.get_guild(int(Constants.get("CORE_GUILD_ID")))
-							member = await guild.fetch_member(member_id)
-							channel = await guild.fetch_channel(interaction["channel_id"])
 							await collection.update_one(
 								{
 									"task_id": payload["task_id"]
@@ -205,16 +200,12 @@ class ApplicationManagementUnit:
 										"status": "completed"
 									}
 								}
-							) if member is not None and channel is not None and interaction.get("token") else await collection.update_one(
-								{
-									"task_id": payload["task_id"]
-								},
-								{
-									"$set": {
-										"status": "failed"
-									}
-								}
 							)
+							member_id = payload["data"].get("member_id")
+							interaction = payload["data"].get("interaction")
+							guild = bot.get_guild(int(Constants.get("CORE_GUILD_ID")))
+							member = await guild.fetch_member(member_id)
+							channel = await guild.fetch_channel(interaction["channel_id"])
 							if member in channel.members:
 								async with aiohttp.ClientSession() as session:
 									async with session.post(
