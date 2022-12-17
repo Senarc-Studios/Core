@@ -188,8 +188,8 @@ class ApplicationManagementUnit:
 						continue
 
 				elif interaction_type == ActionPacket.HANDOFF:
-					action_type = payload["action_type"]
 					print(payload, action_type)
+					action_type = payload["action"]
 					if action_type == CreateVoice.CREATE_CHANNEL:
 						try:
 							member_id = payload["data"]["id"]
