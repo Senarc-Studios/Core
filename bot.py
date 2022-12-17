@@ -68,6 +68,7 @@ class ApplicationManagementUnit:
 				}
 			)
 			if payload is not None:
+				print(payload)
 				interaction_type = payload["interaction"]
 				action_type = payload["action"]
 				if interaction_type is ActionPacket.CALLBACK:
