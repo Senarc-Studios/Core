@@ -239,11 +239,11 @@ class ApplicationManagementUnit:
 											json = {
 												"type": 4,
 												"data": {
-													"content": f"{Constants.get('EMOJIS')['SUCCESS']} Your Voice Channel has been created! <#{resp['id']}>"
+													"content": f"{Constants.get('EMOJIS')['SUCCESS']} Your Voice Channel has been created! <#{await resp.json()['id']}>"
 												}
 											}
 										)
-										channel = await bot.fetch_channel(resp.json()["id"])
+										channel = await bot.fetch_channel(await resp.json()["id"])
 										await member.move_to(channel)
 										continue
 							else:
