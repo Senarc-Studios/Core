@@ -272,7 +272,7 @@ class ApplicationManagementUnit:
 									)
 									continue
 						except Exception as e:
-							print(e)
+							traceback.print_exc(e)
 							await collection.update_one(
 								{
 									"task_id": payload["task_id"]
