@@ -192,7 +192,7 @@ class ApplicationManagementUnit:
 					action_type = payload["action"]
 					if action_type == CreateVoice.CREATE_CHANNEL:
 						try:
-							member_id = payload["data"]["id"]
+							member_id = payload["data"]["member_id"]
 							interaction = payload["data"]["interaction"]
 							guild = bot.get_guild(int(Constants.get("CORE_GUILD_ID")))
 							member = await guild.fetch_member(member_id)
