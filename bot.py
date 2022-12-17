@@ -188,6 +188,7 @@ class ApplicationManagementUnit:
 
 				elif interaction_type == ActionPacket.HANDOFF:
 					action_type = payload["action_type"]
+					print(payload, action_type)
 					if action_type == CreateVoice.CREATE_CHANNEL:
 						try:
 							await collection.update_one(
