@@ -201,11 +201,11 @@ class ApplicationManagementUnit:
 									}
 								}
 							)
-							member_id = payload["data"].get("member_id")
+							member_id = int(payload["data"].get("member_id"))
 							interaction = payload["data"].get("interaction")
 							guild = bot.get_guild(int(Constants.get("CORE_GUILD_ID")))
 							member = await guild.fetch_member(member_id)
-							channel = await guild.fetch_channel(interaction["channel_id"])
+							channel = await guild.fetch_channel(int(interaction["channel_id"]))
 							if member in channel.members:
 								async with aiohttp.ClientSession() as session:
 									async with session.post(
