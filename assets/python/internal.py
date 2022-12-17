@@ -97,6 +97,5 @@ class ApplicationSyncManager:
 					}
 				)
 				if document is not None and document.get("status") != "pending":
-					print(document)
 					await collection.delete_one(document)
 					return document
