@@ -188,15 +188,14 @@ class ApplicationManagementUnit:
 						continue
 
 				elif interaction_type == ActionPacket.HANDOFF:
-					print(payload, action_type)
 					action_type = payload["action"]
 					if action_type == CreateVoice.CREATE_CHANNEL:
 						try:
-							member_id = payload["data"]["member_id"]
-							interaction = payload["data"]["interaction"]
+							member_id = payload["data"].get("member_id")
+							interaction = payload["data"].get("interaction")
 							guild = bot.get_guild(int(Constants.get("CORE_GUILD_ID")))
 							member = await guild.fetch_member(member_id)
-							channel = await bot.fetch_channel(interaction["channel_id"])
+							channel = await guild.fetch_channel(interaction["channel_id"])
 							await collection.update_one(
 								{
 									"task_id": payload["task_id"]
