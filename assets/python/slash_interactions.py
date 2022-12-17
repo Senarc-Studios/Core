@@ -77,40 +77,25 @@ async def interaction_handler(request: Request):
 					}
 				}
 
-			else:
-				async with aiohttp.ClientSession() as session:
-					async with session.get(
-						f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/channels",
-						headers = DISCORD_HEADERS
-					) as guild_channels:
-						guild_channels = await guild_channels.json()
-						for channel in guild_channels:
-							if channel.get("parent_id") == CHANNELS["VOICE_CATEGORY"]:
-								for permissions in channel.get("permission_overwrites"):
-									if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == "554385280784":
-										return {
-											"type": 4,
-											"data": {
-												"content": f"{EMOJIS['FAIL']} You already have a voice channel.",
-												"flags": 64
-											}
+			async with aiohttp.ClientSession() as session:
+				async with session.get(
+					f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/channels",
+					headers = DISCORD_HEADERS
+				) as guild_channels:
+					guild_channels = await guild_channels.json()
+					for channel in guild_channels:
+						if channel.get("parent_id") == CHANNELS["VOICE_CATEGORY"]:
+							for permissions in channel.get("permission_overwrites"):
+								if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == "554385280784":
+									return {
+										"type": 4,
+										"data": {
+											"content": f"{EMOJIS['FAIL']} You already have a voice channel.",
+											"flags": 64
 										}
+									}
+						continue
 
-									else:
-										continue
-
-							else:
-								continue
-
-						await ApplicationSyncManager.send_action_packet(
-							{
-								"interaction": ActionPacket.HANDOFF,
-								"action": CreateVoice.CREATE_CHANNEL,
-								"data": {
-									"channel_id": CHANNELS["CREATE_VOICE"],
-									"member_id": interaction["member"]["user"]["id"],
-									"interaction": interaction
-								}
 					print(await ApplicationSyncManager.send_action_packet(
 						{
 							"interaction": ActionPacket.HANDOFF,
