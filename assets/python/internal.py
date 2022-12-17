@@ -84,7 +84,7 @@ class ApplicationSyncManager:
 		) and (
 			packet.get("data") is not None
 		):
-			task_id = f"{int(datetime.datetime.now().timestamp())}"
+			task_id = f"{int(datetime.datetime.utcnow().timestamp())}"
 			packet.update(
 				{
 					"task_id": task_id,
@@ -101,5 +101,6 @@ class ApplicationSyncManager:
 					}
 				)
 				if document is not None and document.get("status") != "pending":
+					print(document)
 					await collection.delete_one(document)
 					return document
