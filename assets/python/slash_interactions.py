@@ -59,8 +59,6 @@ async def interaction_handler(request: Request):
 	except BadSignatureError:
 		return 'invalid request signature', 401
 
-	print(json.dumps(interaction, indent=4))
-
 	if interaction["type"] == 1:
 		return {
 			"type": 1
