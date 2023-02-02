@@ -17,6 +17,7 @@ from assets.python.type import Modmail, ActionPacket, CreateVoice
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
 fetch_list = (
+	"CORE_GUILD_ID",
 	"CLIENT_PUBLIC_KEY",
 	"API_TOKEN",
 	"PING_ROLES",
@@ -34,7 +35,7 @@ Router = APIRouter(
 	prefix="/discord"
 )
 ENDPOINT_URL = "https://discord.com/api/v10"
-UPLOAD_ENDPOINT = f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands"
+UPLOAD_ENDPOINT = f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands"
 DISCORD_HEADERS = {
 	"Authorization": f"Bot {Client.token}",
 	"Content-Type": "application/json"
@@ -79,7 +80,7 @@ async def interaction_handler(request: Request):
 
 			async with aiohttp.ClientSession() as session:
 				async with session.get(
-					f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/channels",
+					f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/channels",
 					headers = DISCORD_HEADERS
 				) as guild_channels:
 					guild_channels = await guild_channels.json()
@@ -405,19 +406,21 @@ async def interaction_handler(request: Request):
 					}
 				}
 
+		
+
 	elif interaction["type"] == 3:
 		PING_ROLES = constants.get("PING_ROLES")
 		payload = interaction["data"]
 		if payload.get("custom_id") in PING_ROLES:
 			async with aiohttp.ClientSession() as session:
 				async with session.get(
-					f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}",
+					f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}",
 					headers = DISCORD_HEADERS
 				) as response:
 					response = await response.json()
 					if PING_ROLES[payload.get("custom_id")] in response.get("roles"):
 						await session.delete(
-							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
+							f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
 							headers = DISCORD_HEADERS
 						)
 
@@ -431,7 +434,7 @@ async def interaction_handler(request: Request):
 
 					else:
 						await session.put(
-							f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
+							f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
 							headers = DISCORD_HEADERS
 						)
 
@@ -447,7 +450,7 @@ async def interaction_handler(request: Request):
 			async with aiohttp.ClientSession() as session:
 				for custom_id, _id in constants.get("PING_ROLES").items():
 					await session.delete(
-						f"{ENDPOINT_URL}/guilds/{Client.core_guild_id}/members/{interaction['member']['user']['id']}/roles/{_id}",
+						f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}/roles/{_id}",
 						headers = DISCORD_HEADERS
 					)
 			
@@ -724,12 +727,10 @@ async def register_call(request: Request):
 					"description": "End your voice channel."
 				}
 			]
-		},
-		{
-			"name": "eval",
-			"type": 1,
-			"description": "Evaluate Python code."
-		},
+		}
+	]
+
+	global_commands = [
 		{
 			"name": "token",
 			"description": "Manage your token.",
@@ -764,10 +765,12 @@ async def register_call(request: Request):
 					]
 				}
 			]
-		}
-	]
-
-	global_commands = [
+		},
+		{
+			"name": "eval",
+			"type": 1,
+			"description": "Evaluate Python code."
+		},
 		{
 			"name": "modmail",
 			"description": "Modmail Ticket management.",
@@ -837,18 +840,18 @@ async def register_call(request: Request):
 					)
 					
 			async with session.get(
-				f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands",
+				f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
 				headers = DISCORD_HEADERS
 			) as response_:
 				for command in (await response_.json()):
 					await session.delete(
-						f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands/{command['id']}",
+						f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
 						headers = DISCORD_HEADERS
 					)
 
 			for command in guild_commands:
 				async with session.post(
-					f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{Client.core_guild_id}/commands",
+					f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
 					headers = DISCORD_HEADERS,
 					json = command
 				) as response_:
