@@ -11,8 +11,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import APIRouter
 from fastapi import Request
 
-from assets.python.internal import Internal, ApplicationSyncManager
-from assets.python.type import Modmail, ActionPacket, CreateVoice
+from .internal import Internal, ApplicationSyncManager
+from .type import Modmail, ActionPacket, CreateVoice
 
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
