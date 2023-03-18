@@ -206,7 +206,7 @@ async def interaction_handler(request: Request):
 		elif data.get("name") == "token" and data["options"][0]["name"] == "generate":
 			async with aiohttp.ClientSession() as session:
 				async with session.post(
-					f"https://api.senarc.online/admin/token/create",
+					f"https://api.senarc.net/admin/token/create",
 					headers = {
 						"Authorisation": constants.get("API_TOKEN")
 					},
@@ -468,7 +468,7 @@ async def interaction_handler(request: Request):
 				if not args[-1] == "message":
 					async with aiohttp.ClientSession() as session:
 						await session.delete(
-							f"https://api.senarc.online/bin/{key}",
+							f"https://api.senarc.net/bin/{key}",
 							headers = {
 								"deletion_token": deletion_token
 							}
@@ -525,7 +525,7 @@ async def interaction_handler(request: Request):
 						code = (code[3:])[:3]
 
 					async with session.post(
-						"https://snekbox.senarc.online/eval",
+						"https://snekbox.senarc.net/eval",
 						json = {
 							"input": code
 						}
@@ -543,7 +543,7 @@ async def interaction_handler(request: Request):
 
 						if "```" in _output:
 							async with session.post(
-								"https://api.senarc.online/paste",
+								"https://api.senarc.net/paste",
 								json = {
 									"title": "Snekbox Eval Output",
 									"content": output,
@@ -585,7 +585,7 @@ async def interaction_handler(request: Request):
 							_output = "\n".join(_output.split("\n")[:19])
 							_output += "\n[...]"
 							async with session.post(
-								"https://api.senarc.online/paste",
+								"https://api.senarc.net/paste",
 								json = {
 									"title": "Snekbox Eval Output",
 									"content": output,
@@ -603,7 +603,7 @@ async def interaction_handler(request: Request):
 							_output = _output[:1497]
 							_output += "..."
 							async with session.post(
-								"https://api.senarc.online/paste",
+								"https://api.senarc.net/paste",
 								json = {
 									"title": "Snekbox Eval Output",
 									"content": output,
@@ -677,6 +677,11 @@ async def interaction_handler(request: Request):
 async def register_call(request: Request):
 
 	guild_commands = [
+		{
+			"name": "solve",
+			"type": 1,
+			"description": "Mark a help thread as solved."
+		},
 		{
 			"name": "voice",
 			"description": "Voice Channel controller.",
