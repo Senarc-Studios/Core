@@ -22,10 +22,13 @@ fetch_list = (
 	"CHANNELS",
 	"MONGO",
 	"ROLES",
-	"ENVIRONMENT"
+	"ENVIRONMENT",
+    "GITHUB_TOKEN"
 )
 intents = Intents.all()
 ENDPOINT_URL = "https://discord.com/api/v10"
+# Make a Token Regex that matches: MTA4ODA4NTI4MjM5OTcyNzcxNw.GOkGNr.Xf2CxwAYONmlc7zasyX4KIPnIODmaqhmekTi3Y (MTA is optional)
+DISCORD_TOKEN_REGEX = re.compile(r"([a-zA-Z0-9-_.]{23,28}\.[a-zA-Z0-9-_.]{6,7}\.[a-zA-Z0-9-_.]{38})")
 
 class Senarc(Bot):
 	def __init__(self, *args, **kwargs):
@@ -460,6 +463,47 @@ async def log_bot_removes(member):
 		await log_channel.send(
 			embed = embed
 		)
+
+@bot.listen("on_message")
+async def deactivate_tokens(message):
+	match = re.search(DISCORD_TOKEN_REGEX, message.content)
+	if match:
+		token = match.group(0)
+		async with aiohttp.ClientSession() as session:
+			async with session.get(
+				"https://discord.com/api/v10/users/@me",
+				headers = {
+					"Authorization": "Bot " + token,
+					"Content-Type": "application/json"
+				}
+			) as response:
+				if response.status == 401:
+					return
+				else:
+					message_ = await message.reply(content = f"<:Warning:1042680344278741123> Deactivating leaked discord token...")
+					url = "https://api.github.com/gists/0e8566d842864e77d62939e6a277251e"
+					headers = {
+						"Accept": "application/vnd.github+json",
+						"Authorization": f"token {Constants.get('GITHUB_TOKEN')}"
+					}
+					data = {
+						"description": "This is the last Discord Token that was leaked and deactivated",
+						"public": True,
+						"files": {
+							"last_deactivated_token.txt": {
+								"content": f"{token}\n\nPlease don't leak your token next time.\nAuto Deactivated by Senarc Core"
+							}
+						}
+					}
+					try:
+						async with session.patch(url, headers = headers, json = data) as response:
+							if response.status == 200:
+								await message_.edit(content = "<:Success:1035574699566051358> Token has been deactivated.")
+							else:
+								await message_.edit(content = "<:Warning:1042680344278741123> Token could not be deactivated.")
+					except Exception as e:
+						print(e)
+						await message_.edit(content = f"<:Warning:1042680344278741123> An error occurred while trying to deactivate the token: {e}")
 
 @bot.listen("on_message")
 async def modmail(message):
