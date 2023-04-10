@@ -1,3 +1,4 @@
+import re
 import sys
 import aiohttp
 import asyncio
@@ -286,13 +287,37 @@ async def startup():
 	Terminal.display("Bot is ready.")
 	await bot.ApplicationManagementUnit._loop_task_fetch()
 
+@bot.listen("on_member_update")
+async def autorole(member_before, member_after):
+	if member_before.pending and not member_after.pending:
+		role = utils.get(
+			member_after.guild.roles,
+			id = int(Constants.get("ROLES").get("MEMBER"))
+		)
+		await member_after.add_roles(role)
+		Terminal.display(f"{member_after.name} has been given the Member role.")
+
+		embed = Embed(
+			timestamp = member_after.joined_at,
+			description = f"Welcome to **Senarc**'s Core Guild, we hope you have a nice stay!",
+			colour = 0x2f3136
+		)
+		embed.set_author(
+			name = f"{member_after.name} Joined!",
+			icon_url = member_after.display_avatar.url
+		)
+		embed.set_footer(
+			text = f"Senarc Core",
+			icon_url = bot.user.display_avatar.url
+		)
+		await member_after.guild.system_channel.send(
+			content = f"<@!{member_after.id}>",
+			embed = embed
+		)
+
 @bot.listen("on_member_join")
 async def greet_new_members(member):
 	Terminal.display(f"{member.name} has joined the guild.") if not member.bot else Terminal.display(f"{member.name} Bot has joined the guild.")
-
-	while member.pending:
-		await asyncio.sleep(1)
-		continue
 
 	if member.bot:
 		log_channel = utils.get(
@@ -345,29 +370,6 @@ async def greet_new_members(member):
 					id = int(role)
 				)
 				await member.add_roles(role)
-
-		embed = Embed(
-			timestamp = member.joined_at,
-			description = f"Welcome to **Senarc**'s Core Guild, we hope you have a nice stay!",
-			colour = 0x2f3136
-		)
-		embed.set_author(
-			name = f"{member.name} Joined!",
-			icon_url = member.display_avatar.url
-		)
-		embed.set_footer(
-			text = f"Senarc Core",
-			icon_url = bot.user.display_avatar.url
-		)
-		role = utils.get(
-			member.guild.roles,
-			id = int(Constants.get("ROLES").get("MEMBER"))
-		)
-		await member.add_roles(role)
-		await member.guild.system_channel.send(
-			content = f"<@!{member.id}>",
-			embed = embed
-		)
 
 		log_channel = utils.get(
 			member.guild.channels,
