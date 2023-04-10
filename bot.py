@@ -318,6 +318,50 @@ async def autorole(member_before, member_after):
 			embed = embed
 		)
 
+@bot.listen("on_message_delete")
+async def log_deleted_message(message):
+	if not message.author.bot:
+		log_channel = utils.get(
+			message.guild.channels,
+			id = int(Constants.get("CHANNELS").get("MESSAGE_LOGS"))
+		)
+		embed = Embed(
+			timestamp = message.created_at,
+			description = f"[`{message.channel.id}`](`{message.id}`)```\n{message.content}\n```",
+			colour = 0x2f3136
+		)
+		embed.set_author(
+			name = f"{message.author.name} Deleted a Message",
+			icon_url = message.author.display_avatar.url
+		)
+		embed.set_footer(
+			text = f"Senarc Core",
+			icon_url = bot.user.display_avatar.url
+		)
+		await log_channel.send(embed = embed)
+
+@bot.listen("on_message_edit")
+async def log_edited_message(before, after):
+	if not before.author.bot:
+		log_channel = utils.get(
+			before.guild.channels,
+			id = int(Constants.get("CHANNELS").get("MESSAGE_LOGS"))
+		)
+		embed = Embed(
+			timestamp = before.created_at,
+			description = f"[`{before.channel.id}`](`{before.id}`)\n\n> **BEFORE:**\n```\n{before.content}\n```\n> **AFTER:**\n```\n{after.content}\n```",
+			colour = 0x2f3136
+		)
+		embed.set_author(
+			name = f"{before.author.name} Edited a Message",
+			icon_url = before.author.display_avatar.url
+		)
+		embed.set_footer(
+			text = f"Senarc Core",
+			icon_url = bot.user.display_avatar.url
+		)
+		await log_channel.send(embed = embed)
+
 @bot.listen("on_member_join")
 async def greet_new_members(member):
 	Terminal.display(f"{member.name} has joined the guild.") if not member.bot else Terminal.display(f"{member.name} Bot has joined the guild.")
