@@ -293,7 +293,7 @@ async def startup():
 
 @bot.listen("on_member_update")
 async def autorole(member_before, member_after):
-	if member_before.pending and not member_after.pending:
+	if not member_after.pending:
 		quarentine_role = utils.get(
 			member_after.guild.roles,
 			id = int(Constants.get("ROLES").get("QUARENTINE"))
