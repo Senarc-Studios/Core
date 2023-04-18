@@ -321,7 +321,7 @@ async def autorole(member_before, member_after):
 		embed = Embed(
 			timestamp = member_after.joined_at,
 			description = f"Welcome to **Senarc**'s Core Guild, we hope you have a nice stay!",
-			colour = 0x2f3136
+			colour = 0x2B2D31
 		)
 		embed.set_author(
 			name = f"{member_after.name} Joined!",
@@ -362,7 +362,7 @@ async def log_deleted_message(message):
 		embed = Embed(
 			timestamp = message.created_at,
 			description = f"[`{message.channel.id}`](`{message.id}`)```\n{message.content}\n```",
-			colour = 0x2f3136
+			colour = 0x2B2D31
 		)
 		embed.set_author(
 			name = f"{message.author.name} Deleted a Message",
@@ -384,7 +384,7 @@ async def log_edited_message(before, after):
 		embed = Embed(
 			timestamp = before.created_at,
 			description = f"[`{before.channel.id}`](`{before.id}`)\n\n> **BEFORE:**\n```\n{before.content}\n```\n> **AFTER:**\n```\n{after.content}\n```",
-			colour = 0x2f3136
+			colour = 0x2B2D31
 		)
 		embed.set_author(
 			name = f"{before.author.name} Edited a Message",
@@ -416,7 +416,7 @@ async def greet_new_members(member):
 		embed = Embed(
 			timestamp = added_bot.joined_at,
 			description = f"<@!{added_bot.id}> Bot has been added to the guild by <@!{author.id}>.",
-			colour = 0x2f3136
+			colour = 0x2B2D31
 		)
 		embed.set_author(
 			name = f"{added_bot.name} Bot Added!",
@@ -444,7 +444,7 @@ async def greet_new_members(member):
 		embed = Embed(
 			timestamp = datetime.datetime.utcnow(),
 			description = f"{member.name}#{member.discriminator} (`{member.id}`) has joined the guild.",
-			colour = 0x2f3136
+			colour = 0x2B2D31
 		)
 
 		embed.set_author(
@@ -481,7 +481,7 @@ async def log_bot_removes(member):
 		embed = Embed(
 			timestamp = datetime.datetime.utcnow(),
 			description = f"<@!{removed_bot.id}> Bot has been removed from the guild by <@!{author.id}>.",
-			colour = 0x2f3136
+			colour = 0x2B2D31
 		)
 		embed.set_author(
 			name = f"{removed_bot.name} Removed!",
@@ -505,7 +505,7 @@ async def log_bot_removes(member):
 		embed = Embed(
 			timestamp = datetime.datetime.utcnow(),
 			description = f"{member.name}#{member.discriminator} (`{member.id}`) has left the guild.",
-			colour = 0x2f3136
+			colour = 0x2B2D31
 		)
 
 		embed.set_author(
