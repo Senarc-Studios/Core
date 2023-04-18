@@ -293,14 +293,15 @@ async def startup():
 
 @bot.listen("on_member_update")
 async def autorole(member_before, member_after):
-	if not member_after.pending:
+	if member_before.pending and not member_after.pending:
 		quarentine_role = utils.get(
 			member_after.guild.roles,
 			id = int(Constants.get("ROLES").get("QUARENTINE"))
 		)
 		while quarentine_role in member_after.roles:
 			try:
-				await member_after.guild.fetch_member(member_after.id)
+				member_debug = await member_after.guild.fetch_member(member_after.id)
+				print(member_debug.name)
 				await asyncio.sleep(1)
 				continue
 			except:
