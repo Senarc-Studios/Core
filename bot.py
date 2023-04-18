@@ -476,26 +476,22 @@ async def log_bot_removes(member):
 			log_entry = entry if entry.target == member and entry.target.joined_at == member.joined_at else log_entry
 
 		author = log_entry.user
-		added_bot = log_entry.target
+		removed_bot = log_entry.target
 
 		embed = Embed(
 			timestamp = datetime.datetime.utcnow(),
-			description = f"<@!{added_bot.id}> Bot has been added to the guild by <@!{author.id}>.",
+			description = f"<@!{removed_bot.id}> Bot has been removed from the guild by <@!{author.id}>.",
 			colour = 0x2f3136
 		)
 		embed.set_author(
-			name = f"{added_bot.name} Bot Added!",
-			icon_url = added_bot.display_avatar.url
+			name = f"{removed_bot.name} Removed!",
+			icon_url = removed_bot.display_avatar.url
 		)
 		embed.set_footer(
 			text = f"Senarc Core",
 			icon_url = bot.user.display_avatar.url
 		)
-		role = utils.get(
-			added_bot.guild.roles,
-			id = int(Constants.get("ROLES").get("BOT"))
-		)
-		await added_bot.add_roles(role)
+
 		await log_channel.send(
 			embed = embed
 		)
