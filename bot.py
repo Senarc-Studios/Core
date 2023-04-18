@@ -194,6 +194,7 @@ class ApplicationManagementUnit:
 				elif interaction_type == ActionPacket.HANDOFF:
 					action_type = payload["action"]
 					if action_type == CreateVoice.CREATE_CHANNEL:
+						print(payload)
 						try:
 							await collection.update_one(
 								{
@@ -293,6 +294,23 @@ async def startup():
 @bot.listen("on_member_update")
 async def autorole(member_before, member_after):
 	if member_before.pending and not member_after.pending:
+		quarentine_role = utils.get(
+			member_after.guild.roles,
+			id = int(Constants.get("ROLES").get("QUARENTINE"))
+		)
+		while quarentine_role in member_after.roles:
+			try:
+				await member_after.guild.fetch_member(member_after.id)
+				await asyncio.sleep(1)
+				continue
+			except:
+				return
+
+		try:
+			await member_after.guild.fetch_member(member_after.id)
+		except:
+			return
+
 		role = utils.get(
 			member_after.guild.roles,
 			id = int(Constants.get("ROLES").get("MEMBER"))
