@@ -336,6 +336,22 @@ async def autorole(member_before, member_after):
 			embed = embed
 		)
 
+		mongo = AsyncIOMotorClient(bot.ApplicationManagementUnit.constants.get("MONGO"))
+		collection = mongo["senarc"]["members"]
+		member_data = await collection.find_one(
+			{
+				"member_id": member_after.id
+			}
+		)
+
+		if member_data is not None:
+			for role in member_data["roles"]:
+				role = utils.get(
+					member_after.guild.roles,
+					id = int(role)
+				)
+				await member_after.add_roles(role)
+
 @bot.listen("on_message_delete")
 async def log_deleted_message(message):
 	if not message.author.bot:
@@ -420,22 +436,6 @@ async def greet_new_members(member):
 		)
 
 	else:
-		mongo = AsyncIOMotorClient(bot.ApplicationManagementUnit.constants.get("MONGO"))
-		collection = mongo["senarc"]["members"]
-		member_data = await collection.find_one(
-			{
-				"member_id": member.id
-			}
-		)
-
-		if member_data is not None:
-			for role in member_data["roles"]:
-				role = utils.get(
-					member.guild.roles,
-					id = int(role)
-				)
-				await member.add_roles(role)
-
 		log_channel = utils.get(
 			member.guild.channels,
 			id = int(Constants.get("CHANNELS").get("MEMBER_LOGS"))
