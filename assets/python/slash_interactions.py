@@ -20,7 +20,6 @@ fetch_list = (
 	"CORE_GUILD_ID",
 	"CLIENT_PUBLIC_KEY",
 	"API_TOKEN",
-	"PING_ROLES",
 	"CHANNELS",
 	"EMOJIS"
 )
@@ -404,45 +403,10 @@ async def interaction_handler(request: Request):
 					}
 				}
 
-		
 
-	elif interaction["type"] == 3:
-		PING_ROLES = constants.get("PING_ROLES")
-		payload = interaction["data"]
-		if payload.get("custom_id") in PING_ROLES:
-			async with aiohttp.ClientSession() as session:
-				async with session.get(
-					f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}",
-					headers = DISCORD_HEADERS
-				) as response:
-					response = await response.json()
-					if PING_ROLES[payload.get("custom_id")] in response.get("roles"):
-						await session.delete(
-							f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
-							headers = DISCORD_HEADERS
-						)
-
-						return {
-							"type": 4,
-							"data":{
-								"content": f"{EMOJIS['SUCCESS']} `{payload.get('custom_id')}` role has been removed to your account.",
-								"flags": 64
-							}
 						}
 
-					else:
-						await session.put(
-							f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
-							headers = DISCORD_HEADERS
-						)
-
-						return {
-							"type": 4,
-							"data":{
-								"content": f"{EMOJIS['SUCCESS']} `{payload.get('custom_id')}` role has been added to your account.",
-								"flags": 64
 							}
-						}
 
 		elif payload.get("custom_id") == "CLEAR_ALL":
 			async with aiohttp.ClientSession() as session:
