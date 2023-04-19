@@ -9,8 +9,4 @@ class Modmail:
 
 class ActionPacket:
 	CALLBACK = 1
-	HANDOFF = 2
-
-class CreateVoice:
-	CREATE_CHANNEL = 101
 
