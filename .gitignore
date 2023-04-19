@@ -132,3 +132,4 @@ dmypy.json
 .deta
 .DS_Store
 .fleet
+assets/.DS_Store
