@@ -300,10 +300,12 @@ async def autorole(member_before, member_after):
 		)
 		while quarentine_role in member_after.roles:
 			try:
-				member_debug = await member_after.guild.fetch_member(member_after.id)
-				print(member_debug.name)
-				await asyncio.sleep(1)
-				continue
+				member_exists = await member_after.guild.fetch_member(member_after.id)
+				if member_exists:
+					await asyncio.sleep(1)
+					continue
+				else:
+					return
 			except:
 				return
 
