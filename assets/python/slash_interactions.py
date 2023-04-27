@@ -12,7 +12,7 @@ from fastapi import APIRouter
 from fastapi import Request
 
 from .internal import Internal, ApplicationSyncManager
-from .type import Modmail, ActionPacket, CreateVoice
+from .type import Modmail, ActionPacket
 
 internal = Internal()
 constants = internal.Constants("./assets/json/constants.json")
