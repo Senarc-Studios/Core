@@ -663,7 +663,7 @@ async def register_call(request: Request):
 			) as response_:
 				response = await response_.json()
 				for global_command in global_commands:
-					if global_command not in response:
+					if global_command["name"] not in response["name"]:
 						await session.post(
 							f"{ENDPOINT_URL}/application/{Client.id}/commands",
 							headers = DISCORD_HEADERS,
@@ -671,7 +671,7 @@ async def register_call(request: Request):
 						)
 						continue
 					for command in response:
-						if command not in global_commands:
+						if command["name"] not in global_commands["name"]:
 							await session.delete(
 								f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
 								headers = DISCORD_HEADERS
@@ -690,7 +690,7 @@ async def register_call(request: Request):
 			) as response_:
 				response = await response_.json()
 				for guild_command in guild_commands:
-					if guild_command not in response:
+					if guild_command["name"] not in response["name"]:
 						await session.post(
 							f"{ENDPOINT_URL}/application/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
 							headers = DISCORD_HEADERS,
@@ -698,7 +698,7 @@ async def register_call(request: Request):
 						)
 						continue
 					for command in response:
-						if command not in guild_commands:
+						if command["name"] not in guild_commands["name"]:
 							await session.delete(
 								f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
 								headers = DISCORD_HEADERS
