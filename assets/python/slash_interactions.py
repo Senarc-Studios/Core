@@ -675,6 +675,7 @@ async def register_call(request: Request):
 						)
 						continue
 					for command in response:
+						print(command, global_command)
 						if command["name"] not in global_commands["name"]:
 							await session.delete(
 								f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
