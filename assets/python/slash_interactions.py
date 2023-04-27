@@ -3,6 +3,7 @@ import sys
 import json
 import aiohttp
 import datetime
+import traceback
 
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
@@ -742,10 +743,11 @@ async def register_call(request: Request):
 			# 	) as response_:
 			# 		print(await response_.json())
 	except Exception as e:
-		print(e)
-		return {
-			"success": False
-		}, 501
+		# Print Traceback
+		traceback.print_exc()
+		# Return Error
+		return f"{e}", 501
+
 	return {
 		"success": True
 	}
