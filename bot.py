@@ -27,7 +27,6 @@ fetch_list = (
 )
 intents = Intents.all()
 ENDPOINT_URL = "https://discord.com/api/v10"
-# Make a Token Regex that matches: MTA4ODA4NTI4MjM5OTcyNzcxNw.GOkGNr.Xf2CxwAYONmlc7zasyX4KIPnIODmaqhmekTi3Y (MTA is optional)
 DISCORD_TOKEN_REGEX = re.compile(r"([a-zA-Z0-9-_.]{23,28}\.[a-zA-Z0-9-_.]{6,7}\.[a-zA-Z0-9-_.]{38})")
 
 class Senarc(Bot):
