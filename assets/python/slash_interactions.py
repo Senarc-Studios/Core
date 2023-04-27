@@ -254,9 +254,83 @@ async def interaction_handler(request: Request):
 					}
 				}
 
+		elif interaction.get("data").get("name") == "solve":
+			if interaction.get("channel_id") != CHANNELS['HELP_FORUM']:
+				return {
+					"type": 4,
+					"data": {
+						"content": f"{EMOJIS['WARNING']} This interaction command only works on help threads.",
+						"flags": 64
+					}
+				}
 
 			return {
 				"type": 4,
+				"data": {
+					"content": f"{EMOJIS['WARNING']} Are you sure you want to mark this thread as solved?",
+					"embeds": [
+						{
+							"author": {
+								"name": "Mark Thread as Solved",
+								"icon_url": "https://cdn.discordapp.com/emojis/1035574699566051358.webp?size=512&quality=lossless"
+							},
+							"color": 2829617,
+							"description": "This will mark the thread as solved, and lock the thread preventing more messages being sent unless re-opened by a moderator.",
+							"footer": {
+								"text": "Senarc Core",
+								"icon_url": "https://images-ext-2.discordapp.net/external/ww8h71y3iQC3iyNQ_y1Od1kh1AcDQUHIQ7ii3IBr-Xk/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/891952531926843402/e630b5d282b157a1d4b904f63add0d3f.png"
+							},
+							"timestamp": datetime.datetime.utcnow().isoformat()
+						}
+					],
+					"flags": 64,
+					"components": [
+						{
+							"type": 1,
+							"components": [
+								{
+									"type": 2,
+									"style": 3,
+									"label": "Yes",
+									"custom_id": "solve_confirm"
+								},
+								{
+									"type": 2,
+									"style": 4,
+									"label": "No",
+									"custom_id": "solve_cancel"
+								}
+							]
+						}
+					]
+				}
+			}
+
+	elif interaction["type"] == 3:
+		if payload.get("custom_id") == "solve_confirm":
+			async with aiohttp.ClientSession() as session:
+				await session.patch(
+					f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
+					headers = DISCORD_HEADERS,
+					json = {
+						"locked": True,
+						"archived": True
+					}
+				)
+				return {
+					"type": 7,
+					"data": {
+						"content": f"{EMOJIS['SUCCESS']} Thread marked as solved.",
+						"flags": 64
+					}
+				}
+			
+		elif payload.get("custom_id") == "solve_cancel":
+			return {
+				"type": 7,
+				"data": {
+					"content": f"{EMOJIS['WARNING']} Thread was not marked as solved.",
+					"flags": 64
 				}
 			}
 
