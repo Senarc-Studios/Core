@@ -12,7 +12,7 @@ from discord import utils, Thread, Embed, Intents, AuditLogAction, HTTPException
 from discord.ext.commands import Bot, NoPrivateMessage, CommandNotFound
 
 from assets.python.internal import Internal
-from assets.python.type import ActionPacket, Modmail, CreateVoice
+from assets.python.type import ActionPacket, Modmail
 
 Internal = Internal()
 Constants = Internal.Constants("./assets/json/constants.json")
