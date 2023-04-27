@@ -20,7 +20,6 @@ fetch_list = (
 	"CORE_GUILD_ID",
 	"CLIENT_PUBLIC_KEY",
 	"API_TOKEN",
-	"PING_ROLES",
 	"CHANNELS",
 	"EMOJIS"
 )
@@ -66,144 +65,7 @@ async def interaction_handler(request: Request):
 
 	if interaction["type"] == 2:
 		data = interaction.get("data")
-		if data.get("name") == "voice" and data["options"][0]["name"] == "create":
-			if not interaction.get("channel_id") == CHANNELS["CREATE_VOICE"]:
-				return {
-					"type": 4,
-					"data": {
-						"content": f"{EMOJIS['FAIL']} You can only create a voice channel in <#{CHANNELS['CREATE_VOICE']}>.",
-						"flags": 64
-					}
-				}
-
-			async with aiohttp.ClientSession() as session:
-				async with session.get(
-					f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/channels",
-					headers = DISCORD_HEADERS
-				) as guild_channels:
-					guild_channels = await guild_channels.json()
-					for channel in guild_channels:
-						if channel.get("parent_id") == CHANNELS["VOICE_CATEGORY"]:
-							for permissions in channel.get("permission_overwrites"):
-								if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == "554385280784":
-									return {
-										"type": 4,
-										"data": {
-											"content": f"{EMOJIS['FAIL']} You already have a voice channel.",
-											"flags": 64
-										}
-									}
-						continue
-
-					print(await ApplicationSyncManager.send_action_packet(
-						{
-							"interaction": ActionPacket.HANDOFF,
-							"action": CreateVoice.CREATE_CHANNEL,
-							"data": {
-								"channel_id": CHANNELS["CREATE_VOICE"],
-								"member_id": interaction["member"]["user"]["id"],
-								"interaction": interaction
-							}
-						}
-					))
-					return {
-						"type": 5
-					}
-
-		elif data.get("name") == "voice" and data["options"][0]["name"] == "permit":
-			sub_action = data["options"][0]["options"][0]
-			if sub_action["name"] == "approve":
-				async with aiohttp.ClientSession() as session:
-					async with session.get(
-						f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
-						headers = DISCORD_HEADERS
-					) as channel:
-						channel = await channel.json()
-						permission_overwrites = channel["permission_overwrites"]
-						permission_overwrites.append(
-							{
-								"id": sub_action["options"][0]["value"],
-								"type": 1,
-								"allow": "549792517632"
-							}
-						)
-						async with session.patch(
-							f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
-							headers = DISCORD_HEADERS,
-							json = {
-								"permission_overwrites": permission_overwrites
-							}
-						) as resp:
-							return {
-								"type": 4,
-								"data": {
-									"content": f"{EMOJIS['SUCCESS']} Added <@!{sub_action['options'][0]['value']}> to the voice channel.",
-									"flags": 64
-								}
-							}
-
-			elif sub_action["name"] == "deny":
-				async with aiohttp.ClientSession() as session:
-					async with session.get(
-						f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
-						headers = DISCORD_HEADERS
-					) as channel:
-						channel = await channel.json()
-						permission_overwrites = channel["permission_overwrites"]
-						for overwrites in permission_overwrites:
-							if overwrites["id"] == sub_action["options"][0]["value"]:
-								permission_overwrites.remove(overwrites)
-								break
-
-						async with session.patch(
-							f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
-							headers = DISCORD_HEADERS,
-							json = {
-								"permission_overwrites": permission_overwrites
-							}
-						) as resp:
-							return {
-								"type": 4,
-								"data": {
-									"content": f"{EMOJIS['SUCCESS']} Removed <@!{sub_action['options'][0]['value']}> from the voice channel.",
-									"flags": 64
-								}
-							}
-
-		elif data.get("name") == "voice" and data["options"][0]["name"] == "end":
-			async with aiohttp.ClientSession() as session:
-				async with session.get(
-					f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
-					headers = DISCORD_HEADERS
-				) as channel:
-					channel = await channel.json()
-					print(json.dumps(channel, indent=4))
-					for permissions in channel.get("permission_overwrites"):
-						print(json.dumps(permissions, indent=4))
-						if permissions["id"] == interaction["member"]["user"]["id"] and permissions["allow"] == "554385280784":
-							await session.delete(
-								f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
-								headers = DISCORD_HEADERS
-							)
-							return {
-								"type": 4,
-								"data": {
-									"content": f"{EMOJIS['SUCCESS']} Ended the voice channel session.",
-									"flags": 64
-								}
-							}
-						else:
-							continue
-					
-					return {
-						"type": 4,
-						"data": {
-							"content": f"{EMOJIS['FAIL']} You don't have permission to delete this voice channel.",
-							"flags": 64
-						}
-					}
-
-		elif data.get("name") == "token" and data["options"][0]["name"] == "generate":
+		if data.get("name") == "token" and data["options"][0]["name"] == "generate":
 			async with aiohttp.ClientSession() as session:
 				async with session.post(
 					f"https://api.senarc.net/admin/token/create",
@@ -262,18 +124,6 @@ async def interaction_handler(request: Request):
 			}
 
 		elif interaction.get("data").get("name") == "modmail" and interaction.get("data").get("options")[0].get("name") == "create":
-			# print(json.dumps(interaction, indent=4))
-			# client = AsyncIOMotorClient(constants.get("MONGO_URL"))
-			# collection = client["core"]["blacklists"]
-			# if interaction["user"]["id"] in (await collection.find_one({"_id": "modmail"}))["users"]:
-			# 	return {
-			# 		"type": 4,
-			# 		"data": {
-			# 			"content": f"{EMOJIS['WARNING']} You are blacklisted from using this command.",
-			# 			"flags": 64
-			# 		}
-			# 	}
-
 			if (await ApplicationSyncManager.send_action_packet(
 				{
 					"interaction": ActionPacket.CALLBACK,
@@ -404,58 +254,82 @@ async def interaction_handler(request: Request):
 					}
 				}
 
-		
+		elif interaction.get("data").get("name") == "solve":
+			if interaction.get("channel_id") != CHANNELS['HELP_FORUM']:
+				return {
+					"type": 4,
+					"data": {
+						"content": f"{EMOJIS['WARNING']} This interaction command only works on help threads.",
+						"flags": 64
+					}
+				}
 
-	elif interaction["type"] == 3:
-		PING_ROLES = constants.get("PING_ROLES")
-		payload = interaction["data"]
-		if payload.get("custom_id") in PING_ROLES:
-			async with aiohttp.ClientSession() as session:
-				async with session.get(
-					f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}",
-					headers = DISCORD_HEADERS
-				) as response:
-					response = await response.json()
-					if PING_ROLES[payload.get("custom_id")] in response.get("roles"):
-						await session.delete(
-							f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
-							headers = DISCORD_HEADERS
-						)
-
-						return {
-							"type": 4,
-							"data":{
-								"content": f"{EMOJIS['SUCCESS']} `{payload.get('custom_id')}` role has been removed to your account.",
-								"flags": 64
-							}
-						}
-
-					else:
-						await session.put(
-							f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}/roles/{PING_ROLES[payload.get('custom_id')]}",
-							headers = DISCORD_HEADERS
-						)
-
-						return {
-							"type": 4,
-							"data":{
-								"content": f"{EMOJIS['SUCCESS']} `{payload.get('custom_id')}` role has been added to your account.",
-								"flags": 64
-							}
-						}
-
-		elif payload.get("custom_id") == "CLEAR_ALL":
-			async with aiohttp.ClientSession() as session:
-				for custom_id, _id in constants.get("PING_ROLES").items():
-					await session.delete(
-						f"{ENDPOINT_URL}/guilds/{constants.get('CORE_GUILD_ID')}/members/{interaction['member']['user']['id']}/roles/{_id}",
-						headers = DISCORD_HEADERS
-					)
-			
 			return {
 				"type": 4,
-				"data":{
-					"content": f"{EMOJIS['SUCCESS']} Cleared all roles from your account.",
+				"data": {
+					"content": f"{EMOJIS['WARNING']} Are you sure you want to mark this thread as solved?",
+					"embeds": [
+						{
+							"author": {
+								"name": "Mark Thread as Solved",
+								"icon_url": "https://cdn.discordapp.com/emojis/1035574699566051358.webp?size=512&quality=lossless"
+							},
+							"color": 2829617,
+							"description": "This will mark the thread as solved, and lock the thread preventing more messages being sent unless re-opened by a moderator.",
+							"footer": {
+								"text": "Senarc Core",
+								"icon_url": "https://images-ext-2.discordapp.net/external/ww8h71y3iQC3iyNQ_y1Od1kh1AcDQUHIQ7ii3IBr-Xk/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/891952531926843402/e630b5d282b157a1d4b904f63add0d3f.png"
+							},
+							"timestamp": datetime.datetime.utcnow().isoformat()
+						}
+					],
+					"flags": 64,
+					"components": [
+						{
+							"type": 1,
+							"components": [
+								{
+									"type": 2,
+									"style": 3,
+									"label": "Yes",
+									"custom_id": "solve_confirm"
+								},
+								{
+									"type": 2,
+									"style": 4,
+									"label": "No",
+									"custom_id": "solve_cancel"
+								}
+							]
+						}
+					]
+				}
+			}
+
+	elif interaction["type"] == 3:
+		if payload.get("custom_id") == "solve_confirm":
+			async with aiohttp.ClientSession() as session:
+				await session.patch(
+					f"{ENDPOINT_URL}/channels/{interaction['channel_id']}",
+					headers = DISCORD_HEADERS,
+					json = {
+						"locked": True,
+						"archived": True
+					}
+				)
+				return {
+					"type": 7,
+					"data": {
+						"content": f"{EMOJIS['SUCCESS']} Thread marked as solved.",
+						"flags": 64
+					}
+				}
+			
+		elif payload.get("custom_id") == "solve_cancel":
+			return {
+				"type": 7,
+				"data": {
+					"content": f"{EMOJIS['WARNING']} Thread was not marked as solved.",
 					"flags": 64
 				}
 			}
@@ -681,55 +555,6 @@ async def register_call(request: Request):
 			"name": "solve",
 			"type": 1,
 			"description": "Mark a help thread as solved."
-		},
-		{
-			"name": "voice",
-			"description": "Voice Channel controller.",
-			"options": [
-				{
-					"name": "create",
-					"type": 1,
-					"description": "Create a voice channel."
-				},
-				{
-					"name": "permit",
-					"type": 2,
-					"description": "Permit a user to join a voice channel.",
-					"options": [
-						{
-							"name": "approve",
-							"description": "Approve a user to join a voice channel.",
-							"type": 1,
-							"options": [
-								{
-									"name": "user",
-									"description": "The user to approve the permit to join the voice channel.",
-									"type": 6,
-									"required": True
-								}
-							]
-						},
-						{
-							"name": "deny",
-							"description": "Deny a user to join a voice channel.",
-							"type": 1,
-							"options": [
-								{
-									"name": "user",
-									"description": "The user to remove the permit of the voice channel.",
-									"type": 6,
-									"required": True
-								}
-							]
-						}
-					]
-				},
-				{
-					"name": "end",
-					"type": 1,
-					"description": "End your voice channel."
-				}
-			]
 		}
 	]
 
@@ -838,7 +663,7 @@ async def register_call(request: Request):
 			) as response_:
 				response = await response_.json()
 				for global_command in global_commands:
-					if global_command not in response:
+					if global_command["name"] not in response["name"]:
 						await session.post(
 							f"{ENDPOINT_URL}/application/{Client.id}/commands",
 							headers = DISCORD_HEADERS,
@@ -846,7 +671,7 @@ async def register_call(request: Request):
 						)
 						continue
 					for command in response:
-						if command not in global_commands:
+						if command["name"] not in global_commands["name"]:
 							await session.delete(
 								f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
 								headers = DISCORD_HEADERS
@@ -865,7 +690,7 @@ async def register_call(request: Request):
 			) as response_:
 				response = await response_.json()
 				for guild_command in guild_commands:
-					if guild_command not in response:
+					if guild_command["name"] not in response["name"]:
 						await session.post(
 							f"{ENDPOINT_URL}/application/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
 							headers = DISCORD_HEADERS,
@@ -873,7 +698,7 @@ async def register_call(request: Request):
 						)
 						continue
 					for command in response:
-						if command not in guild_commands:
+						if command["name"] not in guild_commands["name"]:
 							await session.delete(
 								f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
 								headers = DISCORD_HEADERS
