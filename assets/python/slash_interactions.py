@@ -663,7 +663,10 @@ async def register_call(request: Request):
 			) as response_:
 				response = await response_.json()
 				for global_command in global_commands:
-					if global_command["name"] not in response["name"]:
+					if global_command["name"] not in [
+						response_command["name"]
+						for response_command in response
+					]:
 						await session.post(
 							f"{ENDPOINT_URL}/application/{Client.id}/commands",
 							headers = DISCORD_HEADERS,
@@ -690,7 +693,10 @@ async def register_call(request: Request):
 			) as response_:
 				response = await response_.json()
 				for guild_command in guild_commands:
-					if guild_command["name"] not in response["name"]:
+					if guild_command["name"] not in [
+						response_command["name"]
+						for response_command in response
+					]:
 						await session.post(
 							f"{ENDPOINT_URL}/application/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
 							headers = DISCORD_HEADERS,
