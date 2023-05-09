@@ -10,7 +10,6 @@
 
 <p align="center">
   <a href='https://discord.gg/5YY3W83YWg'><img alt="Discord" height=45 src='https://pbs.twimg.com/media/FM7jr5BXIAkke5D?format=png&name=4096x4096'/></a>
-  <a href='https://go.deta.dev/deploy?repo=https://github.com/Senarc-Studios/Core'><img alt="Deploy" src='https://button.deta.dev/1/svg'/></a>
 </p>
 
 # Quickstart Guide
@@ -25,18 +24,18 @@ python3 -m pip install -U -r requirements.txt
 1. Rename the file in `assets/json/constants-template.json` into `constants.json`
 2. Replace all the constants with valid values from application and Discord Guild.
 
-### Running System
-```sh
-# Windows
-python ./main.py
-# Other OS
-python3 ./main.py
-```
-
 ### Running Bot Client
 ```sh
 # Windows
-python ./client/index.py
+python ./bot.py
 # Other OS
-python3 ./client/index.py
+python3 ./bot.py
+```
+
+### Running API Client
+```sh
+# Windows
+python -m uvicorn main:app --reload --host 127.0.0.1 --workers 2 --port 2000
+# Other OS
+./start.sh
 ```
