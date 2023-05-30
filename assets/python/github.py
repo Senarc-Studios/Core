@@ -27,8 +27,10 @@ async def git_updates(request: Request):
 			break
 
 		if len(str(commit_['message'])) > 50:
+			backticks: int = commit_["message"].count("`")
 			commit_['message'] = commit_['message'][:47] + "..."
-		
+			commit_['message'] = commit_['message'] + "`" if backticks > commit_["message"].count("`") else commit_['message']
+
 		commit_string = commit_string + f"<:Dot:1038764950249807953> [`{commit['after'][:7]}`]({commit_['url']}) {commit_['message']} - [`{commit_['author']['name']}`](https://github.com/{commit_['author']['username']})\n"
 
 	commit_heading = (
