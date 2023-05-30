@@ -61,7 +61,7 @@ async def git_updates(request: Request):
 				},
 				"footer": {
 					"text": f"Senarc Core",
-					"icon_url": "https://images-ext-1.discordapp.net/external/JLdEGrbDlsR6UPBiFvqjkB_EjbsQ7FqNYO6lmDLTO3g/https/i.ibb.co/DVRvMs4/image.png"
+					"icon_url": "https://cdn.discordapp.com/app-icons/891952531926843402/3c6199f323021fc89955632314b09c95?size=512"
 				}
 			}
 		]
