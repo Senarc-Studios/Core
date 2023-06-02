@@ -419,9 +419,10 @@ async def interaction_handler(request: Request):
 												},
 											],
 											"footer": {
-												"text": f"Since {user['created_at']}",
+												"text": f"Since",
 												"icon_url": f"{user['icon_url']}"
-											}
+											},
+											"timestamp": datetime.datetime.fromtimestamp(user['created_at']).isoformat()
 										}
 									]
 								}
