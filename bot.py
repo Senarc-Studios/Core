@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 import aiohttp
@@ -13,6 +14,8 @@ from discord.ext.commands import Bot, NoPrivateMessage, CommandNotFound
 
 from assets.python.internal import Internal
 from assets.python.type import ActionPacket, Modmail
+
+#from typing import Coroutine, Any
 
 Internal = Internal()
 Constants = Internal.Constants("./assets/json/constants.json")
@@ -35,6 +38,11 @@ class Senarc(Bot):
 
 	async def start(self, *args, **kwargs):
 		super().start(*args, **kwargs)
+
+	# async def setup_hook(self) -> Coroutine[Any, Any, None]:
+	# 	for file in os.listdir("./assets/python/bot"):
+	# 		if file.endswith(".py"):
+	# 			self.load_extension(f"assets.python.bot.{file[:-3]}")
 
 bot = Bot(
 	command_prefix = "sca!",
