@@ -320,7 +320,7 @@ async def interaction_handler(request: Request):
 										{
 											"author": {
 												"name": "No MTA Certificates",
-												"icon_url": f"{interaction.get('data').get('author').get('avatar_url')}"
+												"icon_url": f"https://cdn.discordapp.com/avatars/{interaction.get('member').get('user').get('id')}/{interaction.get('member').get('user').get('avatar')}.webp?size=1024"
 											},
 											"color": 2829617,
 											"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('value')}`",
@@ -439,7 +439,7 @@ async def interaction_handler(request: Request):
 									{
 										"author": {
 											"name": "No MTA Certificates",
-											"icon_url": f"{interaction.get('data').get('author').get('avatar_url')}"
+											"icon_url": f"https://cdn.discordapp.com/avatars/{interaction.get('member').get('user').get('id')}/{interaction.get('member').get('user').get('avatar')}.webp?size=1024"
 										},
 										"color": 2829617,
 										"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('options')[0].get('value')}`",
@@ -511,7 +511,7 @@ async def interaction_handler(request: Request):
 									{
 										"author": {
 											"name": "No MTA Certificates",
-											"icon_url": f"{interaction.get('data').get('author').get('avatar_url')}"
+											"icon_url": f"https://cdn.discordapp.com/avatars/{interaction.get('member').get('user').get('id')}/{interaction.get('member').get('user').get('avatar')}.webp?size=1024"
 										},
 										"color": 2829617,
 										"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('value')}`",
