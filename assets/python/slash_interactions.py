@@ -669,24 +669,29 @@ async def register_call(request: Request):
 						for response_command in response
 					]:
 						await session.post(
-							f"{ENDPOINT_URL}/application/{Client.id}/commands",
+							f"{ENDPOINT_URL}/applications/{Client.id}/commands",
 							headers = DISCORD_HEADERS,
 							json = global_command
 						)
 						continue
 					for command in response:
 						print(command, global_command)
-						if command["name"] not in global_commands["name"]:
-							await session.delete(
-								f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
-								headers = DISCORD_HEADERS
-							)
-						else:
-							await session.patch(
-								f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
-								headers = DISCORD_HEADERS,
-								json = command
-							)
+						async with session.get(f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}") as command_payload:
+							command_payload = await command_payload.json()
+							if command["name"] not in [
+								global_command_entries["name"]
+								for global_command_entries in global_commands
+							]:
+								await session.delete(
+									f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command_payload['id']}",
+									headers = DISCORD_HEADERS
+								)
+							else:
+								await session.patch(
+									f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command_payload['id']}",
+									headers = DISCORD_HEADERS,
+									json = command
+								)
 
 		async with aiohttp.ClientSession() as session:
 			async with session.get(
@@ -700,23 +705,28 @@ async def register_call(request: Request):
 						for response_command in response
 					]:
 						await session.post(
-							f"{ENDPOINT_URL}/application/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
+							f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
 							headers = DISCORD_HEADERS,
 							json = guild_command
 						)
 						continue
 					for command in response:
-						if command["name"] not in guild_commands["name"]:
-							await session.delete(
-								f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
-								headers = DISCORD_HEADERS
-							)
-						else:
-							await session.patch(
-								f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
-								headers = DISCORD_HEADERS,
-								json = command
-							)
+						async with session.get(
+							f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
+							headers = DISCORD_HEADERS
+						) as command_payload:
+							command_payload = await command_payload.json()
+							if command["name"] not in command_payload["name"]:
+								await session.delete(
+									f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
+									headers = DISCORD_HEADERS
+								)
+							else:
+								await session.patch(
+									f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
+									headers = DISCORD_HEADERS,
+									json = command
+								)
 
 			# async with session.get(
 			# 	f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
