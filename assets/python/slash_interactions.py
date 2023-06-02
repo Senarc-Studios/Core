@@ -553,14 +553,6 @@ async def register_call(request: Request):
 
 	guild_commands = [
 		{
-			"name": "solve",
-			"type": 1,
-			"description": "Mark a help thread as solved."
-		}
-	]
-
-	global_commands = [
-		{
 			"name": "token",
 			"description": "Manage your token.",
 			"options": [
@@ -600,6 +592,14 @@ async def register_call(request: Request):
 			"type": 1,
 			"description": "Evaluate Python code."
 		},
+		{
+			"name": "solve",
+			"type": 1,
+			"description": "Mark a help thread as solved."
+		}
+	]
+
+	global_commands = [
 		{
 			"name": "modmail",
 			"description": "Modmail Ticket management.",
