@@ -324,6 +324,10 @@ async def interaction_handler(request: Request):
 											},
 											"color": 2829617,
 											"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('value')}`",
+											"footer": {
+												"text": "Senarc MTA",
+												"icon_url": "https://cdn.discordapp.com/avatars/891952531926843402/3c6199f323021fc89955632314b09c95.webp?size=128"
+											}
 										}
 									]
 								}
