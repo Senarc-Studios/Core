@@ -388,35 +388,35 @@ async def interaction_handler(request: Request):
 											"description": "",
 											"fields": [
 												{
-													"name": "> User",
-													"value": f"<@!{user['_id']}> (`{user['_id']}`)",
+													"name": "User",
+													"value": f"<@!{user['_id']}>",
 													"inline": True
 												},
 												{
-													"name": "> Token",
+													"name": "Token",
 													"value": f"`{user['token']}`",
 													"inline": True
 												},
 												{
-													"name": "> Linked Guild",
+													"name": "Status",
+													"value": f"`{user['status']}`",
+													"inline": True
+												},
+												{
+													"name": "Linked Guild",
 													"value": f"{user.get('linked_guild').get('name')} (`{user.get('linked_guild').get('id')}`)",
 													"inline": False
 												},
 												{
-													"name": "> Guild Owner",
+													"name": "Guild Owner",
 													"value": f"<@!{user.get('linked_guild').get('guild_owner')['id']}> (`{user.get('linked_guild').get('guild_owner')['id']}`)",
 													"inline": True
 												},
 												{
-													"name": "> Expiry",
+													"name": "Expiry",
 													"value": f"<t:{user['expires_at']}:R>",
 													"inline": False
 												},
-												{
-													"name": "> Status",
-													"value": f"`{user['status']}`",
-													"inline": True
-												}
 											],
 											"footer": {
 												"text": f"Since {user['created_at']}",
