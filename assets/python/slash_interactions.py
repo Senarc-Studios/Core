@@ -595,12 +595,12 @@ async def interaction_handler(request: Request):
 												},
 												{
 													"name": "> Guild Owner",
-													"value": f"<@!{certificate.get('linked_guild').get('guild_owner')}> (`{certificate.get('linked_guild').get('guild_owner')}`)",
+													"value": f"<@!{certificate.get('linked_guild').get('guild_owner').get('id')}> (`{certificate.get('linked_guild').get('guild_owner').get('id')}`)",
 													"inline": True
 												},
 												{
 													"name": "> Expiry",
-													"value": f"`{certificate['expiry']}`",
+													"value": f"<t:{certificate['expires_at']}:R>",
 													"inline": False
 												},
 												{
