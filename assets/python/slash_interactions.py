@@ -308,7 +308,358 @@ async def interaction_handler(request: Request):
 			}
 
 		elif interaction.get("data").get("name") == "mta" and interaction.get("data").get("options")[0].get("name") == "user":
-			print(interaction.get("data").get("options"))
+			if interaction.get("data").get("options")[0].get("options")[0].get("name") == "user":
+				async with aiohttp.ClientSession() as session:
+					async with session.get(f"https://api.senarc.net/mta/user/{interaction.get('data').get('options')[0].get('options')[0].get('value')}") as response:
+						user = await response.json()
+						if response.status == 404:
+							return {
+								"type": 4,
+								"data": {
+									"embeds": [
+										{
+											"author": {
+												"name": "No MTA Certificates",
+												"icon_url": f"{interaction.get('data').get('author').get('avatar_url')}"
+											},
+											"color": 2829617,
+											"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('value')}`",
+										}
+									]
+								}
+							}
+
+						elif response.status == 200:
+							if user.get("linked_guild") is None:
+								return {
+									"type": 4,
+									"data": {
+										"embeds": [
+											{
+												"author": {
+													"name": "MTA Certificate",
+													"icon_url": f"{user.get('icon_url')}"
+												},
+												"color": 2829617,
+												"fields": [
+													{
+														"name": "> User",
+														"value": f"<@!{user['_id']}> (`{user['id']}`)",
+														"inline": True
+													},
+													{
+														"name": "> Token",
+														"value": f"`{user['token']}`",
+														"inline": True
+													},
+													{
+														"name": "> Expiry",
+														"value": f"`{user['expiry']}`",
+														"inline": False
+													},
+													{
+														"name": "> Status",
+														"value": f"`{user['status']}`",
+														"inline": True
+													}
+												],
+												"footer": {
+													"text": f"Since {user['created_at']}",
+													"icon_url": f"{user['icon_url']}"
+												}
+											}
+										]
+									}
+								}
+							return {
+								"type": 4,
+								"data": {
+									"embeds": [
+										{
+											"author": {
+												"name": "MTA Certificate",
+												"icon_url": f"{user['icon_url']}"
+											},
+											"color": 2829617,
+											"description": "",
+											"fields": [
+												{
+													"name": "> User",
+													"value": f"<@!{user['_id']}> (`{user['id']}`)",
+													"inline": True
+												},
+												{
+													"name": "> Token",
+													"value": f"`{user['token']}`",
+													"inline": True
+												},
+												{
+													"name": "> Linked Guild",
+													"value": f"{user.get('linked_guild').get('guild_name')} (`{user.get('linked_guild').get('guild_id')}`)",
+													"inline": False
+												},
+												{
+													"name": "> Guild Owner",
+													"value": f"<@!{user.get('linked_guild').get('guild_owner')}> (`{user.get('linked_guild').get('guild_owner')}`)",
+													"inline": True
+												},
+												{
+													"name": "> Expiry",
+													"value": f"`{user['expiry']}`",
+													"inline": False
+												},
+												{
+													"name": "> Status",
+													"value": f"`{user['status']}`",
+													"inline": True
+												}
+											],
+											"footer": {
+												"text": f"Since {user['created_at']}",
+												"icon_url": f"{user['icon_url']}"
+											}
+										}
+									]
+								}
+							}
+
+		elif interaction.get("data").get("name") == "mta" and interaction.get("data").get("options")[0].get("name") == "guild":
+			async with aiohttp.ClientSession() as session:
+				async with session.get(f"https://api.senarc.net/mta/guild/{interaction.get('data').get('options')[0].get('options')[0].get('value')}") as response:
+					guild = await response.json()
+					if response.status == 404:
+						return {
+							"type": 4,
+							"data": {
+								"embeds": [
+									{
+										"author": {
+											"name": "No MTA Certificates",
+											"icon_url": f"{interaction.get('data').get('author').get('avatar_url')}"
+										},
+										"color": 2829617,
+										"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('options')[0].get('value')}`",
+										"footer": {
+											"text": "Senarc MTA",
+											"icon_url": "https://cdn.discordapp.com/avatars/891952531926843402/3c6199f323021fc89955632314b09c95.webp?size=128"
+										}
+									}
+								]
+							}
+						}
+
+					elif response.status == 200:
+						return {
+								"type": 4,
+								"data": {
+									"embeds": [
+										{
+											"author": {
+												"name": "MTA Certificate",
+												"icon_url": f"{guild['icon_url']}"
+											},
+											"color": 2829617,
+											"fields": [
+												{
+													"name": "> Guild",
+													"value": f"{guild['guild_name']} (`{guild['guild_id']}`)",
+													"inline": True
+												},
+												{
+													"name": "> Guild Owner",
+													"value": f"<@!{guild['guild_owner']}> (`{guild['guild_owner']}`)",
+													"inline": True
+												},
+												{
+													"name": "> Token",
+													"value": f"`{guild['token']}`",
+													"inline": True
+												},
+												{
+													"name": "> Expiry",
+													"value": f"`{guild['expiry']}`",
+													"inline": False
+												},
+												{
+													"name": "> Status",
+													"value": f"`{guild['status']}`",
+													"inline": True
+												}
+											],
+											"footer": {
+												"text": f"Since {guild['created_at']}",
+												"icon_url": f"{guild['icon_url']}"
+											}
+										}
+									]
+								}
+							}
+
+		elif interaction.get("data").get("name") == "mta" and interaction.get("data").get("options")[0].get("name") == "token":
+			async with aiohttp.ClientSession() as session:
+				async with session.get(f"https://api.senarc.net/mta/token/{interaction.get('data').get('options')[0].get('options')[0].get('value')}") as response:
+					certificate = await response.json()
+					if response.status == 404:
+						return {
+							"type": 4,
+							"data": {
+								"embeds": [
+									{
+										"author": {
+											"name": "No MTA Certificates",
+											"icon_url": f"{interaction.get('data').get('author').get('avatar_url')}"
+										},
+										"color": 2829617,
+										"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('value')}`",
+										"footer": {
+											"text": "Senarc MTA",
+											"icon_url": "https://cdn.discordapp.com/avatars/891952531926843402/3c6199f323021fc89955632314b09c95.webp?size=128"
+										}
+									}
+								]
+							}
+						}
+
+					elif response.status == 200:
+						if certificate.get("type") == "user":
+							if certificate.get("linked_guild") is None:
+								return {
+									"type": 4,
+									"data": {
+										"embeds": [
+											{
+												"author": {
+													"name": "MTA Certificate",
+													"icon_url": f"{certificate.get('icon_url')}"
+												},
+												"color": 2829617,
+												"fields": [
+													{
+														"name": "> User",
+														"value": f"<@!{certificate['_id']}> (`{certificate['_id']}`)",
+														"inline": True
+													},
+													{
+														"name": "> Token",
+														"value": f"`{certificate['token']}`",
+														"inline": True
+													},
+													{
+														"name": "> Expiry",
+														"value": f"`{certificate['expiry']}`",
+														"inline": False
+													},
+													{
+														"name": "> Status",
+														"value": f"`{certificate['status']}`",
+														"inline": True
+													}
+												],
+												"footer": {
+													"text": f"Since {certificate['created_at']}",
+													"icon_url": f"{certificate['icon_url']}"
+												}
+											}
+										]
+									}
+								}
+							return {
+								"type": 4,
+								"data": {
+									"embeds": [
+										{
+											"author": {
+												"name": "MTA Certificate",
+												"icon_url": f"{interaction.get('data').get('author').get('avatar_url')}"
+											},
+											"color": 2829617,
+											"fields": [
+												{
+													"name": "> User",
+													"value": f"<@!{certificate['_id']}> (`{certificate['_id']}`)",
+													"inline": True
+												},
+												{
+													"name": "> Token",
+													"value": f"`{certificate['token']}`",
+													"inline": True
+												},
+												{
+													"name": "> Linked Guild",
+													"value": f"{certificate.get('linked_guild').get('guild_name')} (`{certificate.get('linked_guild').get('guild_id')}`)",
+													"inline": False
+												},
+												{
+													"name": "> Guild Owner",
+													"value": f"<@!{certificate.get('linked_guild').get('guild_owner')}> (`{certificate.get('linked_guild').get('guild_owner')}`)",
+													"inline": True
+												},
+												{
+													"name": "> Expiry",
+													"value": f"`{certificate['expiry']}`",
+													"inline": False
+												},
+												{
+													"name": "> Status",
+													"value": f"`{certificate['status']}`",
+													"inline": True
+												}
+											],
+											"footer": {
+												"text": f"Since {certificate['created_at']}",
+												"icon_url": f"{certificate['icon_url']}"
+											}
+										}
+									]
+								}
+							}
+						elif certificate.get("type") == "guild":
+							return {
+								"type": 4,
+								"data": {
+									"embeds": [
+										{
+											"author": {
+												"name": "MTA Certificate",
+												"icon_url": f"{certificate.get('icon_url')}"
+											},
+											"color": 2829617,
+											"fields": [
+												{
+													"name": "> Guild",
+													"value": f"{certificate['guild_name']} (`{certificate['guild_id']}`)",
+													"inline": True
+												},
+												{
+													"name": "> Guild Owner",
+													"value": f"<@!{certificate['guild_owner']}> (`{certificate['guild_owner']}`)",
+													"inline": True
+												},
+												{
+													"name": "> Token",
+													"value": f"`{certificate['token']}`",
+													"inline": True
+												},
+												{
+													"name": "> Expiry",
+													"value": f"`{certificate['expiry']}`",
+													"inline": False
+												},
+												{
+													"name": "> Status",
+													"value": f"`{certificate['status']}`",
+													"inline": True
+												}
+											],
+											"footer": {
+												"text": f"Since {certificate['created_at']}",
+												"icon_url": f"{certificate['icon_url']}"
+											}
+										}
+									]
+								}
+							}
+
 	elif interaction["type"] == 3:
 		if payload.get("custom_id") == "solve_confirm":
 			async with aiohttp.ClientSession() as session:
