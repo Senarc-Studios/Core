@@ -307,6 +307,8 @@ async def interaction_handler(request: Request):
 				}
 			}
 
+		elif interaction.get("data").get("name") == "mta" and interaction.get("data").get("options")[0].get("name") == "user":
+			print(interaction.get("data").get("options"))
 	elif interaction["type"] == 3:
 		if payload.get("custom_id") == "solve_confirm":
 			async with aiohttp.ClientSession() as session:
