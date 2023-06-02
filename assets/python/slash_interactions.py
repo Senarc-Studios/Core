@@ -653,6 +653,50 @@ async def register_call(request: Request):
 					]
 				}
 			]
+		},
+		{
+			"name": "mta",
+			"description": "MTA Info.",
+			"options": [
+				{
+					"name": "user",
+					"type": 1,
+					"description": "Check for user's MTA certificate.",
+					"options": [
+						{
+							"name": "user",
+							"description": "The user you want to check for.",
+							"type": 6,
+							"required": False
+						},
+						{
+							"name": "token",
+							"description": "Certificate Token",
+							"type": 3,
+							"required": False
+						},
+					]
+				},
+				{
+					"name": "guild",
+					"type": 1,
+					"description": "Check for guild's MTA certificate.",
+					"options": [
+						{
+							"name": "guild",
+							"description": "The guild id you want to check for.",
+							"type": 3,
+							"required": False
+						},
+						{
+							"name": "token",
+							"description": "Certificate Token",
+							"type": 3,
+							"required": False
+						}
+					]
+				}
+			]
 		}
 	]
 
