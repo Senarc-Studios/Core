@@ -1021,13 +1021,7 @@ async def register_call(request: Request):
 							"description": "The user you want to check for.",
 							"type": 6,
 							"required": False
-						},
-						{
-							"name": "token",
-							"description": "Certificate Token",
-							"type": 3,
-							"required": False
-						},
+						}
 					]
 				},
 				{
@@ -1040,12 +1034,19 @@ async def register_call(request: Request):
 							"description": "The guild id you want to check for.",
 							"type": 3,
 							"required": False
-						},
+						}
+					]
+				},
+				{
+					"name": "token",
+					"type": 1,
+					"description": "Look up Tokens",
+					"options": [
 						{
 							"name": "token",
 							"description": "Certificate Token",
 							"type": 3,
-							"required": False
+							"required": True
 						}
 					]
 				}
