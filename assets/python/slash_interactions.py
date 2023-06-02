@@ -409,7 +409,7 @@ async def interaction_handler(request: Request):
 												},
 												{
 													"name": "> Expiry",
-													"value": f"`{user['expires_at']}`",
+													"value": f"<t:{user['expires_at']}:R>",
 													"inline": False
 												},
 												{
