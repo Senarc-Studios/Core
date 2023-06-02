@@ -323,7 +323,7 @@ async def interaction_handler(request: Request):
 												"icon_url": f"https://cdn.discordapp.com/avatars/{interaction.get('member').get('user').get('id')}/{interaction.get('member').get('user').get('avatar')}.webp?size=1024"
 											},
 											"color": 2829617,
-											"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('value')}`",
+											"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('options')[0].get('value')}`",
 											"footer": {
 												"text": "Senarc MTA",
 												"icon_url": "https://cdn.discordapp.com/avatars/891952531926843402/3c6199f323021fc89955632314b09c95.webp?size=128"
@@ -514,7 +514,7 @@ async def interaction_handler(request: Request):
 											"icon_url": f"https://cdn.discordapp.com/avatars/{interaction.get('member').get('user').get('id')}/{interaction.get('member').get('user').get('avatar')}.webp?size=1024"
 										},
 										"color": 2829617,
-										"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('value')}`",
+										"description": f"No Certificate was found for `{interaction.get('data').get('options')[0].get('options')[0].get('value')}`",
 										"footer": {
 											"text": "Senarc MTA",
 											"icon_url": "https://cdn.discordapp.com/avatars/891952531926843402/3c6199f323021fc89955632314b09c95.webp?size=128"
