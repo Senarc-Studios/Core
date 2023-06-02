@@ -348,7 +348,7 @@ async def interaction_handler(request: Request):
 												"fields": [
 													{
 														"name": "> User",
-														"value": f"<@!{user['_id']}> (`{user['id']}`)",
+														"value": f"<@!{user['_id']}> (`{user['_id']}`)",
 														"inline": True
 													},
 													{
@@ -389,7 +389,7 @@ async def interaction_handler(request: Request):
 											"fields": [
 												{
 													"name": "> User",
-													"value": f"<@!{user['_id']}> (`{user['id']}`)",
+													"value": f"<@!{user['_id']}> (`{user['_id']}`)",
 													"inline": True
 												},
 												{
