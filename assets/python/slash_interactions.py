@@ -399,12 +399,12 @@ async def interaction_handler(request: Request):
 												},
 												{
 													"name": "> Linked Guild",
-													"value": f"{user.get('linked_guild').get('guild_name')} (`{user.get('linked_guild').get('guild_id')}`)",
+													"value": f"{user.get('linked_guild').get('name')} (`{user.get('linked_guild').get('id')}`)",
 													"inline": False
 												},
 												{
 													"name": "> Guild Owner",
-													"value": f"<@!{user.get('linked_guild').get('guild_owner')}> (`{user.get('linked_guild').get('guild_owner')}`)",
+													"value": f"<@!{user.get('linked_guild').get('guild_owner')['id']}> (`{user.get('linked_guild').get('guild_owner')['id']}`)",
 													"inline": True
 												},
 												{
