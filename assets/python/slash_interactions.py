@@ -720,7 +720,10 @@ async def register_call(request: Request):
 						continue
 					for command in response:
 						print(command, global_command)
-						async with session.get(f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}") as command_payload:
+						async with session.get(
+							f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
+							headers = DISCORD_HEADERS
+						) as command_payload:
 							command_payload = await command_payload.json()
 							if command["name"] not in [
 								global_command_entries["name"]
