@@ -310,7 +310,7 @@ async def interaction_handler(request: Request):
 		elif interaction.get("data").get("name") == "mta" and interaction.get("data").get("options")[0].get("name") == "user":
 			if interaction.get("data").get("options")[0].get("options")[0].get("name") == "user":
 				async with aiohttp.ClientSession() as session:
-					async with session.get(f"https://api.senarc.net/mta/user/{interaction.get('data').get('options')[0].get('options')[0].get('value')}") as response:
+					async with session.get(f"https://api.senarc.net/mta/id/{interaction.get('data').get('options')[0].get('options')[0].get('value')}") as response:
 						user = await response.json()
 						if response.status == 404:
 							return {
@@ -358,7 +358,7 @@ async def interaction_handler(request: Request):
 													},
 													{
 														"name": "> Expiry",
-														"value": f"`{user['expiry']}`",
+														"value": f"`{user['expires_at']}`",
 														"inline": False
 													},
 													{
@@ -409,7 +409,7 @@ async def interaction_handler(request: Request):
 												},
 												{
 													"name": "> Expiry",
-													"value": f"`{user['expiry']}`",
+													"value": f"`{user['expires_at']}`",
 													"inline": False
 												},
 												{
@@ -429,7 +429,7 @@ async def interaction_handler(request: Request):
 
 		elif interaction.get("data").get("name") == "mta" and interaction.get("data").get("options")[0].get("name") == "guild":
 			async with aiohttp.ClientSession() as session:
-				async with session.get(f"https://api.senarc.net/mta/guild/{interaction.get('data').get('options')[0].get('options')[0].get('value')}") as response:
+				async with session.get(f"https://api.senarc.net/mta/id/{interaction.get('data').get('options')[0].get('options')[0].get('value')}") as response:
 					guild = await response.json()
 					if response.status == 404:
 						return {
@@ -471,7 +471,7 @@ async def interaction_handler(request: Request):
 												},
 												{
 													"name": "> Guild Owner",
-													"value": f"<@!{guild['guild_owner']}> (`{guild['guild_owner']}`)",
+													"value": f"<@!{guild['guild_owner']['id']}> (`{guild['guild_owner']['id']}`)",
 													"inline": True
 												},
 												{
@@ -481,7 +481,7 @@ async def interaction_handler(request: Request):
 												},
 												{
 													"name": "> Expiry",
-													"value": f"`{guild['expiry']}`",
+													"value": f"`{guild['expires_at']}`",
 													"inline": False
 												},
 												{
@@ -550,7 +550,7 @@ async def interaction_handler(request: Request):
 													},
 													{
 														"name": "> Expiry",
-														"value": f"`{certificate['expiry']}`",
+														"value": f"`{certificate['expires_at']}`",
 														"inline": False
 													},
 													{
@@ -636,7 +636,7 @@ async def interaction_handler(request: Request):
 												},
 												{
 													"name": "> Guild Owner",
-													"value": f"<@!{certificate['guild_owner']}> (`{certificate['guild_owner']}`)",
+													"value": f"<@!{certificate['guild_owner']['id']}> (`{certificate['guild_owner']['id']}`)",
 													"inline": True
 												},
 												{
@@ -646,7 +646,7 @@ async def interaction_handler(request: Request):
 												},
 												{
 													"name": "> Expiry",
-													"value": f"`{certificate['expiry']}`",
+													"value": f"`{certificate['expires_at']}`",
 													"inline": False
 												},
 												{
