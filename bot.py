@@ -13,7 +13,7 @@ class Senarc(Bot):
 		super().__init__(*args, **kwargs)
 
 	async def start(self, *args, **kwargs):
-		super().start(*args, **kwargs)
+		await super().start(*args, **kwargs)
 
 	async def sync_application(self):
 		await self.tree.sync(guild = self.guild_id)
@@ -23,7 +23,7 @@ class Senarc(Bot):
 	async def setup_hook(self) -> Coroutine[Any, Any, None]:
 		for file in os.listdir("./cogs"):
 			if file.endswith(".py"):
-				self.load_extension(f"cogs.{file[:-3]}")
+				await self.load_extension(f"cogs.{file[:-3]}")
 
 		self.loop.create_task(self.sync_application())
 
