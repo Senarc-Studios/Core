@@ -906,265 +906,265 @@ async def interaction_handler(request: Request):
 							}
 						}
 
-@Router.get("/register")
-async def register_call(request: Request):
+# @Router.get("/register")
+# async def register_call(request: Request):
 
-	guild_commands = [
-		{
-			"name": "token",
-			"description": "Manage your token.",
-			"options": [
-				{
-					"name": "generate",
-					"type": 1,
-					"description": "Generate a new token.",
-					"options": [
-						{
-							"name": "email",
-							"description": "Your email connected to Discord.",
-							"type": 3,
-							"required": True
-						},
-						{
-							"name": "type",
-							"description": "Do you have a Dynamic or Static IP?",
-							"type": 3,
-							"required": True,
-							"choices": [
-								{
-									"name": "Dynamic IP",
-									"value": "dynamic"
-								},
-								{
-									"name": "Static IP",
-									"value": "static"
-								}
-							]
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "eval",
-			"type": 1,
-			"description": "Evaluate Python code."
-		},
-		{
-			"name": "solve",
-			"type": 1,
-			"description": "Mark a help thread as solved."
-		}
-	]
+# 	guild_commands = [
+# 		{
+# 			"name": "token",
+# 			"description": "Manage your token.",
+# 			"options": [
+# 				{
+# 					"name": "generate",
+# 					"type": 1,
+# 					"description": "Generate a new token.",
+# 					"options": [
+# 						{
+# 							"name": "email",
+# 							"description": "Your email connected to Discord.",
+# 							"type": 3,
+# 							"required": True
+# 						},
+# 						{
+# 							"name": "type",
+# 							"description": "Do you have a Dynamic or Static IP?",
+# 							"type": 3,
+# 							"required": True,
+# 							"choices": [
+# 								{
+# 									"name": "Dynamic IP",
+# 									"value": "dynamic"
+# 								},
+# 								{
+# 									"name": "Static IP",
+# 									"value": "static"
+# 								}
+# 							]
+# 						}
+# 					]
+# 				}
+# 			]
+# 		},
+# 		{
+# 			"name": "eval",
+# 			"type": 1,
+# 			"description": "Evaluate Python code."
+# 		},
+# 		{
+# 			"name": "solve",
+# 			"type": 1,
+# 			"description": "Mark a help thread as solved."
+# 		}
+# 	]
 
-	global_commands = [
-		{
-			"name": "modmail",
-			"description": "Modmail Ticket management.",
-			"options": [
-				{
-					"name": "create",
-					"type": 1,
-					"description": "Create a modmail thread. (DM Only)",
-					"options": [
-						{
-							"name": "topic",
-							"description": "Pick the topic you're opening a Modmail about.",
-							"type": 3,
-							"required": True,
-							"choices": [
-								{
-									"name": "Moderation",
-									"value": "moderation"
-								},
-								{
-									"name": "Suggestion",
-									"value": "suggestion"
-								},
-								{
-									"name": "Report/Bug",
-									"value": "report"
-								},
-								{
-									"name": "Question",
-									"value": "question"
-								},
-								{
-									"name": "Other",
-									"value": "other"
-								}
-							]
-						}
-					]
-				},
-				{
-					"name": "close",
-					"type": 1,
-					"description": "Close a modmail thread. (DM Only)",
-					"options": [
-						{
-							"name": "reason",
-							"description": "The reason for closing the modmail thread.",
-							"type": 3,
-							"required": False
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "mta",
-			"description": "MTA Info.",
-			"options": [
-				{
-					"name": "user",
-					"type": 1,
-					"description": "Check for user's MTA certificate.",
-					"options": [
-						{
-							"name": "user",
-							"description": "The user you want to check for.",
-							"type": 6,
-							"required": False
-						}
-					]
-				},
-				{
-					"name": "guild",
-					"type": 1,
-					"description": "Check for guild's MTA certificate.",
-					"options": [
-						{
-							"name": "guild",
-							"description": "The guild id you want to check for.",
-							"type": 3,
-							"required": False
-						}
-					]
-				},
-				{
-					"name": "token",
-					"type": 1,
-					"description": "Look up Tokens",
-					"options": [
-						{
-							"name": "token",
-							"description": "Certificate Token",
-							"type": 3,
-							"required": True
-						}
-					]
-				}
-			]
-		}
-	]
+# 	global_commands = [
+# 		{
+# 			"name": "modmail",
+# 			"description": "Modmail Ticket management.",
+# 			"options": [
+# 				{
+# 					"name": "create",
+# 					"type": 1,
+# 					"description": "Create a modmail thread. (DM Only)",
+# 					"options": [
+# 						{
+# 							"name": "topic",
+# 							"description": "Pick the topic you're opening a Modmail about.",
+# 							"type": 3,
+# 							"required": True,
+# 							"choices": [
+# 								{
+# 									"name": "Moderation",
+# 									"value": "moderation"
+# 								},
+# 								{
+# 									"name": "Suggestion",
+# 									"value": "suggestion"
+# 								},
+# 								{
+# 									"name": "Report/Bug",
+# 									"value": "report"
+# 								},
+# 								{
+# 									"name": "Question",
+# 									"value": "question"
+# 								},
+# 								{
+# 									"name": "Other",
+# 									"value": "other"
+# 								}
+# 							]
+# 						}
+# 					]
+# 				},
+# 				{
+# 					"name": "close",
+# 					"type": 1,
+# 					"description": "Close a modmail thread. (DM Only)",
+# 					"options": [
+# 						{
+# 							"name": "reason",
+# 							"description": "The reason for closing the modmail thread.",
+# 							"type": 3,
+# 							"required": False
+# 						}
+# 					]
+# 				}
+# 			]
+# 		},
+# 		{
+# 			"name": "mta",
+# 			"description": "MTA Info.",
+# 			"options": [
+# 				{
+# 					"name": "user",
+# 					"type": 1,
+# 					"description": "Check for user's MTA certificate.",
+# 					"options": [
+# 						{
+# 							"name": "user",
+# 							"description": "The user you want to check for.",
+# 							"type": 6,
+# 							"required": False
+# 						}
+# 					]
+# 				},
+# 				{
+# 					"name": "guild",
+# 					"type": 1,
+# 					"description": "Check for guild's MTA certificate.",
+# 					"options": [
+# 						{
+# 							"name": "guild",
+# 							"description": "The guild id you want to check for.",
+# 							"type": 3,
+# 							"required": False
+# 						}
+# 					]
+# 				},
+# 				{
+# 					"name": "token",
+# 					"type": 1,
+# 					"description": "Look up Tokens",
+# 					"options": [
+# 						{
+# 							"name": "token",
+# 							"description": "Certificate Token",
+# 							"type": 3,
+# 							"required": True
+# 						}
+# 					]
+# 				}
+# 			]
+# 		}
+# 	]
 
-	try:
-		async with aiohttp.ClientSession() as session:
-			async with session.get(
-				f"{ENDPOINT_URL}/applications/{Client.id}/commands",
-				headers = DISCORD_HEADERS
-			) as response_:
-				response = await response_.json()
-				for global_command in global_commands:
-					if global_command["name"] not in [
-						response_command["name"]
-						for response_command in response
-					]:
-						await session.post(
-							f"{ENDPOINT_URL}/applications/{Client.id}/commands",
-							headers = DISCORD_HEADERS,
-							json = global_command
-						)
-						continue
-					for command in response:
-						print(command, global_command)
-						async with session.get(
-							f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
-							headers = DISCORD_HEADERS
-						) as command_payload:
-							command_payload = await command_payload.json()
-							if command["name"] not in [
-								global_command_entries["name"]
-								for global_command_entries in global_commands
-							]:
-								await session.delete(
-									f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command_payload['id']}",
-									headers = DISCORD_HEADERS
-								)
-							else:
-								await session.patch(
-									f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command_payload['id']}",
-									headers = DISCORD_HEADERS,
-									json = command
-								)
+# 	try:
+# 		async with aiohttp.ClientSession() as session:
+# 			async with session.get(
+# 				f"{ENDPOINT_URL}/applications/{Client.id}/commands",
+# 				headers = DISCORD_HEADERS
+# 			) as response_:
+# 				response = await response_.json()
+# 				for global_command in global_commands:
+# 					if global_command["name"] not in [
+# 						response_command["name"]
+# 						for response_command in response
+# 					]:
+# 						await session.post(
+# 							f"{ENDPOINT_URL}/applications/{Client.id}/commands",
+# 							headers = DISCORD_HEADERS,
+# 							json = global_command
+# 						)
+# 						continue
+# 					for command in response:
+# 						print(command, global_command)
+# 						async with session.get(
+# 							f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command['id']}",
+# 							headers = DISCORD_HEADERS
+# 						) as command_payload:
+# 							command_payload = await command_payload.json()
+# 							if command["name"] not in [
+# 								global_command_entries["name"]
+# 								for global_command_entries in global_commands
+# 							]:
+# 								await session.delete(
+# 									f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command_payload['id']}",
+# 									headers = DISCORD_HEADERS
+# 								)
+# 							else:
+# 								await session.patch(
+# 									f"{ENDPOINT_URL}/applications/{Client.id}/commands/{command_payload['id']}",
+# 									headers = DISCORD_HEADERS,
+# 									json = command
+# 								)
 
-		async with aiohttp.ClientSession() as session:
-			async with session.get(
-				f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
-				headers = DISCORD_HEADERS
-			) as response_:
-				response = await response_.json()
-				for guild_command in guild_commands:
-					if guild_command["name"] not in [
-						response_command["name"]
-						for response_command in response
-					]:
-						await session.post(
-							f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
-							headers = DISCORD_HEADERS,
-							json = guild_command
-						)
-						continue
-					for command in response:
-						async with session.get(
-							f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
-							headers = DISCORD_HEADERS
-						) as command_payload:
-							command_payload = await command_payload.json()
-							if command["name"] not in command_payload["name"]:
-								await session.delete(
-									f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
-									headers = DISCORD_HEADERS
-								)
-							else:
-								await session.patch(
-									f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
-									headers = DISCORD_HEADERS,
-									json = command
-								)
+# 		async with aiohttp.ClientSession() as session:
+# 			async with session.get(
+# 				f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
+# 				headers = DISCORD_HEADERS
+# 			) as response_:
+# 				response = await response_.json()
+# 				for guild_command in guild_commands:
+# 					if guild_command["name"] not in [
+# 						response_command["name"]
+# 						for response_command in response
+# 					]:
+# 						await session.post(
+# 							f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
+# 							headers = DISCORD_HEADERS,
+# 							json = guild_command
+# 						)
+# 						continue
+# 					for command in response:
+# 						async with session.get(
+# 							f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
+# 							headers = DISCORD_HEADERS
+# 						) as command_payload:
+# 							command_payload = await command_payload.json()
+# 							if command["name"] not in command_payload["name"]:
+# 								await session.delete(
+# 									f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
+# 									headers = DISCORD_HEADERS
+# 								)
+# 							else:
+# 								await session.patch(
+# 									f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
+# 									headers = DISCORD_HEADERS,
+# 									json = command
+# 								)
 
-			# async with session.get(
-			# 	f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
-			# 	headers = DISCORD_HEADERS
-			# ) as response_:
-			# 	for command in (await response_.json()):
-			# 		await session.delete(
-			# 			f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
-			# 			headers = DISCORD_HEADERS
-			# 		)
+# 			# async with session.get(
+# 			# 	f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
+# 			# 	headers = DISCORD_HEADERS
+# 			# ) as response_:
+# 			# 	for command in (await response_.json()):
+# 			# 		await session.delete(
+# 			# 			f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands/{command['id']}",
+# 			# 			headers = DISCORD_HEADERS
+# 			# 		)
 
-			# for command in guild_commands:
-			# 	async with session.post(
-			# 		f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
-			# 		headers = DISCORD_HEADERS,
-			# 		json = command
-			# 	) as response_:
-			# 		print(await response_.json())
+# 			# for command in guild_commands:
+# 			# 	async with session.post(
+# 			# 		f"{ENDPOINT_URL}/applications/{Client.id}/guilds/{constants.get('CORE_GUILD_ID')}/commands",
+# 			# 		headers = DISCORD_HEADERS,
+# 			# 		json = command
+# 			# 	) as response_:
+# 			# 		print(await response_.json())
 
-			# for command in global_commands:
-			# 	async with session.post(
-			# 		f"{ENDPOINT_URL}/applications/{Client.id}/commands",
-			# 		headers = DISCORD_HEADERS,
-			# 		json = command
-			# 	) as response_:
-			# 		print(await response_.json())
-	except Exception as e:
-		# Print Traceback
-		traceback.print_exc()
-		# Return Error
-		return f"{e}", 501
+# 			# for command in global_commands:
+# 			# 	async with session.post(
+# 			# 		f"{ENDPOINT_URL}/applications/{Client.id}/commands",
+# 			# 		headers = DISCORD_HEADERS,
+# 			# 		json = command
+# 			# 	) as response_:
+# 			# 		print(await response_.json())
+# 	except Exception as e:
+# 		# Print Traceback
+# 		traceback.print_exc()
+# 		# Return Error
+# 		return f"{e}", 501
 
-	return {
-		"success": True
-	}
+# 	return {
+# 		"success": True
+# 	}
