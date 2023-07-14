@@ -39,7 +39,7 @@ class DeleteResponse(Button):
 
 class CodeExecution(Modal, title = "Code Evaluation"):
 	code_input = TextInput(
-		"Code",
+		label = "Code",
 		placeholder = "print(\"Hello World!\")",
 		style = TextStyle.paragraph,
 		required = True
