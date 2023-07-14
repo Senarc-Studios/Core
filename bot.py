@@ -14,11 +14,18 @@ class Senarc(Bot):
 	async def start(self, *args, **kwargs):
 		super().start(*args, **kwargs)
 
-	# async def setup_hook(self) -> Coroutine[Any, Any, None]:
-	# 	for file in os.listdir("./assets/python/bot"):
-	# 		if file.endswith(".py"):
-	# 			self.load_extension(f"assets.python.bot.{file[:-3]}")
+	async def sync_application(self):
+		await self.tree.sync(guild = Internal.core_guild)
+		print("Application synced successfully.")
 
+	async def setup_hook(self) -> Coroutine[Any, Any, None]:
+		for file in os.listdir("./cogs"):
+			if file.endswith(".py"):
+				self.load_extension(f"cogs.{file[:-3]}")
+
+		self.loop.create_task(self.sync_application())
+
+intents = Intents.all()
 bot = Bot(
 	command_prefix = "sca!",
 	intents = intents
