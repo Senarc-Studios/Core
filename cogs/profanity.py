@@ -20,6 +20,7 @@ class Profanity(Cog):
     @Cog.listener("on_message")
     async def profanity_check(self, message):
         probability: int = int(predict_prob([message.content])[0] * 100)
+        print(probability)
         if probability > 65:
             log_message = Embed(
                 description = f"**Original Message:**\n{message.content}\n\n**Probability:**\n`{probability}%`",
@@ -33,7 +34,7 @@ class Profanity(Cog):
                 text = "Senarc Core",
                 icon_url = self.bot.me.display_avatar.url
             )
-            
+
             log_channel = self.bot.get_channel(int(Constants.get("CHANNELS").get("AUTOMOD_LOGS")))
             await log_channel.send(embed = log_message)
 
