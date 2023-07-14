@@ -34,7 +34,7 @@ bot = Bot(
 fetch_list = (
 	"TOKEN"
 )
-internal = Internal(bot)
+internal = Internal()
 Constants = internal.Constants
 for constant in fetch_list:
 	Constants.fetch(constant)
