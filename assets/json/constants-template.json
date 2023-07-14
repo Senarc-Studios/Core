@@ -26,6 +26,7 @@
         "MAINTENANCE": "EMOJI_NAME_AND_ID"
     },
     "CHANNELS": {
+        "AUTOMOD_LOGS": "SNOWFLAKE_ID",
         "VOICE_CATEGORY": "SNOWFLAKE_ID",
         "CREATE_VOICE": "SNOWFLAKE_ID",
         "LOGS": "SNOWFLAKE_ID",
