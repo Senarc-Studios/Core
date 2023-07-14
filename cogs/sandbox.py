@@ -186,6 +186,9 @@ class Sandbox(Cog):
 			)
 		]
 	)
+	@app_commands.describe(
+		code = "The code to evaluate. (or enter nothing)"
+	)
 	async def eval_(self, interaction: Interaction, code: str = None) -> Coroutine[Any, Any, None]:
 		if code is None:
 			modal = CodeExecution()
