@@ -4,7 +4,7 @@ import aiohttp
 import asyncio
 import traceback
 
-from ..assets.python.internal import Internal
+from assets.python.internal import Internal
 
 from discord import AuditLogAction, Embed, Intents, Thread, utils
 from discord import CommandNotFound, NoPrivateMessage, HTTPException

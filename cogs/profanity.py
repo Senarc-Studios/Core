@@ -1,4 +1,4 @@
-from ..assets.python.internal import Internal
+from assets.python.internal import Internal
 
 from discord import Embed
 from discord.ext.commands import Cog

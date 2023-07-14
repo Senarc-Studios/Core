@@ -1,6 +1,6 @@
 import aiohttp
 
-from ..assets.python.internal import Internal
+from assets.python.internal import Internal
 
 from discord import Interaction, TextStyle, app_commands
 from discord.interactions import Interaction
