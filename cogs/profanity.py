@@ -33,11 +33,11 @@ class Profanity(Cog):
                 text = "Senarc Core",
                 icon_url = self.bot.me.display_avatar.url
             )
-
-            await message.delete()
-
+            
             log_channel = self.bot.get_channel(int(Constants.get("CHANNELS").get("AUTOMOD_LOGS")))
             await log_channel.send(embed = log_message)
+
+            await message.delete()
 
 async def setup(bot):
     await bot.add_cog(Profanity(bot))
