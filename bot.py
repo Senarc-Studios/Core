@@ -32,7 +32,7 @@ bot = Bot(
 )
 
 fetch_list = (
-	"TOKEN"
+	"CLIENT_TOKEN"
 )
 internal = Internal()
 Constants = internal.Constants("./assets/json/constants.json")
