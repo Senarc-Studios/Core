@@ -178,13 +178,7 @@ class Sandbox(Cog):
 
 	@app_commands.command(
 		name = "eval",
-		description = "Evaluate your Python code.",
-		options = [
-			app_commands.Argument(
-				name = "code",
-				description = "The code to evaluate. (or enter nothing)"
-			)
-		]
+		description = "Evaluate your Python code."
 	)
 	@app_commands.describe(
 		code = "The code to evaluate. (or enter nothing)"
