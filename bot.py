@@ -32,7 +32,7 @@ bot = Bot(
 )
 
 fetch_list = (
-	"CLIENT_TOKEN"
+	"CLIENT_TOKEN",
 )
 internal = Internal()
 Constants = internal.Constants("./assets/json/constants.json")
@@ -41,4 +41,4 @@ for constant in fetch_list:
 
 if __name__ == "__main__":
 	bot.Constants = Constants
-	bot.run(Constants.TOKEN)
+	bot.run(Constants.get("CLIENT_TOKEN"))
