@@ -188,13 +188,7 @@ class Sandbox(Cog):
 	)
 	async def eval_(self, interaction: Interaction, code: str = None) -> Coroutine[Any, Any, None]:
 		if code is None:
-			modal = Modal("Python Evaluation")
-			code_input = TextInput(
-				"Code:",
-				placeholder = "print(\"Hello World!\")",
-				required = True
-			)
-			modal.add_item(code_input)
+			modal = CodeExecution()
 			await interaction.response.send_modal(modal)
 		else:
 			try:
