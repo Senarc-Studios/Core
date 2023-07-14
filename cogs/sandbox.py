@@ -176,7 +176,7 @@ class Sandbox(Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	@app_commands.slash_command(
+	@app_commands.command(
 		name = "eval",
 		description = "Evaluate your Python code.",
 		options = [
