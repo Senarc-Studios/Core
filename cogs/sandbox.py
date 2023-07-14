@@ -201,3 +201,6 @@ class Sandbox(Cog):
 				await interaction.response.send_message(eval(code))
 			except Exception as error:
 				await interaction.response.send_message(error)
+
+async def setup(bot):
+	await bot.add_cog(Sandbox(bot))
