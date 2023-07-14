@@ -10,7 +10,7 @@ from discord.ext.commands import Cog
 from typing import Coroutine, Any
 
 internal = Internal()
-Constants = internal.Constants
+Constants = internal.Constants("./assets/json/constants.json")
 FETCH_LIST = (
 	"EMOJIS"
 )

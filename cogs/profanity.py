@@ -6,7 +6,7 @@ from discord.ext.commands import Cog
 from profanity_check import predict_prob
 
 internal = Internal()
-Constants = internal.Constants
+Constants = internal.Constants("./assets/json/constants.json")
 FETCH_LIST = (
 	"CHANNELS"
 )

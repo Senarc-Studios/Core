@@ -35,7 +35,7 @@ fetch_list = (
 	"TOKEN"
 )
 internal = Internal()
-Constants = internal.Constants
+Constants = internal.Constants("./assets/json/constants.json")
 for constant in fetch_list:
 	Constants.fetch(constant)
 
