@@ -178,13 +178,13 @@ class Sandbox(Cog):
 
 	@app_commands.command(
 		name = "eval",
-		description = "Evaluate your Python code."
-	)
-	@app_commands.options(
-		app_commands.Argument(
-			name = "code",
-			description = "The code to evaluate. (or enter nothing)"
-		)
+		description = "Evaluate your Python code.",
+		options = [
+			app_commands.Argument(
+				name = "code",
+				description = "The code to evaluate. (or enter nothing)"
+			)
+		]
 	)
 	async def eval_(self, interaction: Interaction, code: str = None) -> Coroutine[Any, Any, None]:
 		if code is None:
