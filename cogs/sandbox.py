@@ -173,7 +173,7 @@ class CodeExecution(Modal, title = "Code Evaluation"):
 					)
 
 class Sandbox(Cog):
-	def __init__(self, bot: app_commands.Bot):
+	def __init__(self, bot):
 		self.bot = bot
 
 	@app_commands.slash_command(
@@ -188,7 +188,7 @@ class Sandbox(Cog):
 	)
 	async def eval_(self, interaction: Interaction, code: str = None) -> Coroutine[Any, Any, None]:
 		if code is None:
-			modal = Modal()
+			modal = Modal("Python Evaluation")
 			code_input = TextInput(
 				"Code:",
 				placeholder = "print(\"Hello World!\")",
