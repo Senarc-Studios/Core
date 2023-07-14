@@ -12,7 +12,7 @@ from typing import Coroutine, Any
 internal = Internal()
 Constants = internal.Constants("./assets/json/constants.json")
 FETCH_LIST = (
-	"EMOJIS"
+	"EMOJIS",
 )
 for constant in FETCH_LIST:
 	Constants.fetch(constant)
