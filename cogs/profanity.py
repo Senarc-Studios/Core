@@ -36,7 +36,7 @@ class Profanity(Cog):
 
             await message.delete()
 
-            log_channel = self.bot.get_channel(Constants.get("CHANNELS").get("AUTOMOD_LOGS"))
+            log_channel = self.bot.get_channel(int(Constants.get("CHANNELS").get("AUTOMOD_LOGS")))
             await log_channel.send(embed = log_message)
 
 async def setup(bot):
