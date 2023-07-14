@@ -499,24 +499,5 @@ class Events(Cog):
                     }
                 )
 
-    # Source: https://gist.github.com/EvieePy/7822af90858ef65012ea500bcecf1612
-    @Cog.listener("on_command_error")
-    async def error_handler(ctx, error):
-        ignored = (CommandNotFound)
-        error = getattr(error, 'original', error)
-
-        if isinstance(error, ignored):
-            return
-
-        elif isinstance(error, NoPrivateMessage):
-            try:
-                await ctx.author.send(f'`{ctx.command}` can not be used in Private Messages.')
-            except HTTPException:
-                pass
-
-        else:
-            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-
 async def setup(bot):
     await bot.add_cog(Events(bot))
