@@ -472,7 +472,7 @@ class Events(Cog):
                     }
                 )
                 not_in_user = [
-                    role.id
+                    role
                     for role in member_data["roles"] if role not in [
                         role.id
                         for role in message.author.roles
