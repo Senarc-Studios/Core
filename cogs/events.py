@@ -24,6 +24,8 @@ fetch_list = (
 	"ENVIRONMENT",
     "GITHUB_TOKEN"
 )
+for constant in fetch_list:
+    Constants.fetch(constant)
 intents = Intents.all()
 ENDPOINT_URL = "https://discord.com/api/v10"
 DISCORD_TOKEN_REGEX = re.compile(r"([a-zA-Z0-9-_.]{23,28}\.[a-zA-Z0-9-_.]{6,7}\.[a-zA-Z0-9-_.]{38})")
@@ -83,7 +85,7 @@ class Events(Cog):
                 embed = embed
             )
 
-            mongo = AsyncIOMotorClient(self.bot.ApplicationManagementUnit.constants.get("MONGO"))
+            mongo = AsyncIOMotorClient(Constants.get("MONGO"))
             collection = mongo["senarc"]["members"]
             member_data = await collection.find_one(
                 {
@@ -444,7 +446,7 @@ class Events(Cog):
                     traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
         else:
-            mongo = AsyncIOMotorClient(self.bot.ApplicationManagementUnit.constants.get("MONGO"))
+            mongo = AsyncIOMotorClient(Constants.get("MONGO"))
             collection = mongo["senarc"]["members"]
 
             if await collection.count_documents(
