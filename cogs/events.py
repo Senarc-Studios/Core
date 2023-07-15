@@ -488,14 +488,10 @@ class Events(Cog):
                     },
                     {
                         "$addToSet": {
-                            "roles": {
-                                "roles": new_roles
-                            }
+                            "roles": new_roles
                         },
                         "$pull": {
-                            "roles": {
-                                "roles": not_in_user
-                            }
+                            "roles": not_in_user
                         }
                     }
                 )
