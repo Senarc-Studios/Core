@@ -16,7 +16,7 @@ for constant in FETCH_LIST:
 class Profanity(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.filter = ProfanityFilter()
+        self.filter = ProfanityFilter().set_censor("\*")
 
     @Cog.listener("on_message")
     async def profanity_check(self, message):
