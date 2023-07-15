@@ -2,7 +2,7 @@ import os
 
 from assets.python.internal import Internal
 
-from discord import Intents
+from discord import Intents, Object
 from discord.ext.commands import Bot
 
 from typing import Coroutine, Any
@@ -16,7 +16,7 @@ class Senarc(Bot):
 		await super().start(*args, **kwargs)
 
 	async def sync_application(self):
-		await self.tree.sync(guild = self.guild_id)
+		await self.tree.sync(guild = Object(id = self.guild_id))
 		await self.tree.sync()
 		print("Application synced successfully.")
 
