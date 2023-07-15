@@ -32,7 +32,7 @@ class Profanity(Cog):
             )
             log_message.set_footer(
                 text = "Senarc Core",
-                icon_url = self.bot.me.display_avatar.url
+                icon_url = self.bot.user.display_avatar.url
             )
 
             log_channel = self.bot.get_channel(int(Constants.get("CHANNELS").get("AUTOMOD_LOGS")))
