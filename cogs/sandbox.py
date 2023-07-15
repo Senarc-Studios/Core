@@ -189,9 +189,10 @@ class Sandbox(Cog):
 			await interaction.response.send_modal(modal)
 		else:
 			try:
-				await interaction.response.send_message(eval(code))
+				modal = CodeExecution()
+				await interaction.response.send_modal(modal)
 			except Exception as error:
-				await interaction.response.send_message(error)
+				await interaction.response.send_message(f"{Constants.get('EMOJIS').get('WARNING')} Exception on `/eval`:\n\n```\n{error}\n```")
 
 async def setup(bot):
 	await bot.add_cog(Sandbox(bot))
