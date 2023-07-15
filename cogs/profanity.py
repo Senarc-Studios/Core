@@ -8,7 +8,7 @@ from profanityfilter import ProfanityFilter
 internal = Internal()
 Constants = internal.Constants("./assets/json/constants.json")
 FETCH_LIST = (
-	"CHANNELS"
+	"CHANNELS",
 )
 for constant in FETCH_LIST:
 	Constants.fetch(constant)
