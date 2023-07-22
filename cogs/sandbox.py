@@ -86,7 +86,7 @@ class CodeExecution(Modal, title = "Code Evaluation"):
 						json = {
 							"title": "Snekbox Eval Output",
 							"content": output,
-							"description": code_input,
+							"description": CodeExecution.code_input,
 							"background_colour": "#1c1e26",
 							"text_colour": "#dda487",
 							"embed_colour": "#90B5F8"
@@ -114,7 +114,7 @@ class CodeExecution(Modal, title = "Code Evaluation"):
 						json = {
 							"title": "Snekbox Eval Output",
 							"content": output,
-							"description": code_input,
+							"description": CodeExecution.code_input,
 							"background_colour": "#1c1e26",
 							"text_colour": "#dda487",
 							"embed_colour": "#90B5F8"
@@ -132,7 +132,7 @@ class CodeExecution(Modal, title = "Code Evaluation"):
 						json = {
 							"title": "Snekbox Eval Output",
 							"content": output,
-							"description": code_input,
+							"description": CodeExecution.code_input,
 							"background_colour": "#1c1e26",
 							"text_colour": "#dda487",
 							"embed_colour": "#90B5F8"
