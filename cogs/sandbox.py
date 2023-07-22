@@ -56,15 +56,17 @@ class CodeExecution(Modal, title = "Code Evaluation"):
 			thinking = True
 		)
 		async with aiohttp.ClientSession() as session:
-			if code_input.startswith("```py") and code_input.endswith("```"):
-				code_input = (code_input[5:])[:3]
-			elif code_input.startswith("```") and code_input.endswith("```"):
-				code_input = (code_input[3:])[:3]
+			if CodeExecution.code_input.startswith("```python") and CodeExecution.code_input.endswith("```"):
+				CodeExecution.code_input = (CodeExecution.code_input[9:])[:3]
+			elif CodeExecution.code_input.startswith("```py") and CodeExecution.code_input.endswith("```"):
+				CodeExecution.code_input = (CodeExecution.code_input[5:])[:3]
+			elif CodeExecution.code_input.startswith("```") and CodeExecution.code_input.endswith("```"):
+				CodeExecution.code_input = (CodeExecution.code_input[3:])[:3]
 
 			async with session.post(
 				"https://snekbox.senarc.net/eval",
 				json = {
-					"input": code_input
+					"input": CodeExecution.code_input
 				}
 			) as response:
 				response = await response.json()
