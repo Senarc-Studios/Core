@@ -192,7 +192,7 @@ class Events(Cog):
 
             embed = Embed(
                 timestamp = datetime.datetime.utcnow(),
-                description = f"{member.name}#{member.discriminator} (`{member.id}`) has joined the guild.",
+                description = f"@{member.name} (`{member.id}`) has joined the guild.",
                 colour = 0x2B2D31
             )
 
@@ -253,7 +253,7 @@ class Events(Cog):
 
             embed = Embed(
                 timestamp = datetime.datetime.utcnow(),
-                description = f"{member.name}#{member.discriminator} (`{member.id}`) has left the guild.",
+                description = f"@{member.name} (`{member.id}`) has left the guild.",
                 colour = 0x2B2D31
             )
 
@@ -334,7 +334,7 @@ class Events(Cog):
                         colour = 0x303136
                     )
                     embed.set_author(
-                        name = f"{message.author.name}#{message.author.discriminator}",
+                        name = f"@{message.author.name}",
                         icon_url = message.author.display_avatar.url
                     )
                     embed.set_footer(
