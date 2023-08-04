@@ -191,7 +191,7 @@ class Events(Cog):
             )
 
             embed = Embed(
-                timestamp = datetime.datetime.utcnow(),
+                timestamp = datetime.utcnow(),
                 description = f"@{member.name} (`{member.id}`) has joined the guild.",
                 colour = 0x2B2D31
             )
@@ -228,7 +228,7 @@ class Events(Cog):
             removed_bot = log_entry.target
 
             embed = Embed(
-                timestamp = datetime.datetime.utcnow(),
+                timestamp = datetime.utcnow(),
                 description = f"<@!{removed_bot.id}> Bot has been removed from the guild by <@!{author.id}>.",
                 colour = 0x2B2D31
             )
@@ -252,7 +252,7 @@ class Events(Cog):
             )
 
             embed = Embed(
-                timestamp = datetime.datetime.utcnow(),
+                timestamp = datetime.utcnow(),
                 description = f"@{member.name} (`{member.id}`) has left the guild.",
                 colour = 0x2B2D31
             )
@@ -329,7 +329,7 @@ class Events(Cog):
 
                 if thread_exists:
                     embed = Embed(
-                        timestamp = datetime.datetime.utcnow(),
+                        timestamp = datetime.utcnow(),
                         description = message.content,
                         colour = 0x303136
                     )
@@ -355,7 +355,7 @@ class Events(Cog):
                         else:
                             for attachment in message.attachments:
                                 image_embed = Embed(
-                                    timestamp = datetime.datetime.utcnow(),
+                                    timestamp = datetime.utcnow(),
                                     colour = 0x303136
                                 )
                                 image_embed.set_author(
@@ -393,7 +393,7 @@ class Events(Cog):
                             starter_message = await message.channel.fetch_message(message.channel.id)
                         user = await self.bot.fetch_user(int(starter_message.content))
                         embed = Embed(
-                            timestamp = datetime.datetime.utcnow(),
+                            timestamp = datetime.utcnow(),
                             description = message.content,
                             colour = 0x303136
                         )
@@ -419,7 +419,7 @@ class Events(Cog):
                             else:
                                 for attachment in message.attachments:
                                     image_embed = Embed(
-                                        timestamp = datetime.datetime.utcnow(),
+                                        timestamp = datetime.utcnow(),
                                         colour = 0x303136
                                     )
                                     image_embed.set_author(
