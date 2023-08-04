@@ -37,142 +37,145 @@ class DeleteResponse(Button):
 				)
 		await interaction.response.delete_message()
 
+async def process_evaluation(interaction, code_input):
+	EMOJIS = Constants.get("EMOJIS")
+	eval_code = (
+		EMOJIS["SUCCESS"],
+		EMOJIS["WARNING"]
+	)
+	await interaction.response.defer(
+		ephemeral = True,
+		thinking = True
+	)
+	async with aiohttp.ClientSession() as session:
+		if code_input.value.startswith("```python") and code_input.value.endswith("```"):
+			code_input.value = (code_input.value[9:])[:3]
+		elif code_input.value.startswith("```py") and code_input.value.endswith("```"):
+			code_input.value = (code_input.value[5:])[:3]
+		elif code_input.value.startswith("```") and code_input.value.endswith("```"):
+			code_input.value = (code_input.value[3:])[:3]
+
+		async with session.post(
+			"https://snekbox.senarc.net/eval",
+			json = {
+				"input": code_input.value
+			}
+		) as response:
+			response = await response.json()
+			output = response.get('stdout')
+			returncode = response.get('returncode')
+			output_ = output.split("\n")[:-1]
+			modified = False
+			count = 0
+			_output = ""
+			for line in output_:
+				count += 1
+				_output = _output + f"{(3 - len(str(count)))*'0'}{count} | {line}\n"
+
+			if "```" in _output:
+				async with session.post(
+					"https://api.senarc.net/paste",
+					json = {
+						"title": "Snekbox Eval Output",
+						"content": output,
+						"description": code_input.value,
+						"background_colour": "#1c1e26",
+						"text_colour": "#dda487",
+						"embed_colour": "#90B5F8"
+					}
+				) as paste:
+					paste = await paste.json()
+					full_output = paste.get("url")
+					view = View()
+					view.add_item(
+						Button(style = 5, label = "View Output", url = paste.get("url"))
+					)
+					view.add_item(
+						DeleteResponse(custom_id = f"delete_{paste.get('key')}_{paste.get('deletion_token')}")
+					)
+					await interaction.followup.send(
+						f"{EMOJIS['WARNING']} Detected attempt to escape code block, output will not be sent in discord.\n\n```py\n{_output}```",
+						view = view
+					)
+
+			if len(_output.split("\n")) > 20:
+				_output = "\n".join(_output.split("\n")[:19])
+				_output += "\n[...]"
+				async with session.post(
+					"https://api.senarc.net/paste",
+					json = {
+						"title": "Snekbox Eval Output",
+						"content": output,
+						"description": code_input.value,
+						"background_colour": "#1c1e26",
+						"text_colour": "#dda487",
+						"embed_colour": "#90B5F8"
+					}
+				) as paste:
+					paste = await paste.json()
+					full_output = paste.get("url")
+					modified = True
+
+			elif len(output) > 1500 and not modified:
+				_output = _output[:1497]
+				_output += "..."
+				async with session.post(
+					"https://api.senarc.net/paste",
+					json = {
+						"title": "Snekbox Eval Output",
+						"content": output,
+						"description": code_input.value,
+						"background_colour": "#1c1e26",
+						"text_colour": "#dda487",
+						"embed_colour": "#90B5F8"
+					}
+				) as paste:
+					paste = await paste.json()
+					full_output = paste.get("url")
+					modified = True
+
+			if _output.replace("\n", "") == "":
+				_output = "[No output]"
+
+			if returncode == 0:
+				message = f"{eval_code[0]} Successfully executed code."
+
+			else:
+				message = f"{eval_code[1]} Code execution returned code `{returncode}`."
+
+			if modified:
+				view = View()
+				view.add_item(
+					Button(style = 5, label = "Full Output", url = full_output)
+				)
+				view.add_item(
+					DeleteResponse(custom_id = f"delete_{paste.get('key')}_{paste.get('deletion_token')}")
+				)
+				await interaction.followup.send(
+					f"{message}\n\n```py\n{_output}```",
+					view = view
+				)
+
+			else:
+				view = View()
+				view.add_item(
+					DeleteResponse(custom_id = f"delete_message")
+				)
+				await interaction.followup.send(
+					f"{message}\n\n```py\n{_output}```",
+					view = view
+				)
+
 class CodeExecution(Modal, title = "Code Evaluation"):
 	code_input = TextInput(
 		label = "Code",
 		placeholder = "print(\"Hello World!\")",
 		style = TextStyle.paragraph,
 		required = True
-	).value
+	)
 
 	async def on_submit(self, interaction: Interaction) -> Coroutine[Any, Any, None]:
-		EMOJIS = Constants.get("EMOJIS")
-		eval_code = (
-			EMOJIS["SUCCESS"],
-			EMOJIS["WARNING"]
-		)
-		await interaction.response.defer(
-			ephemeral = True,
-			thinking = True
-		)
-		async with aiohttp.ClientSession() as session:
-			if CodeExecution.code_input.startswith("```python") and CodeExecution.code_input.endswith("```"):
-				CodeExecution.code_input = (CodeExecution.code_input[9:])[:3]
-			elif CodeExecution.code_input.startswith("```py") and CodeExecution.code_input.endswith("```"):
-				CodeExecution.code_input = (CodeExecution.code_input[5:])[:3]
-			elif CodeExecution.code_input.startswith("```") and CodeExecution.code_input.endswith("```"):
-				CodeExecution.code_input = (CodeExecution.code_input[3:])[:3]
-
-			async with session.post(
-				"https://snekbox.senarc.net/eval",
-				json = {
-					"input": CodeExecution.code_input
-				}
-			) as response:
-				response = await response.json()
-				output = response.get('stdout')
-				returncode = response.get('returncode')
-				output_ = output.split("\n")[:-1]
-				modified = False
-				count = 0
-				_output = ""
-				for line in output_:
-					count += 1
-					_output = _output + f"{(3 - len(str(count)))*'0'}{count} | {line}\n"
-
-				if "```" in _output:
-					async with session.post(
-						"https://api.senarc.net/paste",
-						json = {
-							"title": "Snekbox Eval Output",
-							"content": output,
-							"description": CodeExecution.code_input,
-							"background_colour": "#1c1e26",
-							"text_colour": "#dda487",
-							"embed_colour": "#90B5F8"
-						}
-					) as paste:
-						paste = await paste.json()
-						full_output = paste.get("url")
-						view = View()
-						view.add_item(
-							Button(style = 5, label = "View Output", url = paste.get("url"))
-						)
-						view.add_item(
-							DeleteResponse(custom_id = f"delete_{paste.get('key')}_{paste.get('deletion_token')}")
-						)
-						await interaction.response.send_message(
-							f"{EMOJIS['WARNING']} Detected attempt to escape code block, output will not be sent in discord.\n\n```py\n{_output}```",
-							view = view
-						)
-
-				if len(_output.split("\n")) > 20:
-					_output = "\n".join(_output.split("\n")[:19])
-					_output += "\n[...]"
-					async with session.post(
-						"https://api.senarc.net/paste",
-						json = {
-							"title": "Snekbox Eval Output",
-							"content": output,
-							"description": CodeExecution.code_input,
-							"background_colour": "#1c1e26",
-							"text_colour": "#dda487",
-							"embed_colour": "#90B5F8"
-						}
-					) as paste:
-						paste = await paste.json()
-						full_output = paste.get("url")
-						modified = True
-
-				elif len(output) > 1500 and not modified:
-					_output = _output[:1497]
-					_output += "..."
-					async with session.post(
-						"https://api.senarc.net/paste",
-						json = {
-							"title": "Snekbox Eval Output",
-							"content": output,
-							"description": CodeExecution.code_input,
-							"background_colour": "#1c1e26",
-							"text_colour": "#dda487",
-							"embed_colour": "#90B5F8"
-						}
-					) as paste:
-						paste = await paste.json()
-						full_output = paste.get("url")
-						modified = True
-
-				if _output.replace("\n", "") == "":
-					_output = "[No output]"
-
-				if returncode == 0:
-					message = f"{eval_code[0]} Successfully executed code."
-
-				else:
-					message = f"{eval_code[1]} Code execution returned code `{returncode}`."
-
-				if modified:
-					view = View()
-					view.add_item(
-						Button(style = 5, label = "Full Output", url = full_output)
-					)
-					view.add_item(
-						DeleteResponse(custom_id = f"delete_{paste.get('key')}_{paste.get('deletion_token')}")
-					)
-					await interaction.response.send_message(
-						f"{message}\n\n```py\n{_output}```",
-						view = view
-					)
-
-				else:
-					view = View()
-					view.add_item(
-						DeleteResponse(custom_id = f"delete_message")
-					)
-					await interaction.response.send_message(
-						f"{message}\n\n```py\n{_output}```",
-						view = view
-					)
+		return await process_evaluation(interaction, self.code_input)
 
 class Sandbox(Cog):
 	def __init__(self, bot):
@@ -187,14 +190,12 @@ class Sandbox(Cog):
 	)
 	async def eval_(self, interaction: Interaction, code: str = None) -> Coroutine[Any, Any, None]:
 		if code is None:
-			modal = CodeExecution()
-			await interaction.response.send_modal(modal)
+			await interaction.response.send_modal(CodeExecution())
 		else:
 			try:
-				modal = CodeExecution()
-				await interaction.response.send_modal(modal)
+				return await process_evaluation(interaction, self.code_input)
 			except Exception as error:
-				await interaction.response.send_message(f"{Constants.get('EMOJIS').get('WARNING')} Exception on `/eval`:\n\n```\n{error}\n```")
+				return await interaction.followup.send(f"{Constants.get('EMOJIS').get('WARNING')} Exception on `/eval`:\n\n```\n{error}\n```")
 
 async def setup(bot):
 	await bot.add_cog(Sandbox(bot))
