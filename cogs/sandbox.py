@@ -43,7 +43,7 @@ class CodeExecution(Modal, title = "Code Evaluation"):
 		placeholder = "print(\"Hello World!\")",
 		style = TextStyle.paragraph,
 		required = True
-	)
+	).value
 
 	async def on_submit(self, interaction: Interaction) -> Coroutine[Any, Any, None]:
 		EMOJIS = Constants.get("EMOJIS")
