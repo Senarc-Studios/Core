@@ -1,7 +1,8 @@
 fastapi
 uvicorn
 uvloop
-httptools==0.1.2
+cython
+git+https://github.com/MagicStack/httptools.git@v0.4.0
 dnspython
 pymongo
 motor
